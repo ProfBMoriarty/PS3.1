@@ -1,0 +1,251 @@
+<!DOCTYPE HTML>
+<html lang="en">
+	<head>
+		<title>Perlenspiel | API | Colors</title>
+		<meta charset="utf-8"/>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+		<meta name="description" content="Perlenspiel | API | Colors"/>
+		<meta name="keywords" content="perlenspiel, game, design, engine, gameclavier, moriarty, wpi"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+		<meta name="apple-mobile-web-app-capable" content="yes"/>
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+		<link rel="shortcut icon" href="http://users.wpi.edu/~bmoriarty/ps/favicon.png"/>
+		<link rel="apple-touch-icon" href="http://users.wpi.edu/~bmoriarty/ps/apple-touch-icon.png"/>
+		<link href='http://fonts<b>.g</b>oogleapis.com/css?family=Roboto:400,700,400italic,700italic,100' rel='stylesheet' type='text/css'>
+		<link rel="stylesheet" href="style.css" type="text/css">
+		<script type="text/javascript" src="jscolor/jscolor.js"></script>
+		<script type="text/javascript" src="play.js"></script>
+	</head>
+	<body onload="PSA.dots();">
+		<div id="header">
+			<p><img src="images/logosm.png" alt="[Logo]"><strong>Perlenspiel<sup class="sup3">3</sup></strong></p>
+
+			<ul id="nav">
+				<li><a href="index.html">Home</a></li>
+				<li><a href="download.html">Download</a></li>
+				<li><a href="learning.html">Learning</a></li>
+				<li><a href="examples.html">Examples</a></li>
+				<li><a href="api.html">API</a></li>
+				<li><a href="links.html">Links</a></li>
+			</ul>
+		</div>
+
+		<div id="main">
+		<p class="subhead">API | Colors</p>
+
+		<p>This page describes how colors are expressed and used in Perlenspiel.</p>
+
+		<ul class="select">
+			<li><a href="#basics">Color basics</a></li>
+			<li><a href="#express">Color expression</a></li>
+			<li><a href="#widget">RGB color widget</a></li>
+		</ul>
+
+		<div class="section">
+			<div id="basics" class="dot">&nbsp;</div>
+			<p class="subhead">Color basics</p>
+
+			<p>Perlenspiel operates in 24-bit RGB colorspace.</p>
+
+			<p><em>RGB</em> means that colors are defined using three values, one for each of the primary colors:
+				red, green and blue.
+				By mixing these colors in different proportions, a wide range of visible hues can be represented.</p>
+
+			<p>
+				<img src="images/rgbwheel200.png" alt="[RGB color wheel]"><span class="tiny">Colors available in 24-bit RGB. There are many.</span>
+			</p>
+
+			<p>
+				<em>24-bit</em> means that eight binary bits (one byte) are used to specify each of the three primary colors. A byte can store 256 unique values,
+				usually expressed as a whole number or <em>integer</em> between 0 and 255 inclusive.</p>
+
+			<p>Because three 8-bit values are used to define each color, Perlenspiel projects can employ (256 * 256 * 256) or 16,777,216 distinct hues.</p>
+		</div>
+
+		<div class="section">
+			<div id="express" class="dot">&nbsp;</div>
+			<p class="subhead">Color expression</p>
+
+			<p>Five Perlenspiel commands let you change the color of elements:</p>
+
+			<ul>
+				<li><a href="beads.html#color">PS.color</a> ( x, y, color )</li>
+				<li><a href="beads.html#bordercolor">PS<b>.b</b>orderColor</a> ( x, y, color )</li>
+				<li><a href="beads.html#glyphcolor">PS<b>.g</b>lyphColor</a> ( x, y, color )</li>
+				<li><a href="grid.html#color">PS.gridColor</a> ( color )</li>
+				<li><a href="status.html#color">PS.statusColor</a> ( color )</li>
+			</ul>
+
+			<p>The optional <b>color</b> parameter of these commands can be expressed using any of four different formats:</p>
+
+			<ol>
+				<li>an <em>integer</em> <a href="#triplet">triplet</a></li>
+				<li>an <em>integer</em> <a href="#plex">RGB multiplex</a></li>
+				<li>an <em>integer</em> <a href="#array">array</a></li>
+				<li>an <a href="#object">object</a> with named color properties</li>
+			</ol>
+
+			<p>Examples of using each format are provided below.</p>
+
+			<p id="triplet" class="subitem">1. Triplet format</p>
+
+			<p>A <b>triplet</b> is a sequence of three parameters, one for each primary color, provided in
+				red, green, blue order.</p>
+
+			<p>Each component should be an <em>integer</em> in the range 0 to 255 inclusive.
+				Values outside this range are clamped. Non-integral values are floored.</p>
+
+			<p>If a component is specified as <b>PS.DEFAULT</b>, the default value for that component is used.
+				If a component is <b>PS.CURRENT</b>, that component is not changed.</p>
+
+			<p>Use the <a href="#widget">RGB color widget</a> below to obtain
+				red, green and blue triplet values for various colors.</p>
+
+			<p>NOTE: If only one <em>integer</em> parameter is supplied for the <b>color</b> parameter, it is
+				interpreted as an <a href="plex">RGB multiplex</a> value (see below). If two <em>integer</em> parameters
+				are supplied, they are interpreted as the red and green components of a triplet, with the missing blue
+				component assumed to be <b>PS.CURRENT</b>.</p>
+
+			<div class="example">
+				<p>// EXAMPLE<br>
+					// Using triplets to express color<br><br>
+					// Change bead to autumn orange<br><br>
+					PS.color( x, y, 255, 192, 64 );<br><br>
+					// Change grid background to black<br><br>
+					PS.gridColor( 0, 0, 0 );</p></div>
+
+			<p id="plex" class="subitem">2. RGB multiplex format</p>
+
+			<p>An RGB multiplex combines the red, green and blue components of a color into a single value,
+				using this formula:</p>
+
+			<p><strong>(red * 65536) + (green * 256) + blue</strong></p>
+
+			<p>A multiplexed <b>color</b> should be an <em>integer</em> in the range 0 to 16777215 (0xFFFFFF) inclusive.
+				Values outside this range are clamped. Non-integral values are floored.</p>
+
+			<p>If <b>color</b> is <b>PS.DEFAULT</b>, the default element color is used.
+				If <b>color</b> is <b>PS.CURRENT</b> or not supplied, the color is not changed.</p>
+
+			<p>Multiplexes are especially handy if you understand hexadecimal (base 16) number notation.
+				In hex, the multiplexed colors are arranged in a <b>color</b> value like this:</p>
+
+			<p><strong>0xRRGGBB</strong></p>
+
+			<p>The RR hex digits contain the red component value, GG the green and BB the blue.</p>
+
+			<p>Use the <a href="#widget">RGB color widget</a> below to obtain multiplexed values for various colors.</p>
+
+			<p>Several <a href="constants.html#colors">commonly used multiplexes</a> are predefined as Perlenspiel constants.
+			</p>
+
+			<div class="example">
+				<p>// EXAMPLE<br>
+					// Using an RGB multiplex to express color<br><br>
+					// Change bead color to autumn orange<br><br>
+					PS.color( x, y, 0xFFC040 );<br><br>
+					// Change bead color using a predefined constant<br><br>
+					PS.color( x, y, PS.COLOR_RED );<br><br>
+					// Change grid background to black<br><br>
+					PS.gridColor( 0x000000 );</p></div>
+
+			<p id="array" class="subitem">3. Array format</p>
+
+			<p>You can specify the components of a color in the first three elements of an <em>array</em>, as follows:</p>
+
+			<ul>
+				<li>array[0] = red component</li>
+				<li>array[1] = green component</li>
+				<li>array[2] = blue component</li>
+			</ul>
+
+			<p>Each component should be an <em>integer</em> in the range 0 to 255 inclusive.
+				Values outside this range are clamped. Non-integral values are floored.</p>
+
+			<p>If any component is <b>PS.DEFAULT</b>, the default value for that component is used.
+				If a component is <b>PS.CURRENT</b>, the value of that component is not changed.</p>
+
+			<p>If the <em>array</em> contains fewer than three elements,
+				or any of the first three elements in the <em>array</em> are undefined,
+				the missing elements are interpreted as <b>PS.CURRENT</b>.</p>
+
+			<p>Any <em>array</em> elements beyond the first three are ignored.</p>
+
+			<div class="example">
+				<p>// EXAMPLE<br>
+					// Using arrays to express color<br><br>
+					// Change bead to autumn orange<br><br>
+					PS.color( x, y, [ 255, 192, 64 ] );<br><br>
+					// Change grid background to black<br><br>
+					PS.gridColor( [ 0, 0, 0 ] );</p></div>
+
+			<p id="object" class="subitem">4. Object format</p>
+
+			<p>A <b>color</b> parameter can also be expressed as an <em>object</em>
+				containing any of the following properties:</p>
+
+			<ul>
+				<li><b>.r</b> : <em>integer</em>, <b>PS.CURRENT</b> or <b>PS.DEFAULT</b></li>
+				<li><b>.g</b> : <em>integer</em>, <b>PS.CURRENT</b> or <b>PS.DEFAULT</b></li>
+				<li><b>.b</b> : <em>integer</em>, <b>PS.CURRENT</b> or <b>PS.DEFAULT</b></li>
+				<li><b>.rgb</b>: <em>integer</em>, <b>PS.CURRENT</b> or <b>PS.DEFAULT</b></li>
+			</ul>
+
+			<p>The <b>.r</b>, <b>.g</b> and
+				<b>.b</b> properties represent the red, green and blue color components, respectively.
+				They should be <em>integers</em> in the range 0 to 255 inclusive. Values outside this range are clamped.
+				Non-integral values are floored.</p>
+
+			<p>If any component property is <b>PS.DEFAULT</b>, the default value for that component is used.
+				If a component is <b>PS.CURRENT</b> or not supplied, that component is not changed.</p>
+
+			<p>If an <b>.rgb</b> property is supplied, it is interpreted as an <a href="#plex">RGB multiplex</a> (see above).
+				It should be an integer in the range 0 to 16777215 (0xFFFFFF) inclusive.
+				Values outside this range are clamped. Non-integral values are floored.</p>
+
+			<p>If <b>.rgb </b>is <b>PS.DEFAULT</b>, the default element color is used.
+				If <b>.rgb</b> is <b>PS.CURRENT</b>, the color is not changed.</p>
+
+			<p><strong>An .rgb property takes priority over any .r, .g or .b properties.</strong>
+				If an <b>.rgb</b> property is supplied in a
+				<b>color</b> object, its color is assigned to the associated element, and
+				the values of any <b>.r</b>, <b>.g</b> or <b>.b</b> properties are ignored.</p>
+
+			<div class="example">
+				<p>// EXAMPLE<br>
+					// Using object properties to express color<br><br>
+					// Change bead to autumn orange (two ways)<br><br>
+					PS.color( x, y, { r : 255, g : 192, b : 64 } );<br>
+					PS.color( x, y, { rgb : 0xFFC040 } );<br><br>
+					// Change grid background to black (two ways)<br><br>
+					PS.gridColor( { r : 0, g : 0, b : 0 } );<br>
+					PS.gridColor( { rgb : 0x000000 } );</p></div>
+		</div>
+
+		<div class="section">
+			<div id="widget" class="dot">&nbsp;</div>
+			<p class="subhead">RGB color widget</p>
+
+			<p>Use this simple widget from <a href="http://jscolor.com">JSColor.com</a>
+				to experiment with RGB color values.</p>
+
+			<p>Click on the Hex box to begin.</p>
+
+			<p>Hex: <input class="color" id="myColor" onchange="
+		   document.getElementById('rval').value = Math.floor(this.color.rgb[0] * 255);
+		   document.getElementById('gval').value = Math.floor(this.color.rgb[1] * 255);
+		   document.getElementById('bval').value = Math.floor(this.color.rgb[2] * 255);">
+				R: <input id="rval" size="5"> G: <input id="gval" size="5"> B: <input id="bval" size="5">
+
+		</div>
+		</div>
+
+		<div id="footer">
+			<p>Interactive Media and Game Development<br/>
+				Worcester Polytechnic Institute<br/>
+				100 Institute Road, Worcester, MA 01609 USA<br/>
+				<a href="http://imgd.wpi.edu">imgd.wpi.edu</a><br/>&nbsp;</p>
+		</div>
+	</body>
+</html>
+

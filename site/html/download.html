@@ -1,0 +1,141 @@
+<!DOCTYPE HTML>
+<html lang="en">
+	<head>
+		<title>Perlenspiel | Download</title>
+		<meta charset="utf-8"/>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+		<meta name="description" content="Perlenspiel | Download"/>
+		<meta name="keywords" content="perlenspiel, game, design, engine, gameclavier, moriarty, wpi"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+		<meta name="apple-mobile-web-app-capable" content="yes"/>
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+		<link rel="shortcut icon" href="http://users.wpi.edu/~bmoriarty/ps/favicon.png"/>
+		<link rel="apple-touch-icon" href="http://users.wpi.edu/~bmoriarty/ps/apple-touch-icon.png"/>
+		<link href='http://fonts.googleapis.com/css?family=Roboto:400,700,400italic,700italic,100' rel='stylesheet' type='text/css'>
+		<link rel="stylesheet" href="style.css" type="text/css">
+		<script type="text/javascript" src="play.js"></script>
+	</head>
+	<body onload="PSA.dots();">
+		<div id="header">
+			<p><img src="images/logosm.png" alt="[Logo]"><strong>Perlenspiel<sup class="sup3">3</sup></strong></p>
+
+			<ul id="nav">
+				<li><a href="index.html">Home</a></li>
+				<li><a href="#">Download</a></li>
+				<li><a href="learning.html">Learning</a></li>
+				<li><a href="examples.html">Examples</a></li>
+				<li><a href="api.html">API</a></li>
+				<li><a href="links.html">Links</a></li>
+			</ul>
+		</div>
+
+		<div id="main">
+			<p class="subhead">Download</p>
+
+			<p>Click the arrow to download the file <b>PS.zip</b> (4 KB).</p>
+
+			<p>
+				<a href="PS.zip"><img src="images/arrow.png" alt="[Logo]"></a>&nbsp;<a href="PS.zip">Perlenspiel 3 Devkit</a>
+			</p>
+
+			<p>Extract the archive to any convenient place on a local drive. You'll end up with a directory named <b>PS</b> containing all the files you need.</p>
+
+			<p>Keep a backup of the PS directory. You'll need a fresh copy for every new Perlenspiel project.</p>
+
+			<div class="section">
+				<p><strong>Version notes</strong></p>
+
+				<p>Email suspected bugs, ideas and comments to bmoriarty [at] wpi [dot] edu.</p>
+
+				<ul>
+					<li><strong>Version 3.0.8</strong> (12.03.13)</li>
+					<ul>
+						<li>A bug prevented variable border widths from working properly. Discovered and fixed by Mark Diehr.</li>
+						<li><a href="images.html#load">PS.imageLoad</a>() now passes <b>PS.ERROR</b> to the
+							<b>exec</b> function if a loading error occurs.</li>
+					</ul>
+					<li><strong>Version 3.0.7</strong> (11.18.13)</li>
+					<ul>
+						<li><a href="images.html#load">PS.imageLoad</a>() now defaults to format 4 instead of format 3.</li>
+						<li>Problems with dubious reporting of sprite collisions have been fixed.</li>
+						<li><a href="events.html#keydown">PS.keyDown</a>() and <a href="events.html#keyup">PS.keyUp</a>() now respond
+							correctly to the enter and backspace keys.</li>
+						<li>Other obscure bug fixes and code improvements.</li>
+					</ul>
+					<li><strong>Version 3.0.6</strong> (11.16.13)</li>
+					<ul>
+						<li>Problems with <a href="events.html#keydown">PS.keyDown</a>() and
+							<a href="events.html#keyup">PS.keyUp</a>() have been fixed.</li>
+						<li>A new utility call, <a href="utility.html#keyrepeat">PS.keyRepeat</a>(),
+							lets you inspect and change the auto-repeat behavior of the keyboard.</li>
+					</ul>
+                    <li><strong>Version 3.0.5</strong> (11.07.13)</li>
+                    <ul>
+                        <li>Issues with <a href="events.html#keydown">PS.keyDown</a>() and <a href="events.html#keyup">PS.keyUp</a>()
+                            were addressed, together with odd status line behavior under Firefox.</li>
+                    </ul>
+					<li><strong>Version 3.0.4</strong> (11.05.13)</li>
+					<ul>
+						<li>Mark Diehr discovered a bug in the alpha blending of bead planes. Fixed.</li>
+					</ul>
+					<li><strong>Version 3.0.3</strong> (11.04.13)</li>
+					<ul>
+						<li>A parameter issue was discovered in <a href="timer.html#start">PS.timerStart</a>(). Fixed.</li>
+					</ul>
+					<li><strong>Version 3.0.2</strong> (10.30.13)</li>
+					<ul>
+						<li>Mark Diehr discovered a drawing bug with Opera browsers. Fixed.</li>
+					</ul>
+					<li><strong>Version 3.0.1</strong> (10.28.13)</li>
+					<ul>
+						<li>Bugs in the code and documentation for <a href="utility.html#applyrect">PS.applyRect</a>() have been fixed.
+							Thanks to Eric Anumba for spotting these issues.</li>
+						<li>Stalled HTML5 audio loads (which seem to occur with annoying frequency under Android) no longer throw an error message.</li>
+					</ul>
+					<li><strong>Version 3.0.0</strong> (10.25.13)</li>
+					<ul>
+						<li>First release. There will be issues! Report curious behaviors to Professor Moriarty for immediate investigation.</li>
+						<li>Thanks to WPI students Ben Carlson, Patrick Feeney and Ian Fite for their valuable help in preparing
+							Version 3 for release.
+						</li>
+						<li>Special thanks to Mark Diehr at <a href="http://www.fullsail.edu">Full Sail</a> for ideas, code and bug fixes.</li>
+					</ul>
+				</ul>
+			</div>
+
+			<div class="section">
+				<p><strong>The Fine Print</strong></p>
+
+				<div class="tiny">
+					<p>Perlenspiel is a scheme by Professor Moriarty (bmoriarty -at- wpi -dot- edu).</p>
+
+					<p>This web site and the Perlenspiel software are
+						Copyright &copy; 2009-13 Worcester Polytechnic Institute.</p>
+
+					<p>Perlenspiel is open source software, released under the
+						<a href="http://www.opensource.org/licenses/lgpl-3.0.html">GNU LGPL-3.0</a> (Lesser General Public License 3.0).
+						For more information about open source software, visit
+						<a href="http://opensource.org">opensource.org</a>.</p>
+
+					<p>The Perlenspiel software is provided to you “as is,”
+						and we make no express or implied warranties whatsoever with respect to its functionality, operability, or use,
+						including, without limitation, any implied warranties of merchantability, fitness for a particular purpose,
+						or infringement. We expressly disclaim any liability whatsoever for any direct, indirect, consequential, incidental
+						or special damages, including, without limitation, lost revenues, lost profits, losses resulting from business
+						interruption or loss of data, regardless of the form of action or legal theory under which the liability may be
+						asserted, even if advised of the possibility or likelihood of such damages.</p>
+
+					<p>By downloading the software from this page, you agree to the specified terms.</p>
+				</div>
+			</div>
+
+		</div>
+
+		<div id="footer">
+			<p>Interactive Media and Game Development<br/>
+				Worcester Polytechnic Institute<br/>
+				100 Institute Road, Worcester, MA 01609 USA<br/>
+				<a href="http://imgd.wpi.edu">imgd.wpi.edu</a><br/>&nbsp;</p>
+		</div>
+	</body>
+</html>

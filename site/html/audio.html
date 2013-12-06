@@ -1,0 +1,1023 @@
+<!DOCTYPE HTML>
+<html lang="en">
+	<head>
+		<title>Perlenspiel | API | Audio</title>
+		<meta charset="utf-8"/>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+		<meta name="description" content="Perlenspiel | API | Audio"/>
+		<meta name="keywords" content="perlenspiel, game, design, engine, gameclavier, moriarty, wpi"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+		<meta name="apple-mobile-web-app-capable" content="yes"/>
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+		<link rel="shortcut icon" href="http://users.wpi.edu/~bmoriarty/ps/favicon.png"/>
+		<link rel="apple-touch-icon" href="http://users.wpi.edu/~bmoriarty/ps/apple-touch-icon.png"/>
+		<link href='http://fonts.googleapis.com/css?family=Roboto:400,700,400italic,700italic,100' rel='stylesheet' type='text/css'>
+		<link rel="stylesheet" href="style.css" type="text/css">
+		<script type="text/javascript" src="play.js"></script>
+	</head>
+
+	<body onload="PSA.dots();">
+		<div id="header">
+			<p><img src="images/logosm.png" alt="[Logo]"><strong>Perlenspiel<sup class="sup3">3</sup></strong></p>
+
+			<ul id="nav">
+				<li><a href="index.html">Home</a></li>
+				<li><a href="download.html">Download</a></li>
+				<li><a href="learning.html">Learning</a></li>
+				<li><a href="examples.html">Examples</a></li>
+				<li><a href="api.html">API</a></li>
+				<li><a href="links.html">Links</a></li>
+			</ul>
+		</div>
+
+		<div id="main">
+		<p class="subhead">API | Audio</p>
+
+		<p>These functions control the playback of audio files.</p>
+
+		<ul class="select">
+			<li><a href="#load">PS.audioLoad</a> ( filename, options )</li>
+			<li><a href="#play">PS.audioPlay</a> ( filename, options )</li>
+			<li><a href="#pause">PS.audioPause</a> ( channel )</li>
+			<li><a href="#stop">PS.audioStop</a> ( channel )</li>
+			<li><a href="#piano">PS.piano</a> ( note, long )</li>
+			<li><a href="#hchord">PS.harpsichord</a> ( note, long )</li>
+			<li><a href="#xylo">PS.xylophone</a> ( note )</li>
+			<li><a href="#library">Audio library</a></li>
+		</ul>
+
+		<div class="section">
+			<div id="load" class="dot">&nbsp;</div>
+			<p class="subhead">PS.audioLoad ( filename, options )</p>
+
+			<p>PS.audioLoad() preloads an audio file, and optionally plays it.</p>
+
+			<div class="specs">
+				<p>Parameters:</p>
+				<ol>
+					<li><b>filename</b> : <em>string</em></li>
+					<li>(optional) <b>options</b> : <em>object</em> or <b>PS.DEFAULT</b></li>
+				</ol>
+				<p>Returns: <em>string</em> or <b>PS.ERROR</b></p>
+			</div>
+
+			<p>The
+				<em>filename</em> parameter should be a case-sensitive string matching the filename of the audio to be played,
+				<em>without</em> a path specifier or file extension (example: "click").
+				By default, the file is assumed to reside in the Perlenspiel <a href="#library">Audio Library</a>.
+				Note that library filenames are all lower-case.</p>
+
+			<p>The <b>options</b> parameter, if provided, should by a Javascript
+				<em>object</em> containing one or more of the following properties:</p>
+
+			<ul>
+				<li><b>.autoplay</b> : <em>boolean</em> or <b>PS.DEFAULT</b></li>
+				<li><b>.volume</b> : <em>float</em> or <b>PS.DEFAULT</b></li>
+				<li><b>.loop</b> : <em>boolean</em> or <b>PS.DEFAULT</b></li>
+				<li><b>.lock</b> : <em>boolean</em> or <b>PS.DEFAULT</b></li>
+				<li><b>.onLoad</b> : <em>function</em> or <b>PS.DEFAULT</b></li>
+				<li><b>.onEnd</b> : <em>function</em> or <b>PS.DEFAULT</b></li>
+				<li><b>.data</b> : <em>any Javascript value</em> or <b>PS.DEFAULT</b></li>
+				<li><b>.path</b> : <em>string</em>, or <b>PS.DEFAULT</b></li>
+				<li><b>.types</b> : <em>string array</em> or <b>PS.DEFAULT</b></li>
+			</ul>
+
+			<p class="subitem">.autoplay</p>
+
+			<p>If <b>.autoplay</b> is <em>true</em> or a non-zero number, the audio file specified by
+				<b>filename</b> is played immediately upon loading. Any playback behaviors
+				specified by other parameters in the <b>options</b> object (such as <b>volume</b> and
+				<b>loop</b>) will be in effect. If <b>.autoplay</b> is <em>false</em>, zero (0),
+				<em>null</em>, PS.DEFAULT or not supplied, the default behavior (no autoplay) is used.</p>
+
+			<p class="subitem">.volume</p>
+
+			<p>The <b>.volume</b> property specifies the volume assigned to subsequent playback of the audio file specified by
+				<b>filename</b>. It should be a float in the range 0 (muted) to 1.0 (maximum) inclusive. Values outside this range are clamped.
+				If <b>.volume</b> is <em>null</em>, <b>PS.DEFAULT</b> or not supplied, the default volume (0.5, 50% maximum) is used.</p>
+
+			<p class="subitem">.loop</p>
+
+			<p>If <b>.loop</b> is <em>true</em> or a non-zero number, the audio file specified by
+				<b>filename</b> loops continuously on subsequent playback.
+				If <b>.loop</b> is <em>false</em>, zero (0), <em>null</em>,
+				<b>PS.DEFAULT</b> or not supplied, the default behavior (no looping) is used.</p>
+
+			<p class="subitem">.lock</p>
+
+			<p>If <b>.lock</b> is <em>true</em> or a non-zero number, the audio file specified by
+				<b>filename</b> is marked for long-term retention by the file system.
+				Such files are less likely to be discarded when the engine needs more space.
+				If <b>.lock</b> is <em>false</em>, zero (0), <em>null</em>, <b>PS.DEFAULT</b> or not supplied,
+				the default behavior (no file lock) is used.</p>
+
+			<p class="subitem">.onLoad</p>
+
+			<p>The <b>.onLoad</b> property specifies a Javascript function that is called when the audio file specified by
+				<b>filename</b> is actually loaded. It should be a reference to a valid Javascript function expecting one parameter.
+				If <b>.onLoad</b> is <em>null</em>, <b>PS.DEFAULT</b> or not supplied, no function is called.</p>
+
+			<p class="subitem">.onEnd</p>
+
+			<p>The <b>.onEnd</b> property specifies a Javascript function that is called each time the audio file specified by
+				<b>filename</b> completes playback (including the end of each loop, if enabled).
+				It should be a reference to a valid Javascript function expecting one parameter.
+				If <b>.onEnd</b> is <em>null</em>, <b>PS.DEFAULT</b> or not supplied, no function is called.</p>
+
+			<p class="subitem">.data</p>
+
+			<p>If an <b>.onLoad</b> and/or <b>onEnd</b> property is provided, the
+				<b>.data</b> property specifies the value that is passed to those functions when they are called.
+				It can be any Javascript value.
+				If <b>.data</b> is <em>null</em>, <b>PS.DEFAULT</b> or not supplied, the
+				<b>filename</b> parameter is passed to the function(s).</p>
+
+			<p class="subitem">.path</p>
+
+			<p>The <b>.path</b> property should be the complete, case-sensitive path of the directory containing the file specified by
+				<b>filename</b>. If <b>.path</b> is an empty string (""), <em>null</em>, <b>PS.DEFAULT</b> or not supplied,
+				the path of the Perlenspiel <a href="#library">Audio Library</a> is used.</p>
+
+			<div class="notebox">
+				<p><strong>IMPORTANT:</strong>
+					Webkit-based browsers, such as Chrome and Safari, are picky about security.
+					By default, they will not load resources (including audio and image files) that (1) do not reside on an actual HTTP server,
+					and (2) do not share the root filepath of any script that tries to access them. This means that you have to install all of your scripts,
+					audio and image files on a live server, in the same root filepath, before you can test or deploy an application using these browsers.
+					(It's possible to reconfigure the browser to avoid this necessity, but I don't recommend it.)</p>
+
+				<p>A basic application directory might look like this:</p>
+
+				<p><code>/audio/ (a folder for your audio files)<br>
+					/images/ (a folder for your image files, if any)<br>
+					game.html (the Perlenspiel web page)<br>
+					*.js (your game scripts)</code></p>
+
+				<p>Firefox is currently more lenient about security. Resource files don't need to be on a server, or share the same root filepath.
+					This may change when Firefox switches to Web Audio in the near future.</p>
+			</div>
+
+			<p class="subitem">filetypes</p>
+
+			<p>The
+				<b>types</b> property should be an array of strings indicating the audio filetypes available for the file specified by
+				<b>filepath</b>. The strings should be provided in priority order. Legal strings are:</p>
+
+			<ul>
+				<li>"ogg" (compressed .ogg Vorbis)</li>
+				<li>"mp3" (compressed .mp3)</li>
+				<li>"wav" (uncompressed .wav)</li>
+				<li>"aac" (compressed .aac)</li>
+				<li>"webm" (compressed .webm)</li>
+				<li>"opus" (compressed .opus)</li>
+			</ul>
+
+			<div class="notebox">
+				<p><strong>You should provide an uncompressed 16-bit .wav file (44.1 kHz or 22.05 kHz, mono or stereo)
+					for every sound used by your application, together with .ogg and .mp3 versions of the sound,
+					all stored in the same directory.</strong> The three matching files should share the same case-sensitive filename,
+					each with an appropriate lower-case extension (.wav, .ogg or .mp3).</p>
+
+				<p>Most browsers can handle either .ogg or .mp3 files, which load much faster.</p>
+
+				<p>Encode the compressed formats at whatever bitrate you feel is adequate.
+					For stereo music, I recommend at least 192 kbps for .mp3 files, and 128 kbps for .ogg files.
+					Lower rates may be adequate for voices and sound effects.</p>
+
+				<p>You may also want to provide an .opus file, as this will soon become the standard for all browsers.</p>
+			</div>
+
+			<p>If <b>types</b> is <b>PS.DEFAULT</b> or not supplied, the default filetypes array is used:</p>
+
+			<ul>
+				<li>["ogg", "mp3", "wav"]</li>
+			</ul>
+
+			<p>If <b>options</b> is <b>PS.DEFAULT</b> or not supplied, default values are used for all properties.</p>
+
+			<p class="subitem">Return value</p>
+
+			<p>PS.audioLoad() returns a string uniquely identifying the channel assigned to the sound. This identifier can be used for subsequent calls
+				to <a href="#pause">PS.audioPause</a>() and <a href="#stop">PS.audioStop</a>().</p>
+
+			<div class="example">
+				<p>// EXAMPLE:<br/>
+					// Preload and lock a library sound on startup for future use<br/><br/>
+					PS.init = function( system, options ) {<br/>
+					<span>&nbsp;&nbsp;&nbsp;</span>"use strict";<br/><br/>
+					<span>&nbsp;&nbsp;&nbsp;</span>// set up a 10 x 10 grid<br/><br/>
+					<span>&nbsp;&nbsp;&nbsp;</span>PS.gridSize( 10, 10 );<br/><br/>
+					<span>&nbsp;&nbsp;&nbsp;</span>// load and lock the sound<br/><br/>
+					<span>&nbsp;&nbsp;&nbsp;</span>PS.audioLoad( "fx_click", { lock : true } );<br/>
+					};</p>
+			</div>
+		</div>
+
+		<div class="section">
+			<div id="play" class="dot">&nbsp;</div>
+			<p class="subhead">PS.audioPlay ( filename, options )</p>
+
+			<p>PS.audioPlay() plays an audio file, automatically loading it first if necessary.</p>
+
+			<div class="specs">
+				<p>Parameters:</p>
+				<ol>
+					<li><b>filename</b> : <em>string</em></li>
+					<li>(optional) <b>options</b> : <em>object</em> or <b>PS.DEFAULT</b></li>
+				</ol>
+				<p>Returns: <em>string</em> or <b>PS.ERROR</b></p>
+			</div>
+
+			<p>The
+				<em>filename</em> parameter should be a case-sensitive string matching the filename of the audio to be played,
+				<em>without</em> a file extension. By default, the file is assumed to reside in the Perlenspiel
+				<a href="#library">Audio Library</a>. Note that library filenames are all lower-case.</p>
+
+			<p>The
+				<b>options</b> parameter, if provided, should by a Javascript object containing one or more of the following properties:
+			</p>
+
+			<ul>
+				<li><b>.volume</b> : <em>float</em> or <b>PS.DEFAULT</b></li>
+				<li><b>.loop</b> : <em>boolean</em> or <b>PS.DEFAULT</b></li>
+				<li><b>.lock</b> : <em>boolean</em> or <b>PS.DEFAULT</b></li>
+				<li><b>.onEnd</b> : <em>function</em> or <b>PS.DEFAULT</b></li>
+				<li><b>.data</b> : <em>any Javascript value</em> or <b>PS.DEFAULT</b></li>
+				<li><b>.path</b> : <em>string</em>, or <b>PS.DEFAULT</b></li>
+				<li><b>.types</b> : <em>string array</em> or <b>PS.DEFAULT</b></li>
+			</ul>
+
+			<p>See the documentation for <a href="#load">PS.audioLoad</a>() above for a detailed description of these properties.</p>
+
+			<p>If <b>options</b> is <b>PS.DEFAULT</b> or not supplied, default values are used for all properties.</p>
+
+			<p class="subitem">Return value</p>
+
+			<p>PS.audioPlay() returns a string uniquely identifying the channel assigned to the sound. This identifier can be used for subsequent calls
+				to <a href="#pause">PS.audioPause</a>() and <a href="#stop">PS.audioStop</a>().</p>
+
+			<p>If an error occurs, PS.audioPlay() returns <b>PS.ERROR</b>.</p>
+
+			<div class="example">
+				<p>// EXAMPLES:<br><br>
+					// Play a pop when any bead is clicked/touched<br/><br/>
+					PS.touch = function( x, y, data, options ) {<br/>
+					<span>&nbsp;&nbsp;&nbsp;</span>"use strict";<br/><br/>
+					<span>&nbsp;&nbsp;&nbsp;</span>PS.audioPlay( "fx_pop" );<br/>
+					};<br><br>
+					// Play triangle at 75% volume<br/>
+					// when any key is pressed<br/><br/>
+					PS.keyDown = function( key, shift, ctrl, options ) {<br/>
+					<span>&nbsp;&nbsp;&nbsp;</span>"use strict";<br/><br/>
+					<span>&nbsp;&nbsp;&nbsp;</span>PS.audioPlay( "perc_triangle", { volume: 0.75 } );<br/>
+					};</p>
+			</div>
+
+		</div>
+
+		<div class="section">
+			<div id="pause" class="dot">&nbsp;</div>
+			<p class="subhead">PS.audioPause ( channel )</p>
+
+			<p>PS.audioPause() lets you pause and/or resume a previously played audio channel.</p>
+
+			<div class="specs">
+				<p>Parameters:</p>
+				<ol>
+					<li>channel : <em>string</em></li>
+				</ol>
+				<p>Returns: <em>string</em> or <b>PS.ERROR</b></p>
+			</div>
+
+			<p>The <em>channel</em> parameter should be a channel identifier previously returned by a call to
+				<a href="#play">PS.audioPlay</a>() or <a href="#pause">PS.audioPause</a>().</p>
+
+			<p>If <b>channel</b> is playing, it will pause immediately.
+				If <b>channel</b> is already paused as a result of a previous call to <a href="#pause">PS.audioPause</a>(),
+				it resumes playing at the point from which it was paused.</p>
+
+			<p>If <b>channel</b> is not playing, paused, stopped or invalid, nothing happens.</p>
+
+			<p class="subitem">Return value</p>
+
+			<p>PS.audioPause() returns a string uniquely identifying the channel that was paused.
+				This identifier can be used for subsequent calls to <a href="#pause">PS.audioPause</a>()
+				and <a href="#stop">PS.audioStop</a>().</p>
+
+			<p>IMPORTANT: The channel identifier returned by <a href="#pause">PS.audioPause</a>() may not be the same as
+				the one passed in the <b>channel</b> parameter! Be sure to save this identifier for subsequent audio calls,
+				as the original channel may no longer be valid.
+			</p>
+
+			<p><b>PS.ERROR</b> is returned if an error occurs.</p>
+		</div>
+
+		<div class="section">
+			<div id="stop" class="dot">&nbsp;</div>
+			<p class="subhead">PS.audioStop ( channel )</p>
+
+			<p>PS.audioStop() lets you stop a previously started audio channel.</p>
+
+			<div class="specs">
+				<p>Parameters:</p>
+				<ol>
+					<li>channel : <em>string</em></li>
+				</ol>
+				<p>Returns: <b>PS.DONE</b> or <b>PS.ERROR</b></p>
+			</div>
+
+			<p>The <em>channel</em> parameter should be a channel identifier previously returned by a call to
+				<a href="#play">PS.audioPlay</a>() or <a href="#pause">PS.audioPause</a>().</p>
+
+			<p>If <b>channel</b> is playing, it stops immediately.</p>
+
+			<p>If <b>channel</b> is not playing, paused, already stopped or invalid, nothing happens.</p>
+
+			<p class="subitem">Return value</p>
+
+			<p>PS.audioStop() returns <b>PS.DONE</b> on successful completion, otherwise <b>PS.ERROR</b>.</p>
+
+		</div>
+
+		<div class="section">
+			<div id="piano" class="dot">&nbsp;</div>
+			<p class="subhead">PS.piano ( note, long )</p>
+
+			<p>PS.piano() returns the filename of an indexed piano note.</p>
+
+			<div class="specs">
+				<p>Parameters:</p>
+				<ol>
+					<li><b>note</b> : <em>integer</em></li>
+					<li>(optional) <b>long</b> : <em>boolean</em></li>
+				</ol>
+				<p>Returns: <em>string</em> or <b>PS.ERROR</b></p>
+			</div>
+
+			<p>The Perlenspiel
+				<a href="#library">Audio Library</a> includes a piano with 88 keys, ranging from A0 to C8 inclusive.</p>
+
+			<p>PS.piano() takes a <b>note</b> parameter between 1 and 88 inclusive,
+				and returns a string representing the filename of the associated piano sound. Values outside this range are clamped.
+			</p>
+
+			<p>There are two versions of each piano note, short (about 1 second in duration) and long (about 4 seconds).
+				The optional <b>long</b> parameter determines which version's filename is returned. If <b>long</b> is
+				<em>true</em>, the long version is returned. If <b>long</b> is
+				<em>false</em> or not supplied, the short version is returned.</p>
+
+			<p class="subitem">Return value</p>
+
+			<p>PS.piano() returns a string representing the filename of the piano sound specified by <b>note</b> and <b>long</b>.
+			</p>
+
+			<p><b>PS.ERROR</b> is returned if an error occurs.</p>
+
+			<div class="example">
+				<p>// EXAMPLES:<br/><br/>
+					// Play SHORT version of piano note 44<br/>
+					// when any bead is clicked/touched<br/><br/>
+					PS.touch = function( x, y, data, options ) {<br/>
+					<span>&nbsp;&nbsp;&nbsp;</span>"use strict";<br/><br/>
+					<span>&nbsp;&nbsp;&nbsp;</span>PS.audioPlay( PS.piano(44) );<br/>
+					};<br><br>
+					// Play LONG version of piano note 32<br/>
+					// when any key is pressed<br/><br/>
+					PS.keyDown = function( key, shift, ctrl, options ) {<br/>
+					<span>&nbsp;&nbsp;&nbsp;</span>"use strict";<br/><br/>
+					<span>&nbsp;&nbsp;&nbsp;</span>PS.audioPlay( PS.piano( 32, true ) );<br/>
+					};</p>
+			</div>
+
+		</div>
+
+		<div class="section">
+			<div id="hchord" class="dot">&nbsp;</div>
+			<p class="subhead">PS.harpsichord ( note, long )</p>
+
+			<p>PS.harpsichord() returns the filename of an indexed harpsichord note.</p>
+
+			<div class="specs">
+				<p>Parameters:</p>
+				<ol>
+					<li><b>note</b> : <em>integer</em></li>
+					<li>(optional) <b>long</b> : <em>boolean</em></li>
+				</ol>
+				<p>Returns: <em>string</em> or <b>PS.ERROR</b></p>
+			</div>
+
+			<p>The Perlenspiel
+				<a href="#library">Audio Library</a> includes a harpsichord with 57 keys, ranging from A2 to F7 inclusive.</p>
+
+			<p>PS.harpsichord() takes a <b>note</b> parameter between 1 and 57 inclusive,
+				and returns a string representing the filename of the associated harpsichord sound. Values outside this range are clamped.
+			</p>
+
+			<p>There are two versions of each harpsichord note, short (about 1 second in duration) and long (about 4 seconds).
+				The optional <b>long</b> parameter determines which version's filename is returned. If <b>long</b> is
+				<em>true</em>, the long version is returned. If <b>long</b> is
+				<em>false</em> or not supplied, the short version is returned.</p>
+
+			<p class="subitem">Return value</p>
+
+			<p>PS.harpsichord() returns a string representing the filename of the harpsichord sound specified by <b>note</b> and
+				<b>long</b>.</p>
+
+			<p><b>PS.ERROR</b> is returned if an error occurs.</p>
+
+		</div>
+
+		<div class="section">
+			<div id="xylo" class="dot">&nbsp;</div>
+			<p class="subhead">PS.xylophone ( note )</p>
+
+			<p>PS.xylophone() returns the filename of an indexed xylophone note.</p>
+
+			<div class="specs">
+				<p>Parameters:</p>
+				<ol>
+					<li><b>note</b> : <em>integer</em></li>
+				</ol>
+				<p>Returns: <em>string</em> or <b>PS.ERROR</b></p>
+			</div>
+
+			<p>The Perlenspiel
+				<a href="#library">Audio Library</a> includes a xylophone with 39 notes, ranging from A4 to B7 inclusive.</p>
+
+			<p>PS.xylophone() takes a <b>note</b> parameter between 1 and 39 inclusive,
+				and returns a string representing the filename of the associated xylophone sound. Values outside this range are clamped.
+			</p>
+
+			<p class="subitem">Return value</p>
+
+			<p>PS.xylophone() returns a string representing the filename of the xylophone sound specified by <b>note</b>.</p>
+
+			<p><b>PS.ERROR</b> is returned if an error occurs.</p>
+
+		</div>
+
+		<div class="section">
+		<div id="library" class="dot">&nbsp;</div>
+		<p class="subhead">Audio library</p>
+
+		<p>The Perlenspiel audio library contains nearly 400 sounds that you
+			can use in your games, including a full range of piano, harpsichord and xylophone notes,
+			dozens of percussion instruments, and sound effects ranging from simple to silly.</p>
+
+		<p>To use these sounds, pass the filenames below as a string to the
+			<a href="#load">PS.audioLoad</a>() and <a href="#play">PS.audioPlay</a>() commands.
+			Be sure the filename is spelled correctly! Note that filenames are all lower-case.</p>
+
+		<div class="example"><p>// EXAMPLE:<br>
+			// Play a click when a bead is touched<br><br>
+
+			<p><code>PS.click = function ( x, y, data, options ) {<br>
+				<span>&nbsp;&nbsp;&nbsp;</span>"use strict";<br/><br/>
+				<span>&nbsp;&nbsp;&nbsp;</span>PS.AudioPlay( "fx_click" );<br/>
+				};</code></p>
+		</div>
+
+		<p>Click on any filename to hear what it sounds like.</p>
+
+		<p class="subitem">Sound effects</p>
+
+		<p>All sound effect filenames begin with an <b>fx_</b> prefix.</p>
+		<ul>
+			<li class="sound"><a href="javascript:PSA.play('fx_click');">fx_click</a>: Your basic click</li>
+			<li class="sound"><a href="javascript:PSA.play('fx_tick');">fx_tick</a>: Metallic tick</li>
+			<li class="sound"><a href="javascript:PSA.play('fx_bang');">fx_bang</a>: Small bang</li>
+			<li class="sound"><a href="javascript:PSA.play('fx_blip');">fx_blip</a>: Electronic blip</li>
+			<li class="sound"><a href="javascript:PSA.play('fx_bloop');">fx_bloop</a>: Electronic bloop</li>
+			<li class="sound"><a href="javascript:PSA.play('fx_boop');">fx_boop</a>: Electronic boop</li>
+			<li class="sound"><a href="javascript:PSA.play('fx_beep');">fx_beep</a>: Double electronic beep</li>
+			<li class="sound"><a href="javascript:PSA.play('fx_pop');">fx_pop</a>: Pop</li>
+			<li class="sound"><a href="javascript:PSA.play('fx_chirp1');">fx_chirp1</a>: High electronic chirp</li>
+			<li class="sound"><a href="javascript:PSA.play('fx_chirp2');">fx_chirp2</a>: Low electronic chirp</li>
+			<li class="sound"><a href="javascript:PSA.play('fx_bloink');">fx_bloink</a>: Bloink</li>
+			<li class="sound"><a href="javascript:PSA.play('fx_rip');">fx_rip</a>: Rip</li>
+			<li class="sound"><a href="javascript:PSA.play('fx_scratch');">fx_scratch</a>: Scratch</li>
+			<li class="sound"><a href="javascript:PSA.play('fx_squink');">fx_squink</a>: Squink 1</li>
+			<li class="sound"><a href="javascript:PSA.play('fx_squirp');">fx_squirp</a>: Ssquirp</li>
+			<li class="sound"><a href="javascript:PSA.play('fx_squish');">fx_squish</a>: Squish</li>
+			<li class="sound"><a href="javascript:PSA.play('fx_tweet');">fx_tweet</a>: Tweet</li>
+			<li class="sound"><a href="javascript:PSA.play('fx_zurp');">fx_zurp</a>: Zurp</li>
+			<li class="sound"><a href="javascript:PSA.play('fx_ding');">fx_ding</a>: Ding</li>
+			<li class="sound"><a href="javascript:PSA.play('fx_swoosh');">fx_swoosh</a>: Swoosh</li>
+			<li class="sound"><a href="javascript:PSA.play('fx_bucket');">fx_bucket</a>: A kicked bucket</li>
+			<li class="sound"><a href="javascript:PSA.play('fx_drip1');">fx_drip1</a>: Liquid drip</li>
+			<li class="sound"><a href="javascript:PSA.play('fx_drip2');">fx_drip2</a>: Liquid drip with pop</li>
+			<li class="sound"><a href="javascript:PSA.play('fx_squawk');">fx_squawk</a>: Duck squawk</li>
+			<li class="sound"><a href="javascript:PSA.play('fx_hoot');">fx_hoot</a>: Windy hoot</li>
+			<li class="sound"><a href="javascript:PSA.play('fx_whistle');">fx_whistle</a>: Police whistle</li>
+			<li class="sound"><a href="javascript:PSA.play('fx_silencer');">fx_silencer</a>: Gunshot with silencer</li>
+
+			<li class="sound"><a href="javascript:PSA.play('fx_blast1');">fx_blast1</a>: Electro-blast 1</li>
+			<li class="sound"><a href="javascript:PSA.play('fx_blast2');">fx_blast2</a>: Electro-blast 2</li>
+			<li class="sound"><a href="javascript:PSA.play('fx_blast3');">fx_blast3</a>: Electro-blast 3</li>
+			<li class="sound"><a href="javascript:PSA.play('fx_blast4');">fx_blast4</a>: Electro-blast 4</li>
+
+			<li class="sound"><a href="javascript:PSA.play('fx_coin1');">fx_coin1</a>: Electro-coin 1</li>
+			<li class="sound"><a href="javascript:PSA.play('fx_coin2');">fx_coin2</a>: Electro-coin 2</li>
+			<li class="sound"><a href="javascript:PSA.play('fx_coin3');">fx_coin3</a>: Electro-coin 3</li>
+			<li class="sound"><a href="javascript:PSA.play('fx_coin4');">fx_coin4</a>: Electro-coin 4</li>
+			<li class="sound"><a href="javascript:PSA.play('fx_coin5');">fx_coin5</a>: Electro-coin 5</li>
+			<li class="sound"><a href="javascript:PSA.play('fx_coin6');">fx_coin6</a>: Electro-coin 6</li>
+			<li class="sound"><a href="javascript:PSA.play('fx_coin7');">fx_coin7</a>: Electro-coin 7</li>
+			<li class="sound"><a href="javascript:PSA.play('fx_coin8');">fx_coin8</a>: Electro-coin 8</li>
+
+			<li class="sound"><a href="javascript:PSA.play('fx_jump1');">fx_jump1</a>: Electro-jump 1</li>
+			<li class="sound"><a href="javascript:PSA.play('fx_jump2');">fx_jump2</a>: Electro-jump 2</li>
+			<li class="sound"><a href="javascript:PSA.play('fx_jump3');">fx_jump3</a>: Electro-jump 3</li>
+			<li class="sound"><a href="javascript:PSA.play('fx_jump4');">fx_jump4</a>: Electro-jump 4</li>
+			<li class="sound"><a href="javascript:PSA.play('fx_jump5');">fx_jump5</a>: Electro-jump 5</li>
+			<li class="sound"><a href="javascript:PSA.play('fx_jump6');">fx_jump6</a>: Electro-jump 6</li>
+			<li class="sound"><a href="javascript:PSA.play('fx_jump7');">fx_jump7</a>: Electro-jump 7</li>
+			<li class="sound"><a href="javascript:PSA.play('fx_jump8');">fx_jump8</a>: Electro-jump 8</li>
+
+			<li class="sound"><a href="javascript:PSA.play('fx_powerup1');">fx_powerup1</a>: Electro-powerup 1</li>
+			<li class="sound"><a href="javascript:PSA.play('fx_powerup2');">fx_powerup2</a>: Electro-powerup 2</li>
+			<li class="sound"><a href="javascript:PSA.play('fx_powerup3');">fx_powerup3</a>: Electro-powerup 3</li>
+			<li class="sound"><a href="javascript:PSA.play('fx_powerup4');">fx_powerup4</a>: Electro-powerup 4</li>
+			<li class="sound"><a href="javascript:PSA.play('fx_powerup5');">fx_powerup5</a>: Electro-powerup 5</li>
+			<li class="sound"><a href="javascript:PSA.play('fx_powerup6');">fx_powerup6</a>: Electro-powerup 6</li>
+			<li class="sound"><a href="javascript:PSA.play('fx_powerup7');">fx_powerup7</a>: Electro-powerup 7</li>
+			<li class="sound"><a href="javascript:PSA.play('fx_powerup8');">fx_powerup8</a>: Electro-powerup 8</li>
+
+			<li class="sound"><a href="javascript:PSA.play('fx_shoot1');">fx_shoot1</a>: Electro-shoot 1</li>
+			<li class="sound"><a href="javascript:PSA.play('fx_shoot2');">fx_shoot2</a>: Electro-shoot 2</li>
+			<li class="sound"><a href="javascript:PSA.play('fx_shoot3');">fx_shoot3</a>: Electro-shoot 3</li>
+			<li class="sound"><a href="javascript:PSA.play('fx_shoot4');">fx_shoot4</a>: Electro-shoot 4</li>
+			<li class="sound"><a href="javascript:PSA.play('fx_shoot5');">fx_shoot5</a>: Electro-shoot 5</li>
+			<li class="sound"><a href="javascript:PSA.play('fx_shoot6');">fx_shoot6</a>: Electro-shoot 6</li>
+			<li class="sound"><a href="javascript:PSA.play('fx_shoot7');">fx_shoot7</a>: Electro-shoot 7</li>
+			<li class="sound"><a href="javascript:PSA.play('fx_shoot8');">fx_shoot8</a>: Electro-shoot 8</li>
+
+
+			<li class="sound"><a href="javascript:PSA.play('fx_tada');">fx_tada</a>: Tacky “ta-daaa!” fanfare</li>
+			<li class="sound">
+				<a href="javascript:PSA.play('fx_wilhelm');">fx_wilhelm</a>: The classic Wilhelm scream; use sparingly
+			<li class="sound"><a href="javascript:PSA.play('fx_uhoh');">fx_uhoh</a>: High-speed &ldquo;Uh-oh,&rdquo; for errors</li>
+			</li>
+		</ul>
+
+		<p class="subitem">Percussion instruments</p>
+
+		<p>All percussion filenames begin with a <b>perc_</b> prefix.</p>
+		<ul>
+			<li class="sound"><a href="javascript:PSA.play('perc_drum_snare');">perc_drum_snare</a>: Snare drum hit</li>
+			<li class="sound"><a href="javascript:PSA.play('perc_drum_bass');">perc_drum_bass</a>: Bass drum kick</li>
+			<li class="sound"><a href="javascript:PSA.play('perc_drum_tom1');">perc_drum_tom1</a>: Tom-tom 1 (high)</li>
+			<li class="sound"><a href="javascript:PSA.play('perc_drum_tom2');">perc_drum_tom2</a>: Tom-tom 2 (medium)</li>
+			<li class="sound"><a href="javascript:PSA.play('perc_drum_tom3');">perc_drum_tom3</a>: Tom-tom 3 (medium-low)</li>
+			<li class="sound"><a href="javascript:PSA.play('perc_drum_tom4');">perc_drum_tom4</a>: Tom-tom 4 (low)</li>
+			<li class="sound"><a href="javascript:PSA.play('perc_cymbal_crash1');">perc_cymbal_crash1</a>: Crash cymbal 1</li>
+			<li class="sound"><a href="javascript:PSA.play('perc_cymbal_crash2');">perc_cymbal_crash2</a>: Crash cymbal 2</li>
+			<li class="sound"><a href="javascript:PSA.play('perc_cymbal_crash3');">perc_cymbal_crash3</a>: Crash cymbal 3</li>
+			<li class="sound"><a href="javascript:PSA.play('perc_cymbal_crash4');">perc_cymbal_crash4</a>: Crash cymbal 4</li>
+			<li class="sound"><a href="javascript:PSA.play('perc_cymbal_ride');">perc_cymbal_ride</a>: Ride cymbal</li>
+			<li class="sound"><a href="javascript:PSA.play('perc_hihat_closed');">perc_hihat_closed</a>: Closed hi-hat</li>
+			<li class="sound"><a href="javascript:PSA.play('perc_hihat_open');">perc_hihat_open</a>: Open hi-hat</li>
+			<li class="sound"><a href="javascript:PSA.play('perc_hihat_pedal');">perc_hihat_pedal</a>: Pedaled hi-hat</li>
+			<li class="sound"><a href="javascript:PSA.play('perc_bongo_low');">perc_bongo_low</a>: Low bongo</li>
+			<li class="sound"><a href="javascript:PSA.play('perc_bongo_high');">perc_bongo_high</a>: High bongo</li>
+			<li class="sound"><a href="javascript:PSA.play('perc_conga_low');">perc_conga_low</a>: Low conga</li>
+			<li class="sound"><a href="javascript:PSA.play('perc_conga_high');">perc_conga_high</a>: High conga</li>
+			<li class="sound"><a href="javascript:PSA.play('perc_block_low');">perc_block_low</a>: Low woodblock</li>
+			<li class="sound"><a href="javascript:PSA.play('perc_block_high');">perc_block_high</a>: High woodblock</li>
+			<li class="sound"><a href="javascript:PSA.play('perc_cowbell_low');">perc_cowbell_low</a>: Low cowbell</li>
+			<li class="sound"><a href="javascript:PSA.play('perc_cowbell_high');">perc_cowbell_high</a>: High cowbell</li>
+			<li class="sound"><a href="javascript:PSA.play('perc_shaker');">perc_shaker</a>: Shaker</li>
+			<li class="sound"><a href="javascript:PSA.play('perc_tambourine');">perc_tambourine</a>: Tambourine</li>
+			<li class="sound"><a href="javascript:PSA.play('perc_triangle');">perc_triangle</a>: Triangle</li>
+		</ul>
+
+		<p class="subitem">Piano notes</p>
+
+		<p>All 88 keys on a standard concert piano (notes A0 to C8) are available in two versions, short (about 1 second) and long (about 4 seconds).</p>
+
+		<p>You can translate a note number (1-88) to its associated filename with the <a href="#piano">PS.piano</a>() function.
+		</p>
+
+		<p>Short version filenames begin with a <b>piano_</b> prefix.</p>
+
+		<ul>
+			<li class="sound">
+				<a href="javascript:PSA.play('piano_a0');">piano_a0</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('piano_bb0');">piano_bb0</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('piano_b0');">piano_b0</a>
+			</li>
+			<li class="sound">
+				<a href="javascript:PSA.play('piano_c1');">piano_c1</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('piano_db1');">piano_db1</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('piano_d1');">piano_d1</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('piano_eb1');">piano_eb1</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('piano_e1');">piano_e1</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('piano_f1');">piano_f1</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('piano_gb1');">piano_gb1</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('piano_g1');">piano_g1</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('piano_ab1');">piano_ab1</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('piano_a1');">piano_a1</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('piano_bb1');">piano_bb1</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('piano_b1');">piano_b1</a>
+			</li>
+			<li class="sound">
+				<a href="javascript:PSA.play('piano_c2');">piano_c2</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('piano_db2');">piano_db2</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('piano_d2');">piano_d2</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('piano_eb2');">piano_eb2</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('piano_e2');">piano_e2</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('piano_f2');">piano_f2</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('piano_gb2');">piano_gb2</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('piano_g2');">piano_g2</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('piano_ab2');">piano_ab2</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('piano_a2');">piano_a2</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('piano_bb2');">piano_bb2</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('piano_b2');">piano_b2</a>
+			<li class="sound">
+				<a href="javascript:PSA.play('piano_c3');">piano_c3</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('piano_db3');">piano_db3</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('piano_d3');">piano_d3</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('piano_eb3');">piano_eb3</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('piano_e3');">piano_e3</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('piano_f3');">piano_f3</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('piano_gb3');">piano_gb3</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('piano_g3');">piano_g3</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('piano_ab3');">piano_ab3</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('piano_a3');">piano_a3</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('piano_bb3');">piano_bb3</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('piano_b3');">piano_b3</a>
+			<li class="sound">
+				<a href="javascript:PSA.play('piano_c4');">piano_c4</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('piano_db4');">piano_db4</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('piano_d4');">piano_d4</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('piano_eb4');">piano_eb4</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('piano_e4');">piano_e4</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('piano_f4');">piano_f4</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('piano_gb4');">piano_gb4</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('piano_g4');">piano_g4</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('piano_ab4');">piano_ab4</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('piano_a4');">piano_a4</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('piano_bb4');">piano_bb4</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('piano_b4');">piano_b4</a>
+			<li class="sound">
+				<a href="javascript:PSA.play('piano_c5');">piano_c5</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('piano_db5');">piano_db5</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('piano_d5');">piano_d5</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('piano_eb5');">piano_eb5</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('piano_e5');">piano_e5</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('piano_f5');">piano_f5</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('piano_gb5');">piano_gb5</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('piano_g5');">piano_g5</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('piano_ab5');">piano_ab5</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('piano_a5');">piano_a5</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('piano_bb5');">piano_bb5</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('piano_b5');">piano_b5</a>
+			<li class="sound">
+				<a href="javascript:PSA.play('piano_c6');">piano_c6</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('piano_db6');">piano_db6</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('piano_d6');">piano_d6</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('piano_eb6');">piano_eb6</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('piano_e6');">piano_e6</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('piano_f6');">piano_f6</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('piano_gb6');">piano_gb6</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('piano_g6');">piano_g6</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('piano_ab6');">piano_ab6</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('piano_a6');">piano_a6</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('piano_bb6');">piano_bb6</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('piano_b6');">piano_b6</a>
+			<li class="sound">
+				<a href="javascript:PSA.play('piano_c7');">piano_c7</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('piano_db7');">piano_db7</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('piano_d7');">piano_d7</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('piano_eb7');">piano_eb7</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('piano_e7');">piano_e7</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('piano_f7');">piano_f7</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('piano_gb7');">piano_gb7</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('piano_g7');">piano_g7</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('piano_ab7');">piano_ab7</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('piano_a7');">piano_a7</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('piano_bb7');">piano_bb7</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('piano_b7');">piano_b7</a>
+			</li>
+			<li class="sound">
+				<a href="javascript:PSA.play('piano_c8');">piano_c8</a>
+			</li>
+		</ul>
+
+		<p>Long version filenames begin with a <b>l_piano_</b> prefix.</p>
+
+		<ul>
+			<li class="sound">
+				<a href="javascript:PSA.play('l_piano_a0');">l_piano_a0</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_piano_bb0');">l_piano_bb0</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_piano_b0');">l_piano_b0</a>
+			</li>
+			<li class="sound">
+				<a href="javascript:PSA.play('l_piano_c1');">l_piano_c1</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_piano_db1');">l_piano_db1</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_piano_d1');">l_piano_d1</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_piano_eb1');">l_piano_eb1</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_piano_e1');">l_piano_e1</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_piano_f1');">l_piano_f1</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_piano_gb1');">l_piano_gb1</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_piano_g1');">l_piano_g1</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_piano_ab1');">l_piano_ab1</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_piano_a1');">l_piano_a1</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_piano_bb1');">l_piano_bb1</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_piano_b1');">l_piano_b1</a>
+			</li>
+			<li class="sound">
+				<a href="javascript:PSA.play('l_piano_c2');">l_piano_c2</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_piano_db2');">l_piano_db2</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_piano_d2');">l_piano_d2</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_piano_eb2');">l_piano_eb2</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_piano_e2');">l_piano_e2</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_piano_f2');">l_piano_f2</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_piano_gb2');">l_piano_gb2</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_piano_g2');">l_piano_g2</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_piano_ab2');">l_piano_ab2</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_piano_a2');">l_piano_a2</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_piano_bb2');">l_piano_bb2</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_piano_b2');">l_piano_b2</a>
+			<li class="sound">
+				<a href="javascript:PSA.play('l_piano_c3');">l_piano_c3</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_piano_db3');">l_piano_db3</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_piano_d3');">l_piano_d3</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_piano_eb3');">l_piano_eb3</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_piano_e3');">l_piano_e3</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_piano_f3');">l_piano_f3</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_piano_gb3');">l_piano_gb3</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_piano_g3');">l_piano_g3</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_piano_ab3');">l_piano_ab3</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_piano_a3');">l_piano_a3</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_piano_bb3');">l_piano_bb3</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_piano_b3');">l_piano_b3</a>
+			<li class="sound">
+				<a href="javascript:PSA.play('l_piano_c4');">l_piano_c4</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_piano_db4');">l_piano_db4</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_piano_d4');">l_piano_d4</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_piano_eb4');">l_piano_eb4</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_piano_e4');">l_piano_e4</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_piano_f4');">l_piano_f4</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_piano_gb4');">l_piano_gb4</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_piano_g4');">l_piano_g4</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_piano_ab4');">l_piano_ab4</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_piano_a4');">l_piano_a4</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_piano_bb4');">l_piano_bb4</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_piano_b4');">l_piano_b4</a>
+			<li class="sound">
+				<a href="javascript:PSA.play('l_piano_c5');">l_piano_c5</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_piano_db5');">l_piano_db5</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_piano_d5');">l_piano_d5</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_piano_eb5');">l_piano_eb5</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_piano_e5');">l_piano_e5</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_piano_f5');">l_piano_f5</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_piano_gb5');">l_piano_gb5</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_piano_g5');">l_piano_g5</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_piano_ab5');">l_piano_ab5</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_piano_a5');">l_piano_a5</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_piano_bb5');">l_piano_bb5</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_piano_b5');">l_piano_b5</a>
+			<li class="sound">
+				<a href="javascript:PSA.play('l_piano_c6');">l_piano_c6</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_piano_db6');">l_piano_db6</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_piano_d6');">l_piano_d6</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_piano_eb6');">l_piano_eb6</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_piano_e6');">l_piano_e6</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_piano_f6');">l_piano_f6</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_piano_gb6');">l_piano_gb6</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_piano_g6');">l_piano_g6</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_piano_ab6');">l_piano_ab6</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_piano_a6');">l_piano_a6</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_piano_bb6');">l_piano_bb6</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_piano_b6');">l_piano_b6</a>
+			<li class="sound">
+				<a href="javascript:PSA.play('l_piano_c7');">l_piano_c7</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_piano_db7');">l_piano_db7</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_piano_d7');">l_piano_d7</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_piano_eb7');">l_piano_eb7</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_piano_e7');">l_piano_e7</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_piano_f7');">l_piano_f7</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_piano_gb7');">l_piano_gb7</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_piano_g7');">l_piano_g7</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_piano_ab7');">l_piano_ab7</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_piano_a7');">l_piano_a7</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_piano_bb7');">l_piano_bb7</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_piano_b7');">l_piano_b7</a>
+			</li>
+			<li class="sound">
+				<a href="javascript:PSA.play('l_piano_c8');">l_piano_c8</a>
+			</li>
+		</ul>
+
+		<p class="subitem">Harpsichord notes</p>
+
+		<p>A 57-key harpsichord manual (notes A2 to F7) is available in two versions, short (about 1 second) and long (about 4 seconds).</p>
+
+		<p>You can translate a harpsichord note number (1-57) to its associated filename with the <a
+				href="#hchord">PS.harpsichord</a>() function.</p>
+
+		<p>Short version filenames begin with a <b>hchord_</b> prefix.</p>
+		<ul>
+			<li class="sound">
+				<a href="javascript:PSA.play('hchord_a2');">hchord_a2</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('hchord_bb2');">hchord_bb2</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('hchord_b2');">hchord_b2</a>
+			<li class="sound">
+				<a href="javascript:PSA.play('hchord_c3');">hchord_c3</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('hchord_db3');">hchord_db3</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('hchord_d3');">hchord_d3</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('hchord_eb3');">hchord_eb3</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('hchord_e3');">hchord_e3</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('hchord_f3');">hchord_f3</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('hchord_gb3');">hchord_gb3</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('hchord_g3');">hchord_g3</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('hchord_ab3');">hchord_ab3</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('hchord_a3');">hchord_a3</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('hchord_bb3');">hchord_bb3</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('hchord_b3');">hchord_b3</a>
+			<li class="sound">
+				<a href="javascript:PSA.play('hchord_c4');">hchord_c4</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('hchord_db4');">hchord_db4</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('hchord_d4');">hchord_d4</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('hchord_eb4');">hchord_eb4</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('hchord_e4');">hchord_e4</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('hchord_f4');">hchord_f4</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('hchord_gb4');">hchord_gb4</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('hchord_g4');">hchord_g4</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('hchord_ab4');">hchord_ab4</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('hchord_a4');">hchord_a4</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('hchord_bb4');">hchord_bb4</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('hchord_b4');">hchord_b4</a>
+			<li class="sound">
+				<a href="javascript:PSA.play('hchord_c5');">hchord_c5</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('hchord_db5');">hchord_db5</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('hchord_d5');">hchord_d5</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('hchord_eb5');">hchord_eb5</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('hchord_e5');">hchord_e5</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('hchord_f5');">hchord_f5</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('hchord_gb5');">hchord_gb5</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('hchord_g5');">hchord_g5</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('hchord_ab5');">hchord_ab5</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('hchord_a5');">hchord_a5</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('hchord_bb5');">hchord_bb5</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('hchord_b5');">hchord_b5</a>
+			<li class="sound">
+				<a href="javascript:PSA.play('hchord_c6');">hchord_c6</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('hchord_db6');">hchord_db6</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('hchord_d6');">hchord_d6</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('hchord_eb6');">hchord_eb6</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('hchord_e6');">hchord_e6</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('hchord_f6');">hchord_f6</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('hchord_gb6');">hchord_gb6</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('hchord_g6');">hchord_g6</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('hchord_ab6');">hchord_ab6</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('hchord_a6');">hchord_a6</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('hchord_bb6');">hchord_bb6</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('hchord_b6');">hchord_b6</a>
+			<li class="sound">
+				<a href="javascript:PSA.play('hchord_c7');">hchord_c7</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('hchord_db7');">hchord_db7</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('hchord_d7');">hchord_d7</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('hchord_eb7');">hchord_eb7</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('hchord_e7');">hchord_e7</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('hchord_f7');">hchord_f7</a>
+			</li>
+		</ul>
+
+		<p>Long version filenames begin with a <b>l_hchord_</b> prefix.</p>
+
+		<ul>
+			<li class="sound">
+				<a href="javascript:PSA.play('l_hchord_a2');">l_hchord_a2</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_hchord_bb2');">l_hchord_bb2</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_hchord_b2');">l_hchord_b2</a>
+			<li class="sound">
+				<a href="javascript:PSA.play('l_hchord_c3');">l_hchord_c3</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_hchord_db3');">l_hchord_db3</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_hchord_d3');">l_hchord_d3</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_hchord_eb3');">l_hchord_eb3</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_hchord_e3');">l_hchord_e3</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_hchord_f3');">l_hchord_f3</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_hchord_gb3');">l_hchord_gb3</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_hchord_g3');">l_hchord_g3</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_hchord_ab3');">l_hchord_ab3</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_hchord_a3');">l_hchord_a3</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_hchord_bb3');">l_hchord_bb3</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_hchord_b3');">l_hchord_b3</a>
+			<li class="sound">
+				<a href="javascript:PSA.play('l_hchord_c4');">l_hchord_c4</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_hchord_db4');">l_hchord_db4</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_hchord_d4');">l_hchord_d4</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_hchord_eb4');">l_hchord_eb4</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_hchord_e4');">l_hchord_e4</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_hchord_f4');">l_hchord_f4</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_hchord_gb4');">l_hchord_gb4</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_hchord_g4');">l_hchord_g4</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_hchord_ab4');">l_hchord_ab4</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_hchord_a4');">l_hchord_a4</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_hchord_bb4');">l_hchord_bb4</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_hchord_b4');">l_hchord_b4</a>
+			<li class="sound">
+				<a href="javascript:PSA.play('l_hchord_c5');">l_hchord_c5</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_hchord_db5');">l_hchord_db5</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_hchord_d5');">l_hchord_d5</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_hchord_eb5');">l_hchord_eb5</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_hchord_e5');">l_hchord_e5</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_hchord_f5');">l_hchord_f5</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_hchord_gb5');">l_hchord_gb5</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_hchord_g5');">l_hchord_g5</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_hchord_ab5');">l_hchord_ab5</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_hchord_a5');">l_hchord_a5</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_hchord_bb5');">l_hchord_bb5</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_hchord_b5');">l_hchord_b5</a>
+			<li class="sound">
+				<a href="javascript:PSA.play('l_hchord_c6');">l_hchord_c6</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_hchord_db6');">l_hchord_db6</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_hchord_d6');">l_hchord_d6</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_hchord_eb6');">l_hchord_eb6</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_hchord_e6');">l_hchord_e6</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_hchord_f6');">l_hchord_f6</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_hchord_gb6');">l_hchord_gb6</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_hchord_g6');">l_hchord_g6</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_hchord_ab6');">l_hchord_ab6</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_hchord_a6');">l_hchord_a6</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_hchord_bb6');">l_hchord_bb6</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_hchord_b6');">l_hchord_b6</a>
+			<li class="sound">
+				<a href="javascript:PSA.play('l_hchord_c7');">l_hchord_c7</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_hchord_db7');">l_hchord_db7</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_hchord_d7');">l_hchord_d7</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_hchord_eb7');">l_hchord_eb7</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_hchord_e7');">l_hchord_e7</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('l_hchord_f7');">l_hchord_f7</a>
+			</li>
+		</ul>
+
+		<p class="subitem">Xylophone notes</p>
+
+		<p>Taps on a 39-note xylophone (notes A4 to B7) are available.
+			Each begins with a <b>xylo_</b> prefix.</p>
+
+		<p>You can translate a xylophone note number (1-39) to its associated filename with the <a
+				href="#xylo">PS.xylophone</a>() function.</p>
+		<ul>
+			<li class="sound">
+				<a href="javascript:PSA.play('xylo_a4');">xylo_a4</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('xylo_bb4');">xylo_bb4</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('xylo_b4');">xylo_b4</a>
+			<li class="sound">
+				<a href="javascript:PSA.play('xylo_c5');">xylo_c5</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('xylo_db5');">xylo_db5</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('xylo_d5');">xylo_d5</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('xylo_eb5');">xylo_eb5</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('xylo_e5');">xylo_e5</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('xylo_f5');">xylo_f5</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('xylo_gb5');">xylo_gb5</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('xylo_g5');">xylo_g5</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('xylo_ab5');">xylo_ab5</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('xylo_a5');">xylo_a5</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('xylo_bb5');">xylo_bb5</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('xylo_b5');">xylo_b5</a>
+			<li class="sound">
+				<a href="javascript:PSA.play('xylo_c6');">xylo_c6</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('xylo_db6');">xylo_db6</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('xylo_d6');">xylo_d6</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('xylo_eb6');">xylo_eb6</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('xylo_e6');">xylo_e6</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('xylo_f6');">xylo_f6</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('xylo_gb6');">xylo_gb6</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('xylo_g6');">xylo_g6</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('xylo_ab6');">xylo_ab6</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('xylo_a6');">xylo_a6</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('xylo_bb6');">xylo_bb6</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('xylo_b6');">xylo_b6</a>
+			<li class="sound">
+				<a href="javascript:PSA.play('xylo_c7');">xylo_c7</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('xylo_db7');">xylo_db7</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('xylo_d7');">xylo_d7</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('xylo_eb7');">xylo_eb7</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('xylo_e7');">xylo_e7</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('xylo_f7');">xylo_f7</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('xylo_gb7');">xylo_gb7</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('xylo_g7');">xylo_g7</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('xylo_ab7');">xylo_ab7</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('xylo_a7');">xylo_a7</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('xylo_bb7');">xylo_bb7</a>&nbsp;&nbsp;
+				<a href="javascript:PSA.play('xylo_b7');">xylo_b7</a>
+			</li>
+		</ul>
+
+		</div>
+
+		</div>
+
+		<div id="footer">
+			<p>Interactive Media and Game Development<br/>
+				Worcester Polytechnic Institute<br/>
+				100 Institute Road, Worcester, MA 01609 USA<br/>
+				<a href="http://imgd.wpi.edu">imgd.wpi.edu</a><br/>&nbsp;</p>
+		</div>
+	</body>
+</html>
+

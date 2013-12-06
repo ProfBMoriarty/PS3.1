@@ -1,0 +1,327 @@
+<!DOCTYPE HTML>
+<html lang="en">
+	<head>
+		<title>Perlenspiel | API | Lines &amp; Paths</title>
+		<meta charset="utf-8"/>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+		<meta name="description" content="Perlenspiel | API | Paths"/>
+		<meta name="keywords" content="perlenspiel, game, design, engine, gameclavier, moriarty, wpi"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+		<meta name="apple-mobile-web-app-capable" content="yes"/>
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+		<link rel="shortcut icon" href="http://users.wpi.edu/~bmoriarty/ps/favicon.png"/>
+		<link rel="apple-touch-icon" href="http://users.wpi.edu/~bmoriarty/ps/apple-touch-icon.png"/>
+		<link href='http://fonts.googleapis.com/css?family=Roboto:400,700,400italic,700italic,100' rel='stylesheet' type='text/css'>
+		<link rel="stylesheet" href="style.css" type="text/css">
+		<script type="text/javascript" src="play.js"></script>
+	</head>
+	<body onload="PSA.dots();">
+		<div id="header">
+			<p><img src="images/logosm.png" alt="[Logo]"><strong>Perlenspiel<sup class="sup3">3</sup></strong></p>
+
+			<ul id="nav">
+				<li><a href="index.html">Home</a></li>
+				<li><a href="download.html">Download</a></li>
+				<li><a href="learning.html">Learning</a></li>
+				<li><a href="examples.html">Examples</a></li>
+				<li><a href="api.html">API</a></li>
+				<li><a href="links.html">Links</a></li>
+			</ul>
+		</div>
+
+		<div id="main">
+		<p class="subhead">API | Lines &amp; Paths</p>
+
+		<p>These commands control the creation and use of lines, pathmaps and pathfinding.</p>
+
+		<ul class="select">
+			<li><a href="#line">PS.line</a> ( x1, y1, x2, y2 )</li>
+			<li><a href="#map">PS.pathMap</a> ( image )</li>
+			<li><a href="#find">PS.pathFind</a> ( pathmap, x1, y1, x2, y2, options )</li>
+			<li><a href="#data">PS.pathData</a> ( pathmap, left, top, width, height, data )</li>
+			<li><a href="#delete">PS.pathDelete</a> ( pathmap )</li>
+		</ul>
+
+		<div class="section">
+			<div id="line" class="dot">&nbsp;</div>
+			<p class="subhead">PS.line ( x1, y1, x2, y2 )</p>
+
+			<p>PS.line() calculates a straight line between any two points.</p>
+
+			<div class="specs">
+				<p>Parameters:</p>
+				<ol>
+					<li><b>pathmap</b> : <em>string</em></li>
+					<li><b>x1</b> : <em>integer</em></li>
+					<li><b>y1</b> : <em>integer</em></li>
+					<li><b>x2</b> : <em>integer</em></li>
+					<li><b>y2</b> : <em>integer</em></li>
+				</ol>
+				<p>Returns: <em>array</em> or <b>PS.ERROR</b></p>
+			</div>
+
+			<p>The <b>x1</b> and <b>y1</b> parameters indicate the starting coordinates of the line,
+				and <b>x2</b> and <b>y2</b> indicate the ending coordinates.
+				All four <em>integers</em> are required. Non-integral values are floored.</p>
+
+			<p><strong>Usage notes</strong></p>
+
+			<p>1. PS.line() operates in an arbitrary coordinate space of almost limitless extent.
+				It has no idea how a line it has calculated will be used in your game.
+				It's your responsibility to interpret the data returned by PS.line() in the context of your application,
+				and to deal with boundary conditions that might cause errors if violated.</p>
+
+			<p class="subitem">Return value</p>
+
+			<p>PS.line() returns an array of sub-arrays, each with the following structure:</p>
+
+			<ul>
+				<li>array[0] : <em>integer</em> (x coordinate)</li>
+				<li>array[1] : <em>integer</em> (y coordinate)</li>
+			</ul>
+
+			<p>Each sub-array represents a single point in a straight line from <b>x1, y1</b> to <b>x2, y2</b>,
+				beginning with the first step away from <b>x1, y1</b>.
+				Points are presented in sequence, starting with element zero (0) of the returned array.
+				The final point is always <b>x2, y2</b>.</p>
+
+			<p>If <b>x1, y1</b> and <b>x2, y2</b> specify the same coordinate, the array returned by PS.line() is empty.</p>
+
+			<p><b>PS.ERROR</b> is returned if an error occurs.</p>
+		</div>
+
+		<div class="section">
+			<div id="map" class="dot">&nbsp;</div>
+			<p class="subhead">PS.pathMap ( image )</p>
+
+			<p>PS.pathMap() creates a pathmap from a specialized <a href="images.html#image">image <em>object</em></a>.</p>
+
+			<div class="specs">
+				<p>Parameters:</p>
+				<ol>
+					<li><b>image</b> : <em>object</em></li>
+				</ol>
+				<p>Returns: <em>string</em> or <b>PS.ERROR</b></p>
+			</div>
+
+			<p>The required <b>image</b> parameter must be a reference to a valid <a href="images.html#image">image
+				<em>object</em></a> with the following characteristics:</p>
+
+			<ol>
+				<li><strong>The image must be in format 1.</strong> This means that its
+					<b>image.data</b> array must contain exactly (<b>image.width * image.height</b>) <em>integers</em>
+					in the range 0 to 0xFFFFFF inclusive, and its <b>image.pixelSize</b> property must be set to 1.
+				</li>
+				<li>Each <em>integer</em> in the
+					<b>image.data</b> array indicates whether or not the corresponding map location is "walkable."
+					Any non-zero value indicates that the coordinate should be considered by
+					<a href="#find">PS.pathFind</a>() as a possible candidate for a path point.
+					A value of zero (0) means that <a href="#find">PS.pathFind</a>() should
+					<em>never</em> consider that coordinate for a path point.
+				</li>
+				<li>A convenient <b>image.data</b> value for a "walkable" coordinate is one (1). However, any
+					<em>integer</em> greater than zero is acceptable. The values are interpreted as
+					the relative "cost" of moving into that coordinate. You can use this feature to simulate different types of terrain. For example, flat terrain could be represented by the value 1, and steep terrain by the value 2.
+					This would cause
+					<a href="#find">PS.pathFind</a>() to prefer flat terrain when calculating paths, using steep terrain only if there is no other way to complete the path.
+				</li>
+			</ol>
+
+			<p class="subitem">Return value</p>
+
+			<p>PS.pathMap() returns a string that uniquely identifies the newly created pathmap.</p>
+
+			<p> A new identifer is generated by each call to PS.pathMap(). If you call it with same
+				<b>image</b> more than once for some reason,
+				each instance will be assigned a different identifer.</p>
+
+			<p><b>PS.ERROR</b> is returned if an error occurs.</p>
+		</div>
+
+		<div class="section">
+			<div id="find" class="dot">&nbsp;</div>
+			<p class="subhead">PS.pathFind ( pathmap, x1, y1, x2, y2, options )</p>
+
+			<p>PS.pathFind() calculates a path between two points on a pathmap.</p>
+
+			<div class="specs">
+				<p>Parameters:</p>
+				<ol>
+					<li><b>pathmap</b> : <em>string</em></li>
+					<li><b>x1</b> : <em>integer</em></li>
+					<li><b>y1</b> : <em>integer</em></li>
+					<li><b>x2</b> : <em>integer</em></li>
+					<li><b>y2</b> : <em>integer</em></li>
+					<li>(optional) <b>options</b> : <em>object</em></li>
+				</ol>
+				<p>Returns: <em>array</em> or <b>PS.ERROR</b></p>
+			</div>
+
+			<p>The required <b>pathmap</b> parameter must be string uniquely identifying a pathmap, of the type returned by
+				<a href="#map">PS.pathMap</a>().</p>
+
+			<p>The <b>x1</b> and <b>y1</b> parameters indicate the starting coordinates of the path, and <b>x2</b> and
+				<b>y2</b> indicate the ending coordinates.
+				All four <em>integers</em> are required. Non-integral values are floored.</p>
+
+			<p>The <b>x1</b> and <b>x2</b> coordinates should be between 0 and (map_width - 1) inclusive.</p>
+
+			<p>The <b>y1</b> and <b>y2</b> coordinates should be between 0 and (map_height - 1) inclusive.</p>
+
+			<div class="notebox">
+				<p>The pathmap locations at <b>x1, y1</b> and <b>x2, y2</b> must be "walkable;" that is,
+					the corresponding data in the image passed to
+					<a href="#map">PS.pathMap</a>() to create the pathmap must be non-zero.</p>
+
+				<p>If either location is not walkable, an empty path is returned.</p>
+			</div>
+
+			<p>The optional <b>options</b> parameter should be an <em>object</em> with any of the following properties:</p>
+
+			<ul>
+				<li><b>.no_diagonals</b> : <em>boolean</em> or <b>PS.DEFAULT</b> (default: <em>false</em>)</li>
+				<li><b>.cut_corners</b> : <em>boolean</em> or <b>PS.DEFAULT</b> (default: <em>false</em>)</li>
+			</ul>
+
+			<p>If the <b>.no_diagonals</b> property of <b>options</b> is <em>true</em> or any non-zero number,
+				PS.pathFind() will not use diagonal steps when calculating paths.
+				If <b>.no_diagonals</b> is false, zero (0), <b>PS.DEFAULT</b> or not supplied, diagonal steps are enabled.</p>
+
+			<p>If the <b>.cut_corners</b> property of <b>options</b> is <em>true</em> or any non-zero number,
+				PS.pathFind() will use diagonal steps to cut across square corners.
+				If <b>.cut_corners</b> is false, zero (0),
+				<b>PS.DEFAULT</b> or not supplied, the pathfinder will step around square corners.
+				Note that this option is only relevant if diagonal steps are enabled (the default behavior).</p>
+
+			<p>If <b>options</b> is <b>PS.DEFAULT</b> or not supplied, all default PS.pathFind() settings are used.</p>
+
+			<p class="subitem">Usage notes</p>
+
+			<p>1. PS.pathFind() uses a modified A* pathfinding algorithm. The data you supply in the image used to create the pathmap
+				can be used to influence the behavior of the algorithm. See <a href="#map">PS.pathMap</a>() for details.</p>
+
+			<p>2. If your pathmap uses only one value (such as 1) to indicate walkable locations, setting
+				<b>options.direct</b> to <em>true</em> will improve the speed of the pathfinder.</p>
+
+			<p class="subitem">Return value</p>
+
+			<p>PS.pathFind() returns an array of sub-arrays, each with the following structure:</p>
+
+			<ul>
+				<li>array[0] : <em>integer</em> (x coordinate)</li>
+				<li>array[1] : <em>integer</em> (y coordinate)</li>
+			</ul>
+
+			<p>Each sub-array represents a single point in a path from <b>x1, y1</b> to <b>x2, y2</b>,
+				beginning with the first step away from <b>x1, y1</b>.
+				Points are presented in sequence, starting with element zero (0) of the returned array.
+				The final point is always <b>x2, y2</b>.</p>
+
+			<p>All coordinates are zero-based, relative to the top-left corner of the associated pathmap.</p>
+
+			<p>If <b>x1, y1</b> and <b>x2, y2</b> specify the same coordinate, the array returned by PS.line() is empty.</p>
+
+			<p><b>PS.ERROR</b> is returned if an error occurs.</p>
+		</div>
+
+		<div class="section">
+			<div id="data" class="dot">&nbsp;</div>
+			<p class="subhead">PS.pathData( pathmap, left, top, width, height, data )</p>
+
+			<p>PS.pathData() inspects and replaces the data in a region of a pathmap.</p>
+
+			<div class="specs">
+				<p>Parameters:</p>
+				<ol>
+					<li><b>pathmap</b> : <em>string</em></li>
+					<li><b>left</b> : <em>integer</em></li>
+					<li><b>top</b> : <em>integer</em></li>
+					<li><b>width</b> : <em>integer</em> or <b>PS.DEFAULT</b></li>
+					<li><b>height</b> : <em>integer</em> or <b>PS.DEFAULT</b></li>
+					<li>(optional) <b>data</b> : <em>integer</em>, <b>PS.CURRENT</b> or <b>PS.DEFAULT</b></li>
+				</ol>
+				<p>Returns: <em>array</em> or <b>PS.ERROR</b></p>
+			</div>
+
+			<p>The required <b>pathmap</b> parameter must be string uniquely identifying a pathmap, of the type returned by
+				<a href="#map">PS.pathMap</a>().</p>
+
+			<p>The required <b>left</b>, <b>top</b>, <b>width</b> and
+				<b>height</b> parameters specify a zero-based rectangular region,
+				relative to the top-left corner of the pathmap. Non-integral values are floored.</p>
+
+			<p>The <b>left</b> and <b>top</b> <em>integers</em> indicate the top-left coordinates of the region.
+				The <b>left</b> coordinate should be between 0 and (map_width - 1) inclusive.
+				The
+				<b>top</b> coordinate should be between 0 and (map_height - 1) inclusive. Values outside these limits will cause an error.
+			</p>
+
+			<p>The <b>width</b> and <b>height</b> <em>integers</em> indicate the dimensions of the region.
+				The <b>width</b> parameter should be between 1 and (map_width - <b>left</b>) inclusive.
+				The <b>height</b> parameter should be between 1 and (map_height -
+				<b>top</b>) inclusive. Values outside these limits are clamped.</p>
+
+			<p>If <b>width</b> or <b>height</b> are PS.DEFAULT, the value one (1) is used.</p>
+
+			<p>The optional
+				<b>data</b> parameter indicates the data that will replace the current values in the pathmap. It can be any positive
+				<em>integer</em>. Non-integral values are floored.</p>
+
+			<p>If <b>data</b> is
+				<b>PS.DEFAULT</b>, the data in the pathmap at the specified coordinates is restored to the values in place when the pathmap was originally created by
+				<a href="#map">PS.pathMap</a>().</p>
+
+			<p>If <b>data</b> is <b>PS.CURRENT</b> or not supplied, the data in the pathmap is not changed.</p>
+
+			<p class="subitem">Return value</p>
+
+			<p>PS.pathData() returns an array of
+				<em>integers</em> indicating the current data in the specified region of the pathmap.
+				The array contains (<b>width</b> *
+				<b>height</b>) elements in ascending row order, beginning with the top-left corner of the region.</p>
+
+			<p>PS.ERROR is returned if an error occurs.</p>
+		</div>
+
+		<div class="section">
+			<div id="delete" class="dot">&nbsp;</div>
+			<p class="subhead">PS.pathDelete( pathmap )</p>
+
+			<p>PS.pathDelete() deletes a pathmap created by a previous call to <a href="#map">PS.pathMap</a>().</p>
+
+			<div class="specs">
+				<p>Parameters:</p>
+				<ol>
+					<li><b>pathmap</b> : <em>string</em></li>
+				</ol>
+				<p>Returns: <b>PS.DONE</b> or <b>PS.ERROR</b></p>
+			</div>
+
+			<p>The required <b>pathmap</b> parameter must be string uniquely identifying a pathmap, of the type returned by
+				<a href="#map">PS.pathMap</a>().</p>
+
+			<p>The specified pathmap is permanently deleted from the engine. Subsequent attempt to reference
+				<b>pathmap</b> will cause an error.</p>
+
+			<p class="subitem">Usage notes</p>
+
+			<p>1. The pathmaps created by
+				<a href="#map">PS.pathMap</a>() require a lot of memory. When you're done using a pathmap, call PS.pathDelete() to free resources.
+			</p>
+
+			<p class="subitem">Return value</p>
+
+			<p>PS.pathDelete() returns <b>PS.DONE</b> if the call succeeds, else <b>PS.ERROR</b>.</p>
+		</div>
+
+		</div>
+
+		<div id="footer">
+			<p>Interactive Media and Game Development<br/>
+				Worcester Polytechnic Institute<br/>
+				100 Institute Road, Worcester, MA 01609 USA<br/>
+				<a href="http://imgd.wpi.edu">imgd.wpi.edu</a><br/>&nbsp;</p>
+		</div>
+	</body>
+</html>
+

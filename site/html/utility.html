@@ -1,0 +1,390 @@
+<!DOCTYPE HTML>
+<html lang="en">
+	<head>
+		<title>Perlenspiel | API | Utilities</title>
+		<meta charset="utf-8"/>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+		<meta name="description" content="Perlenspiel | API | Utilities"/>
+		<meta name="keywords" content="perlenspiel, game, design, engine, gameclavier, moriarty, wpi"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+		<meta name="apple-mobile-web-app-capable" content="yes"/>
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+		<link rel="shortcut icon" href="http://users.wpi.edu/~bmoriarty/ps/favicon.png"/>
+		<link rel="apple-touch-icon" href="http://users.wpi.edu/~bmoriarty/ps/apple-touch-icon.png"/>
+		<link href='http://fonts.googleapis.com/css?family=Roboto:400,700,400italic,700italic,100' rel='stylesheet' type='text/css'>
+		<link rel="stylesheet" href="style.css" type="text/css">
+		<script type="text/javascript" src="play.js"></script>
+	</head>
+	<body onload="PSA.dots();">
+		<div id="header">
+			<p><img src="images/logosm.png" alt="[Logo]"><strong>Perlenspiel<sup class="sup3">3</sup></strong></p>
+
+			<ul id="nav">
+				<li><a href="index.html">Home</a></li>
+				<li><a href="download.html">Download</a></li>
+				<li><a href="learning.html">Learning</a></li>
+				<li><a href="examples.html">Examples</a></li>
+				<li><a href="api.html">API</a></li>
+				<li><a href="links.html">Links</a></li>
+			</ul>
+		</div>
+
+		<div id="main">
+			<p class="subhead">API | Utilities</p>
+
+			<p>These utility functions are provided for the convenience of Perlenspiel programmers.</p>
+
+			<ul class="select">
+				<li><a href="#random">PS.random</a> ( val )</li>
+				<li><a href="#makergb">PS.makeRGB</a> ( r, g, b )</li>
+				<li><a href="#unmakergb">PS.unmakeRGB</a> ( rgb )</li>
+				<li><a href="#applyrect">PS.applyRect</a> ( left, top, width, height, exec, ... )</li>
+				<li><a href="#hex">PS.hex</a> ( value, padding )</li>
+				<li><a href="#keyrepeat">PS.keyRepeat</a> ( repeat, init, delay )</li>
+			</ul>
+
+			<div class="section">
+				<div id="random" class="dot">&nbsp;</div>
+				<p class="subhead">PS.random ( val )</p>
+
+				<p>PS.random() returns a random integer.</p>
+
+				<div class="specs">
+					<p>Parameters:</p>
+					<ol>
+						<li>val : <em>integer</em></li>
+					</ol>
+					<p>Returns: <em>integer</em></p>
+				</div>
+
+				<p>The <em>val</em> parameter should be an <em>integer</em> greater than or equal to two (2).
+					Values less than two are clamped. Non-integral values are floored.</p>
+
+				<p class="subitem">Return value</p>
+
+				<p>PS.random() returns a random <em>integer</em> in the range 1 to <b>val</b>, inclusive.</p>
+
+				<p><b>PS.ERROR</b> is returned if an error occurs.</p>
+
+				<div class="example">
+					<p>// EXAMPLE:<br>
+						// Set bead to a random shade of red<br><br>
+						PS.touch = function( x, y, data, options ) {<br>
+						<span>&nbsp;&nbsp;&nbsp;</span>"use strict";<br/><br/>
+						<span>&nbsp;&nbsp;&nbsp;</span>PS.color( x, y, PS.random( 255 ), 0, 0 );<br/>
+						};</p>
+				</div>
+
+			</div>
+
+			<div class="section">
+				<div id="makergb" class="dot">&nbsp;</div>
+				<p class="subhead">PS.makeRGB ( r, g, b )</p>
+
+				<p>PS.makeRGB() takes red, green and blue color components and returns a multiplexed RGB value.</p>
+
+				<div class="specs">
+					<p>Parameters:</p>
+					<ol>
+						<li><b>r</b> : <em>integer</em></li>
+						<li><b>g</b> : <em>integer</em></li>
+						<li><b>b</b> : <em>integer</em></li>
+					</ol>
+					<p>Returns: <em>integer</em></p>
+				</div>
+
+				<p>Each parameter must be an
+					<em>integer</em> in the range of 0-255 inclusive. Values outside this range are clamped.
+					Non-integral values are floored.</p>
+
+				<p class="subitem">Return value</p>
+
+				<p>PS.makeRGB() returns a multiplexed RGB <em>integer</em> in the range 0 to 0xFFFFFF inclusive, formatted RRGGBB.
+				</p>
+
+				<p><b>PS.ERROR</b> is returned if an error occurs.</p>
+
+				<div class="example">
+					<p>// EXAMPLE:<br>
+						// Set bead to a random shade of green<br><br>
+						PS.click = function ( x, y, data, options ) {<br>
+						<span>&nbsp;&nbsp;&nbsp;</span>"use strict";<br/>
+						<span>&nbsp;&nbsp;&nbsp;</span>var rgb;<br/><br/>
+						<span>&nbsp;&nbsp;&nbsp;</span>rgb = PS.makeRGB( 0, PS.random( 255 ), 0 );<br/>
+						<span>&nbsp;&nbsp;&nbsp;</span>PS.color( x, y, rgb );<br/>
+						};</p></div>
+
+			</div>
+
+			<div class="section">
+				<div id="unmakergb" class="dot">&nbsp;</div>
+				<p class="subhead">PS.unmakeRGB ( rgb, colors )</p>
+
+				<p>PS.unmakeRGB() takes a multiplexed RGB value and returns the corresponding red, green and blue color components.</p>
+
+				<div class="specs">
+					<p>Parameters:</p>
+					<ol>
+						<li><b>rgb</b> : <em>integer</em></li>
+						<li><b>colors</b> : <em>array</em> or <em>object</em> reference</li>
+					</ol>
+					<p>Returns: <em>array</em> or <em>object</em></p>
+				</div>
+
+				<p>The <b>rgb</b> parameter should be an
+					<a href="colors.html#plex">RGB multiplex</a> in the range 0 to 0xFFFFFF inclusive.
+					Values outside this range are clamped. Non-integral values are floored.</p>
+
+				<p>The <b>colors</b> parameter should be a valid reference to either an <em>array</em> or an <em>object</em>.</p>
+
+				<p>If <b>colors</b> is an <em>array</em> reference, the first three elements of the
+					<em>array</em> will be populated with <em>integers</em>
+					in the range of 0-255 inclusive, corresponding to the red, green and blue components of <b>rgb</b>:</p>
+				<ul>
+					<li>array[0] = red : <em>integer</em></li>
+					<li>array[1] = green : <em>integer</em></li>
+					<li>array[2] = blue : <em>integer</em></li>
+				</ul>
+
+				<p>Values previously assigned to the first three
+					<em>array</em> elements are lost. Any elements beyond the first three are not changed.</p>
+
+				<p>If <b>colors</b> is an <em>object</em> reference, the <b>.rgb</b> property of the object is set to the value of
+					<b>rgb</b>,
+					and the <b>.r</b>, <b>.g</b> and <b>.b</b> properties are populated with <em>integers</em>
+					in the range of 0-255 inclusive, corresponding to the red, green and blue components of <b>rgb</b>:</p>
+
+				<ul>
+					<li><b>.rgb</b> : <em>integer</em></li>
+					<li><b>.r</b> : <em>integer</em></li>
+					<li><b>.g</b> : <em>integer</em></li>
+					<li><b>.b</b> : <em>integer</em></li>
+				</ul>
+
+				<p>Any values previously assigned to these properties are lost. Any other properties in the object are not changed.</p>
+
+				<p class="subitem">Return value</p>
+
+				<p>PS.unmakeRGB() returns the <em>array</em> or <em>object</em> passed in the
+					<b>colors</b> parameter, modified as explained above.</p>
+
+				<p><b>PS.ERROR</b> is returned if an error occurs.</p>
+
+				<div class="example">
+					<p>// EXAMPLES:<br>
+						// Copy r/g/b values into an array<br><br>
+						var a = [];<br><br>
+						PS.unmakeRGB ( PS.COLOR_ORANGE, a );<br><br>
+						PS.debug( "r = " + a[0] + ", g = " + a[1] +<br>
+						<span>&nbsp;&nbsp;&nbsp;</span>", b = " + a[2] + "\n" );<br><br>
+						// Copy r/g/b values into an object<br><br>
+						obj = PS.unmakeRGB ( PS.COLOR_ORANGE, {} );<br><br>
+						PS.debug( "r = " + obj.r + ", g = " + obj.g +<br>
+						<span>&nbsp;&nbsp;&nbsp;</span>", b = " + obj.b + "\n" );</p>
+				</div>
+
+			</div>
+
+			<div class="section">
+				<div id="applyrect" class="dot">&nbsp;</div>
+				<p class="subhead">PS.applyRect ( left, top, width, height, exec, ... )</p>
+
+				<p>PS.applyRect() applies a specified function to every bead within a rectangular region of the grid.</p>
+
+				<div class="specs">
+					<p>Parameters:</p>
+					<ol>
+						<li><b>left</b> : <em>integer</em> or <b>PS.DEFAULT</b></li>
+						<li><b>top</b> : <em>integer</em> or <b>PS.DEFAULT</b></li>
+						<li><b>width</b> : <em>integer</em> or <b>PS.DEFAULT</b></li>
+						<li><b>height</b> : <em>integer</em> or <b>PS.DEFAULT</b></li>
+						<li>exec : <em>function</em></li>
+					</ol>
+					<p>Returns: Javascript value or <b>PS.ERROR</b></p>
+				</div>
+
+				<p>The required <b>left</b>, <b>top</b>, <b>width</b> and <b>height</b> parameters
+					specify the zero-based dimensions of a rectangular region inside the grid.</p>
+
+				<p>If <b>left</b> is less than zero (0) or <b>PS.DEFAULT</b>, the value zero (0) is used.
+					If <b>left</b> equals or exceeds the grid width, nothing happens.</p>
+
+				<p>If <b>top</b> is less than zero (0) or <b>PS.DEFAULT</b>, the value zero (0) is used.
+					If <b>top</b> equals or exceeds the grid height, nothing happens.</p>
+
+				<p>If <b>width</b> is less than 1, nothing happens.
+					If (<b>left + width</b>) is greater than the grid width or <b>PS.DEFAULT</b>, the value (grid_width -
+					<b>left</b>) is used.</p>
+
+				<p>If <b>height</b> is less than 1, nothing happens.
+					If (<b>top + height</b>) is greater than the grid height or <b>PS.DEFAULT</b>, the value (grid_height -
+					<b>top</b>) is used.</p>
+
+				<p>The required <b>exec</b> parameter should be a reference to a Javascript function that accepts
+					at least two arguments specifying the zero-based x and y coordinates of a bead on the grid, respectively.</p>
+
+				<p>Any parameters supplied to PS.applyRect() after the <b>exec</b> parameter are passed as
+					<em>additional</em> arguments to the <b>exec</b> function.</p>
+
+				<p>The <b>exec</b> function can return any value. If the function fails, it should return <b>PS.ERROR</b>.</p>
+
+				<p class="subitem">Usage</p>
+
+				<p>PS.applyRect() is easily used with any of Perlenspiel's <a href="beads.html">bead commands</a>.
+					Just specify the name of the command for the
+					<b>exec</b> parameter, followed by the same parameters you would normally pass
+					to the command following the <b>x</b> and <b>y</b> parameters.</p>
+
+				<p>You can also use PS.applyRect() with bead functions you write yourself. The first two arguments of your function
+					must specify the zero-based x and y position of the bead of the grid, respectively. Any number of additional arguments can be used.</p>
+
+				<div class="example">
+					<p>// EXAMPLE<br/>
+						// Set a 3 x 3 area of beads to red<br/>
+						// using the clicked bead as the top left corner<br/><br/>
+						PS.touch = function( x, y, data, options ) {<br/>
+						<span>&nbsp;&nbsp;&nbsp;</span>"use strict";<br/><br/>
+						<span>&nbsp;&nbsp;&nbsp;</span>PS.applyRect( x, y, 3, 3, PS.color, PS.COLOR_RED );<br/>
+						};</p>
+				</div>
+
+				<p class="subitem">Return value</p>
+
+				<p>PS.applyRect() returns the result of applying the
+					<b>exec</b> function to the bead in the last column and row of the specified rectangle.</p>
+
+				<p>If <b>top</b> equals or exceeds the grid height, <b>left</b> equals or exceeds the grid width, or either
+					<b>width</b> or <b>height</b>
+					are less than one (1), nothing happens and the value <b>PS.DONE</b> is returned.</p>
+
+				<p><b>PS.ERROR</b> is returned immediately if an error occurs when applying the <b>exec</b> function to any bead.
+				</p>
+
+			</div>
+
+			<div class="section">
+				<div id="hex" class="dot">&nbsp;</div>
+				<p class="subhead">PS.hex ( value, padding )</p>
+
+				<p>PS.hex() converts a number to a hexadecimal string, with optional padding.</p>
+
+				<div class="specs">
+					<p>Parameters:</p>
+					<ol>
+						<li><b>value</b> : <em>integer</em></li>
+						<li>(optional) <b>padding</b> : <em>integer</em></li>
+					</ol>
+					<p>Returns: <em>string</em> or <b>PS.ERROR</b></p>
+				</div>
+
+				<p>The required <b>value</b> parameter can be any number. Non-integral values are floored.</p>
+
+				<p>The optional <b>padding</b> parameter should be a integer greater than or equal to one (1)
+					indicating the minimum number of hexadecimal digits desired in the string.
+					Values less than one are clamped. Non-integral values are floored.</p>
+
+				<p>If <b>padding</b> is <b>PS.DEFAULT</b> or not supplied, a minimum padding of two (2) is applied.
+				</p>
+
+				<p class="subitem">Return value</p>
+
+				<p>PS.hex() returns a string representing the absolute value of <b>value</b> as a hexadecimal number,
+					with a &ldquo;0x&rdquo; prefix.</p>
+
+				<p><b>PS.ERROR</b> is returned if an error occurs.</p>
+
+				<div class="example">
+					<p>// EXAMPLE:<br>
+						// Display the hex value of a bead's color<br><br>
+						PS.touch = function ( x, y, data, options ) {<br>
+						<span>&nbsp;&nbsp;&nbsp;</span>"use strict";<br/>
+						<span>&nbsp;&nbsp;&nbsp;</span>var hex;<br/><br/>
+						<span>&nbsp;&nbsp;&nbsp;</span>hex = PS.hex ( PS.color( x, y ), 6 );<br/>
+						<span>&nbsp;&nbsp;&nbsp;</span>PS.statusText( "RGB = " + hex );<br/>
+						};</p>
+				</div>
+
+			</div>
+
+			<div class="section">
+				<div id="keyrepeat" class="dot">&nbsp;</div>
+				<p class="subhead">PS.keyRepeat ( repeat, init, delay )</p>
+
+				<p>PS.keyRepeat() inspects and changes the auto-repeat behavior of the keyboard.</p>
+
+				<div class="specs">
+					<p>Parameters:</p>
+					<ol>
+						<li>(optional) <b>repeat</b> : <em>boolean</em>, <b>PS.CURRENT</b> or <b>PS.DEFAULT</b></li>
+						<li>(optional) <b>init</b> : <em>integer</em>, <b>PS.CURRENT</b> or <b>PS.DEFAULT</b></li>
+						<li>(optional) <b>delay</b> : <em>integer</em>, <b>PS.CURRENT</b> or <b>PS.DEFAULT</b></li>
+					</ol>
+					<p>Returns: <em>object</em> or <b>PS.ERROR</b></p>
+				</div>
+
+				<p>The optional <b>repeat</b> parameter enables or disables key repeating.</p>
+
+				<p>If <b>repeat</b> is <em>true</em>, any non-zero number, <b>PS.DEFAULT</b> or not supplied,
+					key repeating is enabled. If <b>repeat</b> is <em>false</em> or zero (0), key repeating is disabled.
+					If <b>repeat</b> is <b>PS.CURRENT</b>, the repeat behavior is not changed.</p>
+
+				<p>The optional <b>init</b> parameter specifies the initial time delay before key repeating begins,
+					expressed in 1/60ths of a second. It should be an <em>integer</em> greater than or equal to one (1).
+					Values less than one are clamped. Non-integral values are floored.</p>
+
+				<p>If <b>init</b> is <b>PS.DEFAULT</b> or not supplied, the default value (30, or 1/2 second)
+					is used. If <b>init</b> is <b>PS.CURRENT</b>, the initial delay is not changed.</p>
+
+				<p>The optional <b>delay</b> parameter specifies the time delay between successive key repeats,
+					expressed in 1/60ths of a second. It should be an <em>integer</em> greater than or equal to one (1).
+					Values less than one are clamped. Non-integral values are floored.</p>
+
+				<p>If <b>delay</b> is <b>PS.DEFAULT</b> or not supplied, the default value (6, or 1/10 second)
+					is used. If <b>delay</b> is <b>PS.CURRENT</b>, the delay is not changed.</p>
+
+				<p class="subitem">Usage notes</p>
+
+				<p>1. The default values of <b>init</b> and <b>delay</b> are similar to typical OS values,
+					and should not be changed unless a specific effect is needed.</p>
+
+				<p>2. Specifying an <b>init</b> value less than the <b>delay</b> value is not recommended.</p>
+
+				<p class="subitem">Return value</p>
+
+				<p>PS.keyRepeat() returns an <em>object</em> with the following properties:</p>
+
+				<ul>
+					<li><b>.repeat</b> : <em>boolean</em></li>
+					<li><b>.init</b> : <em>integer</em></li>
+					<li><b>.delay</b> : <em>integer</em></li>
+				</ul>
+
+				<p>The <b>.repeat</b> property is <em>true</em> if key repeating is enabled, else <em>false</em>.</p>
+
+				<p>The <b>.init</b> and <b>.delay</b> properties are <em>integers</em> specifying the initial
+					and successive key repeat delays, respectively, expressed in 1/60ths of a second.</p>
+
+				<p><b>PS.ERROR</b> is returned if an error occurs.</p>
+
+				<div class="example">
+					<p>// EXAMPLES:<br>
+						// Disable all key repeating<br><br>
+						PS.keyRepeat( false );<br><br>
+						// Enable repeats with initial delay of 1 second<br>
+						// and successive delays of 1/4 second<br><br>
+						PS.keyRepeat( true, 60, 15 );</p>
+				</div>
+
+			</div>
+
+		</div>
+
+		<div id="footer">
+			<p>Interactive Media and Game Development<br/>
+				Worcester Polytechnic Institute<br/>
+				100 Institute Road, Worcester, MA 01609 USA<br/>
+				<a href="http://imgd.wpi.edu">imgd.wpi.edu</a><br/>&nbsp;</p>
+		</div>
+	</body>
+</html>
+

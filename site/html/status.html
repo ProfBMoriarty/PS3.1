@@ -1,0 +1,239 @@
+<!DOCTYPE HTML>
+<html lang="en">
+	<head>
+		<title>Perlenspiel | API | Status Line</title>
+		<meta charset="utf-8"/>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+		<meta name="description" content="Perlenspiel | API | Status Line"/>
+		<meta name="keywords" content="perlenspiel, game, design, engine, gameclavier, moriarty, wpi"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+		<meta name="apple-mobile-web-app-capable" content="yes"/>
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+		<link rel="shortcut icon" href="http://users.wpi.edu/~bmoriarty/ps/favicon.png"/>
+		<link rel="apple-touch-icon" href="http://users.wpi.edu/~bmoriarty/ps/apple-touch-icon.png"/>
+		<link href='http://fonts.googleapis.com/css?family=Roboto:400,700,400italic,700italic,100' rel='stylesheet' type='text/css'>
+		<link rel="stylesheet" href="style.css" type="text/css">
+		<script type="text/javascript" src="play.js"></script>
+	</head>
+	<body onload="PSA.dots();">
+		<div id="header">
+			<p><img src="images/logosm.png" alt="[Logo]"><strong>Perlenspiel<sup class="sup3">3</sup></strong></p>
+
+			<ul id="nav">
+				<li><a href="index.html">Home</a></li>
+				<li><a href="download.html">Download</a></li>
+				<li><a href="learning.html">Learning</a></li>
+				<li><a href="examples.html">Examples</a></li>
+				<li><a href="api.html">API</a></li>
+				<li><a href="links.html">Links</a></li>
+			</ul>
+		</div>
+
+		<div id="main">
+			<p class="subhead">API | Status Line</p>
+
+			<p>These functions control the display of text in the status box.</p>
+
+			<ul class="select">
+				<li><a href="#text">PS.statusText ( text )</a></li>
+				<li><a href="#color">PS.statusColor ( color )</a></li>
+				<li><a href="#fade">PS.statusFade ( rate, options )</a></li>
+			</ul>
+
+			<div class="section">
+				<div id="text" class="dot">&nbsp;</div>
+				<p class="subhead">PS.statusText ( str )</p>
+
+				<p>PS.statusText() changes and inspects the text in the status box above the grid.</p>
+
+				<div class="specs">
+					<p>Parameters:</p>
+					<ol>
+						<li>(optional) text : <em>one of</em></li>
+					</ol>
+					<ul>
+						<li><em>string</em></li>
+						<li><b>PS.DEFAULT</b></li>
+						<li><b>PS.CURRENT</b></li>
+					</ul>
+					<p>Returns: <em>string</em></p>
+
+					<p>Default: "" (empty string)</p>
+				</div>
+
+				<p>The optional
+					<b>text</b> parameter specifies the text to be displayed in the status box. Any previously assigned text is replaced.
+				</p>
+
+				<p>The text is centered in the status box. If the text is too wide to fit inside the box,
+					the left and right edges of the text are clipped without warning.</p>
+
+				<p>If <b>text</b> is <b>PS.DEFAULT</b> or an empty string (""), the status box is erased.</p>
+
+				<p>If <b>text</b> is <b>PS.CURRENT</b>, or no <b>text</b> is supplied, or a parameter error occurs,
+					the status box text is unchanged.</p>
+
+				<p class="subitem">Return value</p>
+
+				<p>PS.statusText() returns the text currently assigned to the status box, or an empty string if no text is assigned.</p>
+
+				<p><b>PS.ERROR</b> is returned if an error occurs.</p>
+
+				<div class="example">
+					<p>// EXAMPLE:<br/>
+						// Display game title in status box on startup<br/><br/>
+						PS.init = function( options ) {<br>
+						<span>&nbsp;&nbsp;&nbsp;</span>"use strict";<br><br>
+						<span>&nbsp;&nbsp;&nbsp;</span>// set up a 16 x 16 grid<br/><br/>
+						<span>&nbsp;&nbsp;&nbsp;</span>PS.gridSize( 16, 16 );<br/><br/>
+						<span>&nbsp;&nbsp;&nbsp;</span>// show the title<br/><br/>
+						<span>&nbsp;&nbsp;&nbsp;</span>PS.statusText( "My Clever Game Title" );<br/><br/>
+						<span>&nbsp;&nbsp;&nbsp;</span>// additional init code goes here<br/>
+						};</p>
+				</div>
+			</div>
+
+			<div class="section">
+				<div id="color" class="dot">&nbsp;</div>
+				<p class="subhead">PS.statusColor ( color )</p>
+
+				<p>PS.statusColor() changes and inspects the color of the text in the status box above the grid.</p>
+
+				<div class="specs">
+					<ol>
+						<li>(optional) <b>color</b> : <a href="colors.html#express">color expression</a>, <b>PS.CURRENT</b> or
+							<b>PS.DEFAULT</b></li>
+					</ol>
+					<p>Returns : <em>integer</em> or <b>PS.ERROR</b></p>
+
+					<p>Default: <b>PS.COLOR_BLACK</b></p>
+				</div>
+
+				<p>The optional <b>color</b> parameter can be supplied in any of the four Perlenspiel
+					<a href="colors.html#express">color expression</a> formats.</p>
+
+				<p>If <b>color</b> is <b>PS.DEFAULT</b>, the default color (<b>PS.COLOR_BLACK</b>) is applied.
+					If <b>color</b> is <b>PS.CURRENT</b> or not supplied, the color is not changed.</p>
+
+				<p class="subitem">Return value</p>
+
+				<p>PS.beadGlyphColor() returns a <a href="colors.html#plex">RGB multiplex</a> <em>integer</em>
+					indicating the current status text color.</p>
+
+				<p><b>PS.ERROR</b> is returned if an error occurs.</p>
+
+				<div class="example">
+					<p>// EXAMPLE:<br/>
+						// Change status text color to a random color<br>
+						// on mouse click or touch<br/><br/>
+						PS.touch = function( x, y, data, options ) {<br>
+						<span>&nbsp;&nbsp;&nbsp;</span>"use strict";<br>
+						<span>&nbsp;&nbsp;&nbsp;</span>var color;<br><br>
+						<span>&nbsp;&nbsp;&nbsp;</span>color = PS.random(0xFFFFFF);<br>
+						<span>&nbsp;&nbsp;&nbsp;</span>PS.statusColor( color );<br/>
+						};</p></div>
+			</div>
+
+			<div class="section">
+				<div id="fade" class="dot">&nbsp;</div>
+				<p class="subhead">PS.statusFade ( rate, options )</p>
+
+				<p>PS.statusFade() changes or inspects the color fade effect of the status line.</p>
+
+				<div class="specs">
+					<p>Parameters:</p>
+					<ol>
+						<li>(optional) <b>rate</b> : <em>integer</em>, <b>PS.CURRENT</b> or <b>PS.DEFAULT</b></li>
+						<li>(optional) <b>options</b> : <em>object</em>, <b>PS.CURRENT</b> or <b>PS.DEFAULT</b></li>
+					</ol>
+					<p>Returns : <em>object</em> or <b>PS.ERROR</b></p>
+
+					<p>Default : { rate : 0, rgb : <em>null</em>, onEnd : <em>null</em>, params : <em>null</em> }</p>
+				</div>
+
+				<p>By default, the <a href="#color">PS.statusColor</a>() command changes the color of the status line instantly.
+					You can make the color fade smoothly from one hue to the next by using PS.statusFade().</p>
+
+				<p>Once a fade effect is assigned to the status line with PS.statusFade(),
+					all subsequent calls to <a href="#color">PS.statusColor</a>()
+					will smoothly fade from the current color (or an optionally specified color) to the new color.</p>
+
+				<p>The optional <b>rate</b> parameter(s) specifies the rate of the fade effect in 60ths of a second.
+					If <b>rate</b> is less than 1 or <b>PS.DEFAULT</b>, the status line fade effect is disabled.
+					If <b>rate</b> is <b>PS.CURRENT</b> or not supplied, the currently assigned fade rate is not changed.</p>
+
+				<p>The optional <b>options</b> parameter specifies additional fade options.
+					It should be an <em>object</em> with one or more of the following properties:</p>
+
+				<ul>
+					<li><b>.rgb</b> : <a href="colors.html#plex">RGB multiplex</a>, <b>PS.CURRENT</b> or <b>PS.DEFAULT</b></li>
+					<li><b>.onEnd</b> : <em>function</em>, <b>PS.CURRENT</b> or <b>PS.DEFAULT</b></li>
+					<li><b>.params</b> : <em>array</em>, <b>PS.CURRENT</b> or <b>PS.DEFAULT</b></li>
+				</ul>
+
+				<p class="subitem">.rgb</p>
+
+				<p>The optional <b>.rgb</b> property specifies the initial color of the fade effect.
+					It should be an <a href="colors.html#plex">RGB multiplex</a>
+					<em>integer</em> in the range 0-0xFFFFFF inclusive.
+					Values outside this range are clamped. Non-integral values are floored.
+					If <b>.rgb</b> is <b>PS.DEFAULT</b>,
+					<em>null</em> or not supplied, the current status text color is used as the starting color.
+					If <b>.rgb</b> is <b>PS.CURRENT</b>, the currently assigned start color is not changed.</p>
+
+				<p class="subitem">.onEnd</p>
+
+				<p>The optional
+					<b>.onEnd</b> property specifies a function that will be called when the fade effect is completed.
+					If <b>.onEnd</b> is <b>PS.DEFAULT</b>, <em>null,</em> or not supplied, the default behavior (no function call) is used.
+					If <b>.onEnd</b> is <b>PS.CURRENT</b>, the currently assigned onEnd function is not changed.</p>
+
+				<p class="subitem">.params</p>
+
+				<p>The optional <b>.params</b> property specifies the parameters that will be passed to the function
+					specified by the <b>.onEnd</b> property. It should be an <em>array</em> containing at least one element.
+					If <b>.params</b> is <b>PS.DEFAULT</b>, <em>null,</em> or not supplied, no parameters are passed to the onEnd function.
+					If <b>.onEnd</b> is <b>PS.CURRENT</b>, the currently assigned onEnd parameters are not changed.</p>
+
+				<p>If <b>options</b> is <b>PS.CURRENT</b>, <em>null</em> or not supplied,
+					the currently assigned fade settings are not changed.</p>
+
+				<p>If <b>options</b> is <b>PS.DEFAULT</b>, all fade settings (except for the fade rate) are reset
+					to their default values.</p>
+
+				<p class="subitem">Return value</p>
+
+				<p>PS.statusFade() returns an <em>object</em> with the following properties:</p>
+
+				<ul>
+					<li><b>.rate</b> : <em>integer</em></li>
+					<li><b>.rgb</b> : <em>integer</em> or <em>null</em></li>
+					<li><b>.onEnd</b> : <em>function</em> or <em>null</em></li>
+					<li><b>.params</b> : <em>array</em> or <em>null</em></li>
+				</ul>
+
+				<p>The <b>.rate</b> property indicates the current status line fade rate, zero (0) if disabled.</p>
+
+				<p>The <b>.rgb</b> property is an <a href="colors.html#plex">RGB multiplex</a> <em>integer</em>
+					indicating the start color currently assigned to the fade, <em>null</em> if none.</p>
+
+				<p>The <b>.onEnd</b> property indicates the onEnd function currently assigned to the fade,
+					<em>null</em> if none.</p>
+
+				<p>The <b>.params</b> property is an <em>array</em> containing the parameters currently assigned to the
+					<b>.onEnd</b> function, <em>null</em> if none.</p>
+
+				<p><b>PS.ERROR</b> is returned if an error occurs.</p>
+
+			</div>
+		</div>
+
+		<div id="footer">
+			<p>Interactive Media and Game Development<br/>
+				Worcester Polytechnic Institute<br/>
+				100 Institute Road, Worcester, MA 01609 USA<br/>
+				<a href="http://imgd.wpi.edu">imgd.wpi.edu</a><br/>&nbsp;</p>
+		</div>
+	</body>
+</html>
+

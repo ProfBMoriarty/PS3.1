@@ -1,0 +1,504 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+	<title>Perlenspiel | API | Events</title>
+	<meta charset="utf-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+	<meta name="description" content="Perlenspiel | API | Events"/>
+	<meta name="keywords" content="perlenspiel, game, design, engine, gameclavier, moriarty, wpi"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+	<meta name="apple-mobile-web-app-capable" content="yes"/>
+	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+	<link rel="shortcut icon" href="http://users.wpi.edu/~bmoriarty/ps/favicon.png"/>
+	<link rel="apple-touch-icon" href="http://users.wpi.edu/~bmoriarty/ps/apple-touch-icon.png"/>
+	<link href='http://fonts.googleapis.com/css?family=Roboto:400,700,400italic,700italic,100' rel='stylesheet' type='text/css'>
+	<link rel="stylesheet" href="style.css" type="text/css">
+	<script type="text/javascript" src="play.js"></script>
+</head>
+<body onload="PSA.dots();">
+<div id="header">
+	<p><img src="images/logosm.png" alt="[Logo]"><strong>Perlenspiel<sup class="sup3">3</sup></strong></p>
+
+	<ul id="nav">
+		<li><a href="index.html">Home</a></li>
+		<li><a href="download.html">Download</a></li>
+		<li><a href="learning.html">Learning</a></li>
+		<li><a href="examples.html">Examples</a></li>
+		<li><a href="api.html">API</a></li>
+		<li><a href="links.html">Links</a></li>
+	</ul>
+</div>
+
+<div id="main">
+	<p class="subhead">API | Events</p>
+
+	<p>These functions are called by the Perlenspiel engine when a user event occurs, and when a game is initialized.</p>
+
+	<p>By responding to these events, you can make toys and games.</p>
+
+	<ul class="select">
+		<li><a href="#init">PS.init</a> ( system, options )</li>
+		<li><a href="#touch">PS.touch</a> ( x, y, data, options )</li>
+		<li><a href="#release">PS.release</a> ( x, y, data, options )</li>
+		<li><a href="#enter">PS.enter</a> ( x, y, data, options )</li>
+		<li><a href="#exit">PS.exit</a> ( x, y, data, options )</li>
+		<li><a href="#exitgrid">PS.exitGrid</a> ( options )</li>
+		<li><a href="#keydown">PS.keyDown</a> ( key, shift, ctrl, options )</li>
+		<li><a href="#keyup">PS.keyUp</a> ( key, shift, ctrl, options )</li>
+		<li><a href="#input">PS.input</a> ( device, options )</li>
+	</ul>
+
+	<p>Any values returned by these functions are ignored.</p>
+
+	<div class="section">
+		<div id="init" class="dot">&nbsp;</div>
+		<p class="subhead">PS.init ( system, options )</p>
+
+		<p>PS.init() is called once when a game is initialized.</p>
+
+		<div class="specs">
+			<p>Parameters:</p>
+			<ol>
+				<li><b>system</b> : <em>object</em></li>
+				<li><b>options</b> : <em>object</em></li>
+			</ol>
+		</div>
+
+		<p>Every game should include a PS.init() function. A warning is issued if it is not present.</p>
+
+		<p>Your PS.init() function should immediately call <a href="grid.html#gridsize">PS.gridSize</a>()
+			to establish the dimensions of the grid, followed by any other required game initialization.</p>
+
+		<p>If PS.gridSize() is not called, a default 8x8 grid is created.</p>
+
+		<p>The <b>system</b> parameter provides information about the Perlenspiel engine, host platform and available I/O affordances.
+			It is an object with the following properties:</p>
+
+		<ul>
+			<li><b>.engine</b> : <em>string</em></li>
+			<li><b>.major</b> : <em>integer</em></li>
+			<li><b>.minor</b> : <em>integer</em></li>
+			<li><b>.revision</b> : <em>integer</em></li>
+			<li><b>.host</b> : <em>object</em></li>
+			<li><b>.inputs</b> : <em>object</em></li>
+		</ul>
+
+		<p class="subitem">.engine</p>
+
+		<p>The name of the engine running your game code, usually “Perlenspiel.”</p>
+
+		<p class="subitem">.major / .minor / .revision</p>
+
+		<p>Three integers indicating the current version of the game engine.</p>
+
+		<p class="subitem">.host</p>
+
+		<p>An <em>object</em> identifying the host platform. It contains the following properties:</p>
+
+		<ul>
+			<li><b>.app</b> : <em>string</em></li>
+			<li><b>.version</b> : <em>string</em></li>
+			<li><b>.os</b> : <em>string</em></li>
+		</ul>
+
+		<p>The <b>host.app</b> and <b>host.version</b> <em>strings</em> contain the name and version of the application running the game engine,
+			usually a Web browser.</p>
+
+		<p>The <b>host.os</b> <em>string</em> identifies the operating system hosting the application.</p>
+
+		<p class="subitem">.inputs</p>
+
+		<p>An <em>object</em> indicating the available input affordances. It can contain any of the following properties:</p>
+
+		<ul>
+			<li><b>.touch</b> : <em>boolean</em></li>
+		</ul>
+
+		<p>The <b>input.touch</b> property is <em>true</em> if a touchscreen is available, else <em>false</em>.</p>
+
+		<p>The <b>options</b> parameter is currently unused. It is reserved for future expansion.</p>
+
+		<p>A startup warning occurs if PS.init() is undefined.</p>
+
+		<div class="example">
+			<p>// EXAMPLE:<br/>
+				// Set up a 10 x 10 grid on game initialization<br/>
+				// Saves system info in a global for later reference<br/><br/>
+				var mySystem;<br/><br/>
+				PS.init = function( system, options ) {<br/>
+				<span>&nbsp;&nbsp;&nbsp;</span>"use strict";<br/><br/>
+				<span>&nbsp;&nbsp;&nbsp;</span>PS.gridSize( 10, 10 );<br/><br/>
+				<span>&nbsp;&nbsp;&nbsp;</span>mySystem = system;<br/><br/>
+				<span>&nbsp;&nbsp;&nbsp;</span>// additional init code goes here<br/>
+				};</p>
+		</div>
+
+	</div>
+
+	<div class="section">
+		<div id="touch" class="dot">&nbsp;</div>
+		<p class="subhead">PS.touch ( x, y, data, options )</p>
+
+		<p>PS.touch() is called when the mouse button is clicked on a bead, or when a finger touches a bead.</p>
+
+		<div class="specs">
+			<p>Parameters:</p>
+			<ol>
+				<li><b>x</b> : <em>integer</em></li>
+				<li><b>y</b> : <em>integer</em></li>
+				<li><b>data</b> : <em>a Javascript value</em></li>
+				<li><b>options</b> : <em>object</em></li>
+			</ol>
+		</div>
+
+		<p>The <b>x</b> and <b>y</b> parameters contain the zero-based coordinates of the bead.</p>
+
+		<p>The <b>data</b> parameter contains a value previously assigned to the bead by <a href="beads.html#data">PS.data</a>().
+			If no data has been assigned to the bead, <b>data</b> is set to zero (0).</p>
+
+		<p>The <b>options</b> parameter is currently unused. It is reserved for future expansion.</p>
+
+		<p>A startup warning is displayed if PS.touch() is undefined.</p>
+
+		<div class="example">
+			<p>// EXAMPLE:<br>
+				// Change a clicked or touched bead to red<br/><br/>
+				PS.touch = function( x, y, data, options ) {<br>
+				<span>&nbsp;&nbsp;&nbsp;</span>"use strict";<br><br>
+				<span>&nbsp;&nbsp;&nbsp;</span>PS.color( x, y, PS.COLOR_RED );<br/>
+				};</p></div>
+
+	</div>
+
+	<div class="section">
+		<div id="release" class="dot">&nbsp;</div>
+		<p class="subhead">PS.release ( x, y, data, options )</p>
+
+		<p>PS.release() is called when the mouse button is released over a bead, or when a pressed finger is lifted from a bead.</p>
+
+		<div class="specs">
+			<p>Parameters:</p>
+			<ol>
+				<li><b>x</b> : <em>integer</em></li>
+				<li><b>y</b> : <em>integer</em></li>
+				<li><b>data</b> : <em>a Javascript value</em></li>
+				<li><b>options</b> : <em>object</em></li>
+			</ol>
+		</div>
+
+		<p>The <b>x</b> and <b>y</b> parameters contain the zero-based coordinates of the bead.</p>
+
+		<p>The <b>data</b> parameter contains a value previously assigned to the bead by <a href="beads.html#data">PS.data</a>().
+			If no data has been assigned to the bead, <b>data</b> is set to zero (0).</p>
+
+		<p>The <b>options</b> parameter is currently unused. It is reserved for future expansion.</p>
+
+		<p>A startup warning is displayed if PS.release() is undefined.</p>
+
+		<div class="example">
+			<p>// EXAMPLE:<br/>
+				// Change a released bead to white<br/><br/>
+				PS.release = function( x, y, data, options ) {<br/>
+				<span>&nbsp;&nbsp;&nbsp;</span>"use strict";<br/><br/>
+				<span>&nbsp;&nbsp;&nbsp;</span>PS.color( x, y, PS.COLOR_WHITE );<br/>
+				};</p></div>
+
+	</div>
+
+	<div class="section">
+		<div id="enter" class="dot">&nbsp;</div>
+		<p class="subhead">PS.enter ( x, y, data, options )</p>
+
+		<p>PS.enter() is called when the mouse cursor, or a finger touching the screen, enters a bead.</p>
+
+		<div class="specs">
+			<p>Parameters:</p>
+			<ol>
+				<li><b>x</b> : <em>integer</em></li>
+				<li><b>y</b> : <em>integer</em></li>
+				<li><b>data</b> : <em>a Javascript value</em></li>
+				<li><b>options</b> : <em>object</em></li>
+			</ol>
+		</div>
+
+		<p>The <b>x</b> and <b>y</b> parameters contain the zero-based coordinates of the bead.</p>
+
+		<p>The <b>data</b> parameter contains a value previously assigned to the bead by <a href="beads.html#data">PS.data</a>().
+			If no data has been assigned to the bead, <b>data</b> is set to zero (0).</p>
+
+		<p>The <b>options</b> parameter is currently unused. It is reserved for future expansion.</p>
+
+		<p>A startup warning is displayed if PS.enter() is undefined.</p>
+
+		<div class="example">
+			<p>// EXAMPLE:<br/>
+				// Change bead to blue on mouse or touch enter<br/><br/>
+				PS.enter = function( x, y, data, options ) {<br/>
+				<span>&nbsp;&nbsp;&nbsp;</span>"use strict";<br/><br/>
+				<span>&nbsp;&nbsp;&nbsp;</span>PS.color( x, y, PS.COLOR_BLUE );<br/>
+				};</p></div>
+
+	</div>
+
+	<div class="section">
+		<div id="exit" class="dot">&nbsp;</div>
+		<p class="subhead">PS.exit ( x, y, data, options )</p>
+
+		<p>PS.exit() is called when the mouse cursor, or a finger touching the screen, exits a bead.</p>
+
+		<div class="specs">
+			<p>Parameters:</p>
+			<ol>
+				<li><b>x</b> : <em>integer</em></li>
+				<li><b>y</b> : <em>integer</em></li>
+				<li><b>data</b> : <em>a Javascript value</em></li>
+				<li><b>options</b> : <em>object</em></li>
+			</ol>
+		</div>
+		<p>The <b>x</b> and <b>y</b> parameters contain the zero-based coordinates of the bead.</p>
+
+		<p>The <b>data</b> parameter contains a value previously assigned to the bead by <a href="beads.html#data">PS.data</a>().
+			If no data has been assigned to the bead, <b>data</b> is set to zero (0).</p>
+
+		<p>The <b>options</b> parameter is currently unused. It is reserved for future expansion.</p>
+
+		<p>A startup warning is displayed if PS.exit() is undefined.</p>
+
+		<div class="example">
+			<p>// EXAMPLE:<br/>
+				// Change bead to green on mouse or touch exit<br/><br/>
+				PS.exit = function( x, y, data, options ) {<br/>
+				<span>&nbsp;&nbsp;&nbsp;</span>"use strict";<br/><br/>
+				<span>&nbsp;&nbsp;&nbsp;</span>PS.color( x, y, PS.COLOR_GREEN );<br/>
+				};</p></div>
+
+	</div>
+
+	<div class="section">
+		<div id="exitgrid" class="dot">&nbsp;</div>
+		<p class="subhead">PS.exitGrid ( options )</p>
+
+		<p>PS.exitGrid() is called when the mouse cursor, or a finger touching the screen, exits the perimeter of the grid.</p>
+
+		<div class="specs">
+			<p>Parameters:</p>
+			<ol>
+				<li><b>options</b> : <em>object</em></li>
+			</ol>
+		</div>
+
+		<p>The <b>options</b> parameter is currently unused. It is reserved for future expansion.</p>
+
+		<p>A startup warning is displayed if PS.exitGrid() is undefined.</p>
+
+		<div class="example">
+			<p>// EXAMPLE:<br/>
+				// Play scream when cursor exits grid<br/><br/>
+				PS.exitGrid = function( options ) {<br/>
+				<span>&nbsp;&nbsp;&nbsp;</span>"use strict";<br/><br/>
+				<span>&nbsp;&nbsp;&nbsp;</span>PS.playSound( "fx_wilhelm" );<br/>
+				};</p></div>
+
+	</div>
+
+	<div class="section">
+		<div id="keydown" class="dot">&nbsp;</div>
+		<p class="subhead">PS.keyDown ( key, shift, ctrl, options )</p>
+
+		<p>PS.keyDown() is called when a key is pressed on the keyboard.</p>
+
+		<div class="specs">
+			<p>Parameters:</p>
+			<ol>
+				<li><b>key</b> : <em>integer</em></li>
+				<li><b>shift</b> : <em>boolean</em></li>
+				<li><b>ctrl</b> : <em>boolean</em></li>
+				<li><b>options</b> : <em>object</em></li>
+			</ol>
+		</div>
+
+		<p>PS.keyDown() is called only on platforms with a hardware keyboard.</p>
+
+		<p>The <b>key</b> parameter contains an integer indicating which key was pressed.</p>
+
+		<p>If the key is one of the standard keyboard keys, (upper-case and lower-case alphabetics,
+			numbers or punctation), the <b>key</b> parameter contains the corresponding
+			<a href="http://www.asciitable.com/">ASCII keycode</a>.</p>
+
+		<p>If the key is an arrow key, the <b>key</b> parameter contains one of the following constants:</p>
+		<ul>
+			<li><b>PS.KEY_ARROW_LEFT</b> : Left arrow</li>
+			<li><b>PS.KEY_ARROW_RIGHT</b> : Right arrow</li>
+			<li><b>PS.KEY_ARROW_UP</b> : Up arrow</li>
+			<li><b>PS.KEY_ARROW_DOWN</b> : Down arrow</li>
+		</ul>
+
+		<p>If the key is on the numeric keypad, the <b>key</b> parameter contains one of the following constants:</p>
+		<ul>
+			<li><b>PS.KEY_PAD_0</b> : Keypad 0</li>
+			<li><b>PS.KEY_PAD_1</b> : Keypad 1</li>
+			<li><b>PS.KEY_PAD_2</b> : Keypad 2</li>
+			<li><b>PS.KEY_PAD_3</b> : Keypad 3</li>
+			<li><b>PS.KEY_PAD_4</b> : Keypad 4</li>
+			<li><b>PS.KEY_PAD_5</b> : Keypad 5</li>
+			<li><b>PS.KEY_PAD_6</b> : Keypad 6</li>
+			<li><b>PS.KEY_PAD_7</b> : Keypad 7</li>
+			<li><b>PS.KEY_PAD_8</b> : Keypad 8</li>
+			<li><b>PS.KEY_PAD_9</b> : Keypad 9</li>
+		</ul>
+
+		<p>If the key is function key 1-10, the <b>key</b> parameter contains one of the following constants:</p>
+		<ul>
+			<li><b>PS.KEY_F1</b> : Function key 1</li>
+			<li><b>PS.KEY_F2</b> : Function key 1</li>
+			<li><b>PS.KEY_F3</b> : Function key 1</li>
+			<li><b>PS.KEY_F4</b> : Function key 1</li>
+			<li><b>PS.KEY_F5</b> : Function key 1</li>
+			<li><b>PS.KEY_F6</b> : Function key 1</li>
+			<li><b>PS.KEY_F7</b> : Function key 1</li>
+			<li><b>PS.KEY_F8</b> : Function key 1</li>
+			<li><b>PS.KEY_F9</b> : Function key 1</li>
+			<li><b>PS.KEY_F10</b> : Function key 10</li>
+		</ul>
+
+		<p>The following auxiliary keys are also recognized:</p>
+
+		<ul>
+			<li><b>PS.KEY_ESCAPE</b> : Escape key</li>
+			<li><b>PS.KEY_TAB</b> : Tab key</li>
+			<li><b>PS.KEY_PAGE_UP</b> : Page Up key</li>
+			<li><b>PS.KEY_PAGE_DOWN</b> : Page Down key</li>
+			<li><b>PS.KEY_END</b> : End key</li>
+			<li><b>PS.KEY_HOME</b> : Home key</li>
+			<li><b>PS.KEY_INSERT</b> : Insert key</li>
+			<li><b>PS.KEY_DELETE</b> : Delete key</li>
+		</ul>
+
+		<p>The <b>shift</b> parameter contains <em>true</em> if the shift key is held down, otherwise <em>false</em>.</p>
+
+		<p>The <b>ctrl</b> parameter contains <em>true</em> if the control key is held down, otherwise <em>false</em>.</p>
+
+		<p>The <b>options</b> parameter is currently unused. It is reserved for future expansion.</p>
+
+		<p>A startup warning is displayed if a hardware keyboard is available and PS.keyDown() is undefined.</p>
+
+		<div class="example">
+			<p>// EXAMPLE:<br/>
+				// Report pressed keycode in status box<br/><br/>
+				PS.keyDown = function( key, shift, ctrl, options ) {<br/>
+				<span>&nbsp;&nbsp;&nbsp;</span>"use strict";<br/><br/>
+				<span>&nbsp;&nbsp;&nbsp;</span>PS.statusText( "Pressed key = " + key );<br/>
+				};</p></div>
+	</div>
+
+	<div class="section">
+		<div id="keyup" class="dot">&nbsp;</div>
+		<p class="subhead">PS.keyUp ( key, shift, ctrl, options )</p>
+		<p>PS.keyUp() is called when a key is released.</p>
+		<div class="specs">
+			<p>Parameters:</p>
+			<ol>
+				<li><b>key</b> : <em>integer</em></li>
+				<li><b>shift</b> : <em>boolean</em></li>
+				<li><b>ctrl</b> : <em>boolean</em></li>
+				<li><b>options</b> : <em>object</em></li>
+			</ol>
+		</div>
+		<p>PS.keyUp() is called only on platforms with a hardware keyboard.</p>
+
+		<p>The <b>key</b> parameter contains an integer indicating which key was released.</p>
+
+		<p>If the key is one of the standard keyboard keys, (upper-case and lower-case alphabetics,
+			numbers or punctation), the <b>key</b> parameter contains the corresponding
+			<a href="http://www.asciitable.com/">ASCII keycode</a>.</p>
+
+		<p>The special keycodes passed by PS.keyUp() are the same as those used for <a href="#keydown">PS.keyDown</a>().</p>
+
+		<p>The <b>shift</b> parameter contains <em>true</em> if the shift key is held down, otherwise <em>false</em>.</p>
+
+		<p>The <b>ctrl</b> parameter contains <em>true</em> if the control key is held down, otherwise <em>false</em>.</p>
+
+		<p>The <b>options</b> parameter is currently unused. It is reserved for future expansion.</p>
+
+		<p>A startup warning is displayed if a hardware keyboard is available and PS.keyUp() is undefined.</p>
+
+		<div class="example">
+			<p>// EXAMPLE:<br/>
+				// Report released keycode in status box<br/><br/>
+				PS.keyUp = function( key, shift, ctrl, options ) {<br/>
+				<span>&nbsp;&nbsp;&nbsp;</span>"use strict";<br/><br/>
+				<span>&nbsp;&nbsp;&nbsp;</span>PS.statusText( "Released key = " + key );<br/>
+				};</p></div>
+
+	</div>
+
+	<div class="section">
+		<div id="input" class="dot">&nbsp;</div>
+		<p class="subhead">PS.input ( device, options )</p>
+
+		<p>PS.input() is called when a input device event is detected.</p>
+
+		<div class="specs">
+			<p>Parameters:</p>
+			<ol>
+				<li><b>device</b> : <em>object</em></li>
+				<li><b>options</b> : <em>object</em></li>
+			</ol>
+		</div>
+
+		<p>Perlenspiel games are usually developed and played on a Web browser, using a mouse and/or keyboard for input.</p>
+
+		<p>As the engine migrates to other platforms, it will be able to respond to events from a broader range of input devices,
+			including game controllers, tilt sensors, touchpads, and voice commands.
+			PS.input() provides a flexible way to report these events to your game.</p>
+
+		<p>The <b>device</b> parameter is an object containing one or more of the following properties:</p>
+
+		<ul>
+			<li><b>.wheel</b> : <b>PS.WHEEL_FORWARD</b> or <b>PS.WHEEL_BACKWARD</b></li>
+		</ul>
+
+		<p>When an event is detected on an input device, PS.input() is called with the associated
+			<b>device</b> property set to a value identifying the event.</p>
+
+		<p>For example: When the mouse wheel is scrolled, PS.input() is called with the <b>.wheel</b> property of
+			<b>device</b> set to either <b>PS.WHEEL_FORWARD</b> or <b>PS.WHEEL_BACKWARD</b>,
+			depending on the direction of the scroll.</p>
+
+		<p>As new input devices are supported, the associated <b>device</b> properties and event values will be documented here.</p>
+
+		<p>More than one property can potentially be set in a single call to PS.input(), so be sure your code is able to respond
+			to simultaneous events.</p>
+
+		<p>The <b>options</b> parameter is currently unused. It is reserved for future expansion.</p>
+
+		<p>A startup warning is displayed if a supported special input device is available and PS.input() is undefined.</p>
+
+		<div class="example">
+			<p>// EXAMPLE:<br/>
+				// Report mouse wheel movement in status line<br/><br/>
+				PS.input = function( device, options ) {<br/>
+				<span>&nbsp;&nbsp;&nbsp;</span>"use strict";<br/>
+				<span>&nbsp;&nbsp;&nbsp;</span>var dir;<br/><br/>
+				<span>&nbsp;&nbsp;&nbsp;</span>dir = device.wheel;<br/>
+				<span>&nbsp;&nbsp;&nbsp;</span>if ( dir === PS.WHEEL_FORWARD ) {<br/>
+				<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>PS.statusText( "Wheel scrolled forward" );<br/>
+				<span>&nbsp;&nbsp;&nbsp;</span>}<br/>
+				<span>&nbsp;&nbsp;&nbsp;</span>else if ( dir === PS.WHEEL_BACKWARD ) {<br/>
+				<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>PS.statusText( "Wheel scrolled backward" );<br/>
+				<span>&nbsp;&nbsp;&nbsp;</span>}<br/>
+				};</p></div>
+
+	</div>
+
+</div>
+
+<div id="footer">
+	<p>Interactive Media and Game Development<br/>
+Worcester Polytechnic Institute<br/>
+100 Institute Road, Worcester, MA 01609 USA<br/>
+<a href="http://imgd.wpi.edu">imgd.wpi.edu</a><br/>&nbsp;</p>
+</div>
+</body>
+</html>
+

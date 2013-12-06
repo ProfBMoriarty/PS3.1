@@ -1,0 +1,219 @@
+<!DOCTYPE HTML>
+<html lang="en">
+	<head>
+		<title>Perlenspiel | API | Glossary</title>
+		<meta charset="utf-8"/>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+		<meta name="description" content="Perlenspiel | API | Glossary"/>
+		<meta name="keywords" content="perlenspiel, game, design, engine, gameclavier, moriarty, wpi"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+		<meta name="apple-mobile-web-app-capable" content="yes"/>
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+		<link rel="shortcut icon" href="http://users.wpi.edu/~bmoriarty/ps/favicon.png"/>
+		<link rel="apple-touch-icon" href="http://users.wpi.edu/~bmoriarty/ps/apple-touch-icon.png"/>
+		<link href='http://fonts.googleapis.com/css?family=Roboto:400,700,400italic,700italic,100' rel='stylesheet' type='text/css'>
+		<link rel="stylesheet" href="style.css" type="text/css">
+		<script type="text/javascript" src="play.js"></script>
+	</head>
+	<body onload="PSA.dots();">
+		<div id="header">
+			<p><img src="images/logosm.png" alt="[Logo]"><strong>Perlenspiel<sup class="sup3">3</sup></strong></p>
+
+			<ul id="nav">
+				<li><a href="index.html">Home</a></li>
+				<li><a href="download.html">Download</a></li>
+				<li><a href="learning.html">Learning</a></li>
+				<li><a href="examples.html">Examples</a></li>
+				<li><a href="api.html">API</a></li>
+				<li><a href="links.html">Links</a></li>
+			</ul>
+		</div>
+
+		<div id="main">
+			<p class="subhead">API | Glossary</p>
+
+			<p>Here are definitions of some key terms that appear in the documentation.</p>
+
+			<ul class="select">
+				<li><a href="#array">array</a></li>
+				<li><a href="#clamp">clamp</a></li>
+				<li><a href="#constant">constant</a></li>
+				<li><a href="#float">float</a></li>
+				<li><a href="#floor">floor</a></li>
+				<li><a href="#integer">integer</a></li>
+				<li><a href="#object">object</a></li>
+			</ul>
+
+			<p>For more complete information on any topic, refer to the excellent
+				<a href="http://www.w3schools.com/js/js_obj_array.asp">w3schools</a> Web site, or any of the reference works
+				listed on the <a href="links.html">Links</a> page.</p>
+
+			<div class="section">
+				<div id="array" class="dot">&nbsp;</div>
+				<p class="subitem">array</p>
+
+				<p>An array lets you store multiple values in a single variable.
+					They are written as a list of comma-separated values, enclosed by <b>square</b> brackets.</p>
+
+				<p>Any Javascript data type can be stored in an array, including other arrays.</p>
+
+				<div class="example"><p>
+					// EXAMPLES:<br/>
+					// An empty array<br/><br/>
+					var a = [];<br/><br/>
+					// An array containing three numbers<br/><br/>
+					var a = [ 2, 42, -5 ];<br/><br/>
+					// An array containing many different value types,<br/>
+					// including an array<br/><br/>
+					var a = [ 3.14159, [ 5, 7, 9, 11 ], "rabbit" ];</p></div>
+
+				<p>Each value in an array is called an element. Array elements are numbered sequentially, beginning with zero (0).
+					They are referenced by writing the name of the variable containing the array,
+					followed by the indexed location of the element enclosed in brackets.</p>
+
+				<div class="example">
+					<p>var stooges = [ "Moe", "Larry", "Curly" ];</p></div>
+
+				<p>In this example, <code>stooges[0]</code> contains the string "Moe",
+					<code>stooges[1]</code> contains "Larry" and <code>stooges[2]</code> contains "Curly".</p>
+
+				<p>Javascript offers many functions for manipulating arrays.</p>
+
+			</div>
+
+			<div class="section">
+				<div id="clamp" class="dot">&nbsp;</div>
+				<p class="subitem">clamp</p>
+
+				<p>A value is <em>clamped</em> when its range is forcibly restricted.</p>
+
+				<p>Example: RGB color components are expressed as
+					<a href="#integer">integers</a> in the range 0 to 255 inclusive.
+					Commands that accept color components as parameters, such as <a href="beads.html#color">PS.color</a>(),
+					clamp the values passed in these parameters to prevent errors. If you specify a color component as a number less than zero,
+					PS.color() will silently changes the value to zero before using it. Values greater than 255 are changed to 255.
+				</p>
+
+			</div>
+
+			<div class="section">
+				<div id="constant" class="dot">&nbsp;</div>
+				<p class="subitem">constant</p>
+
+				<p>A constant is a value that is not supposed to change.
+					They are usually defined by assigning the value to a global variable.</p>
+
+				<div class="example">
+					<p>var MONTHS = 12;</p></div>
+
+				<p>By convention, the names of constants are written in all upper-case letters to make them easy to distinguish.</p>
+
+				<p>Javascript has no way "lock" a variable's value so that it cannot be altered.
+					It's your responsibility to make sure you don't assign new values to constants!</p>
+
+				<p>Perlenspiel provides constants for many common values, such as <b>PS.ERROR</b> and <b>PS.COLOR_BLACK</b>.
+					The <a href="constants.html">Constants</a> page lists them all.</p>
+
+			</div>
+
+			<div class="section">
+				<div id="float" class="dot">&nbsp;</div>
+				<p class="subitem">float</p>
+
+				<p>A float is a positive or negative number with a fractional component.</p>
+
+				<p>1.619 and -3.14159 are floats. 42 and -13 are not.</p>
+
+				<p>In Javascript, all numeric values (including <a href="#integer">integers</a>) are actually stored
+					and manipulated as floats.</p>
+
+			</div>
+
+			<div class="section">
+				<div id="floor" class="dot">&nbsp;</div>
+				<p class="subitem">floor</p>
+
+				<p>A value is <em>floored</em> when it is rounded down to the nearest <a href="#integer">integer</a>.</p>
+
+				<p>Consider this list of values:</p>
+
+				<ul>
+					<li>3.14159</li>
+					<li>3.99999</li>
+					<li>3.00001</li>
+					<li>3</li>
+				</ul>
+
+				<p>Flooring any of these numbers would result in the value 3.</p>
+
+				<p>All Perlenspiel functions that expect integer parameters use flooring to eliminate fractional values
+					that might cause errors.</p>
+
+			</div>
+
+			<div class="section">
+				<div id="integer" class="dot">&nbsp;</div>
+				<p class="subitem">integer</p>
+
+				<p>An integer is a positive or negative number <em>without</em> a fractional component.</p>
+
+				<p>0, 1, -42 and 802,701 are integers. 1.619 and -3.14159 are not.</p>
+
+				<p>In Javascript, all numeric values (including integers) are actually stored as <a href="#float">floats</a>.
+				</p>
+
+			</div>
+
+			<div class="section">
+				<div id="object" class="dot">&nbsp;</div>
+				<p class="subitem">object</p>
+
+				<p>Javascript objects let you store multiple values as named properties of a single variable.
+					They are written as a list of comma-separated <b>property : value</b> pairs,
+					enclosed by <b>curly</b> brackets.</p>
+
+				<p>Any Javascript data type can be stored in an object, including other objects.</p>
+
+				<div class="example"><p>
+					// EXAMPLES:<br/>
+					// An empty object<br/><br/>
+					var obj = {};<br/><br/>
+					// An object containing three numeric properties<br/>
+					// named r, g and b<br/><br/>
+					var obj = { r : 32, g : 128, b : 192 };<br/><br/>
+					// An object containing four named properties<br/>
+					// with different value types<br/><br/>
+					var obj = {<br/>
+					<span>&nbsp;&nbsp;&nbsp;</span>name : "Mario",<br/>
+					<span>&nbsp;&nbsp;&nbsp;</span>job : "plumber",<br/>
+					<span>&nbsp;&nbsp;&nbsp;</span>age : 42<br/>
+					<span>&nbsp;&nbsp;&nbsp;</span>friends : [ "Luigi", "Princess Peach" ]<br/>
+					};</p></div>
+
+				<p>Object properties are referenced by writing the name of the variable containing the object,
+					followed by the name of a property, connected by a period (with no intervening spaces).</p>
+
+				<div class="example">
+					<p>var crew = {<br/>
+						<span>&nbsp;&nbsp;&nbsp;</span>captain : "Kirk",<br/>
+						<span>&nbsp;&nbsp;&nbsp;</span>engineer : "Scotty",<br/>
+						<span>&nbsp;&nbsp;&nbsp;</span>doctor : "McCoy"<br/>
+						};</p></div>
+
+				<p>In this example, <code>crew.captain</code> contains the string "Kirk",
+					<code>crew.engineer</code> contains "Scotty" and <code>crew.doctor</code> contains "McCoy".</p>
+
+				<p>Objects offer an extremely powerful way to encapsulate data and functionality, making your
+					code cleaner, more reusable and easier to debug.</p>
+
+			</div>
+		</div>
+
+		<div id="footer">
+			<p>Interactive Media and Game Development<br/>
+				Worcester Polytechnic Institute<br/>
+				100 Institute Road, Worcester, MA 01609 USA<br/>
+				<a href="http://imgd.wpi.edu">imgd.wpi.edu</a><br/>&nbsp;</p>
+		</div>
+	</body>
+</html>

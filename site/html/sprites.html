@@ -1,0 +1,525 @@
+<!DOCTYPE HTML>
+<html lang="en">
+	<head>
+		<title>Perlenspiel | API | Sprites</title>
+		<meta charset="utf-8"/>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+		<meta name="description" content="Perlenspiel | API | Sprites"/>
+		<meta name="keywords" content="perlenspiel, game, design, engine, gameclavier, moriarty, wpi"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+		<meta name="apple-mobile-web-app-capable" content="yes"/>
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+		<link rel="shortcut icon" href="http://users.wpi.edu/~bmoriarty/ps/favicon.png"/>
+		<link rel="apple-touch-icon" href="http://users.wpi.edu/~bmoriarty/ps/apple-touch-icon.png"/>
+		<link href='http://fonts.googleapis.com/css?family=Roboto:400,700,400italic,700italic,100' rel='stylesheet' type='text/css'>
+		<link rel="stylesheet" href="style.css" type="text/css">
+		<script type="text/javascript" src="play.js"></script>
+	</head>
+	<body onload="PSA.dots();">
+		<div id="header">
+			<p><img src="images/logosm.png" alt="[Logo]"><strong>Perlenspiel<sup class="sup3">3</sup></strong></p>
+			<ul id="nav">
+				<li><a href="index.html">Home</a></li>
+				<li><a href="download.html">Download</a></li>
+				<li><a href="learning.html">Learning</a></li>
+				<li><a href="examples.html">Examples</a></li>
+				<li><a href="api.html">API</a></li>
+				<li><a href="links.html">Links</a></li>
+			</ul>
+		</div>
+
+		<div id="main">
+			<p><strong>API | Sprites</strong></p>
+
+			<p>These functions handle the creation, display and movement of sprites.</p>
+
+			<ul class="select">
+				<li><a href="#solid">PS.spriteSolid</a> ( width, height )</li>
+				<li><a href="#solidcolor">PS.spriteSolidColor</a> ( sprite, color )</li>
+				<li><a href="#solidalpha">PS.spriteSolidAlpha</a> ( sprite, alpha )</li>
+				<li><a href="#image">PS.spriteImage</a> ( image, region )</li>
+				<li><a href="#plane">PS.spritePlane</a> ( sprite, plane )</li>
+				<li><a href="#show">PS.spriteShow</a> ( sprite, show )</li>
+				<li><a href="#axis">PS.spriteAxis</a> ( sprite, x, y )</li>
+				<li><a href="#move">PS.spriteMove</a> ( sprite, x, y )</li>
+				<li><a href="#collide">PS.spriteCollide</a> ( sprite, exec )</li>
+				<li><a href="#delete">PS.spriteDelete</a> ( sprite )</li>
+			</ul>
+
+			<div class="section">
+				<div id="solid" class="dot">&nbsp;</div>
+				<p class="subhead">PS.spriteSolid ( width, height )</p>
+				<p>PS.spriteSolid() creates a solid sprite of the specified dimensions.</p>
+				<div class="specs">
+					<p>Parameters:</p>
+					<ol>
+						<li><b>width</b> : <em>integer</em> or <b>PS.DEFAULT</b></li>
+						<li><b>height</b> : <em>integer</em> or <b>PS.DEFAULT</b></li>
+					</ol>
+					<p>Returns: <em>string</em> or PS.ERROR</p>
+				</div>
+
+				<p>The required <b>width</b> and <b>height</b> parameters specify the dimensions of the sprite.
+					They can be any positive
+					<em>integers</em>. Values less than one (1) are clamped to 1. Non-integral values are floored.
+					If either parameter is <b>PS.DEFAULT</b>, the value one (1) is used.</p>
+
+				<p><strong>Usage notes</strong></p>
+
+				<p>1. Newly created sprites are not located anywhere. Call
+					<a href="#move">PS.spriteMove</a>() to position a sprite on the current grid plane.</p>
+
+				<p>1. By default, solid sprites are <b>PS.COLOR_BLACK</b> and <b>PS.ALPHA_OPAQUE</b>. You can change the color with
+					<a href="#solidcolor">PS.spriteSolidColor</a>(),
+					and the alpha transparency with <a href="#solidalpha">PS.spriteSolidAlpha</a>().</p>
+
+				<p>3. By default, the positional axis of a sprite created with PS.spriteSolid() is set to the top left
+					corner of the sprite's rectangle (0, 0). You can change this with <a href="axis">PS.spriteAxis</a>().</p>
+
+				<p class="subitem">Return value</p>
+
+				<p>PS.spriteSolid() returns a string that uniquely identifies the new solid sprite. It can be passed into any Perlenspiel function expecting a sprite identifier.</p>
+
+				<p><b>PS.ERROR</b> is returned if an error occurs.</p>
+
+				<p>See below for an example of how to use PS.spriteSolid().</p>
+			</div>
+
+			<div class="section">
+				<div id="solidcolor" class="dot">&nbsp;</div>
+				<p class="subhead">PS.spriteSolidColor ( sprite, color )</p>
+				<p>PS.spriteSolidColor() inspects and changes the color of a solid sprite.</p>
+				<div class="specs">
+					<p>Parameters:</p>
+					<ol>
+						<li><b>sprite</b> : <em>string</em></li>
+						<li>(optional) <b>color</b> : <a href="colors.html#express">color expression</a>, <b>PS.CURRENT</b> or
+							<b>PS.DEFAULT</b></li>
+					</ol>
+					<p>Returns: <em>integer</em> or PS.ERROR</p>
+					<p>Default: <b>PS.COLOR_BLACK</b></p>
+				</div>
+
+				<p>The required <b>sprite</b> parameter should be unique sprite identifier of the type returned by
+					<a href="#solid">PS.spriteSolid</a>().</p>
+
+				<p>The optional <b>color</b> parameter can be supplied in any of the four Perlenspiel
+					<a href="colors.html#express">color expression</a> formats.</p>
+
+				<p>If <b>color</b> is <b>PS.DEFAULT</b>, the default color (<b>PS.COLOR_BLACK</b>) is applied.
+					If <b>color</b> is <b>PS.CURRENT</b> or not supplied, the color is not changed.</p>
+
+				<p class="subitem">Usage notes</p>
+
+				<p>1. Only sprites created with <a href="#solid">PS.spriteSolid</a>() can have their color changed or inspected.
+					An error occurs if you call PS.spriteSolidColor() on a sprite created with <a href="#image">PS.spriteImage</a>().
+				</p>
+
+				<p class="subitem">Return value</p>
+
+				<p>PS.spriteSolidColor() returns a <a href="colors.html#plex">RGB multiplex</a>
+					<em>integer</em> indicating the current color of the sprite.</p>
+
+				<p><b>PS.ERROR</b> is returned if an error occurs.</p>
+
+			</div>
+
+			<div class="section">
+				<div id="solidalpha" class="dot">&nbsp;</div>
+				<p class="subhead">PS.spriteSolidAlpha ( sprite, alpha )</p>
+				<p>PS.spriteSolidAlpha() inspects and changes the alpha transparency of a solid sprite.</p>
+				<div class="specs">
+					<p>Parameters:</p>
+					<ol>
+						<li><b>sprite</b> : <em>string</em></li>
+						<li>(optional) <b>alpha</b> : <em>integer</em>, <b>PS.CURRENT</b> or <b>PS.DEFAULT</b></li>
+					</ol>
+					<p>Returns: <em>integer</em> or PS.ERROR</p>
+					<p>Default: <b>PS.ALPHA_OPAQUE</b></p>
+				</div>
+
+				<p>The required <b>sprite</b> parameter should be unique sprite identifier of the type returned by
+					<a href="#solid">PS.spriteSolid</a>().</p>
+
+				<p>The optional <b>alpha</b> parameter specifies the alpha transparency of the sprite.
+					It should be an <em>integer</em> between 0 (completely transparent) and 255 (fully opaque) inclusive.
+					Values outside this range are clamped. Non-integral values are floored.</p>
+
+				<p>If <b>alpha</b> is <b>PS.DEFAULT</b>, the default alpha (<b>PS.ALPHA_OPAQUE</b>) is applied.
+					If <b>alpha</b> is <b>PS.CURRENT</b> or not supplied, the alpha is not changed.</p>
+
+				<p class="subitem">Usage notes</p>
+
+				<p>1. Only sprites created with <a href="#solid">PS.spriteSolid</a>() can have their alpha changed or inspected.
+					An error occurs if you call PS.spriteSolidAlpha() on a sprite created with <a href="#image">PS.spriteImage</a>().
+				</p>
+
+				<p class="subitem">Return value</p>
+
+				<p>PS.spriteSolidAlpha() returns an
+					<em>integer</em> in the range 0-255 inclusive indicating the current alpha transparency of the sprite.</p>
+
+				<p><b>PS.ERROR</b> is returned if an error occurs.</p>
+			</div>
+
+			<div class="section">
+				<div id="image" class="dot">&nbsp;</div>
+				<p class="subhead">PS.spriteImage ( image, region )</p>
+				<p>PS.spriteImage() creates a sprite from an <a href="images.html#image">image <em>object</em></a>.</p>
+				<div class="specs">
+					<p>Parameters:</p>
+					<ol>
+						<li><b>image</b> : <em>object</em></li>
+						<li>(optional) <b>region</b> : <em>object</em> or <b>PS.DEFAULT</b></li>
+					</ol>
+					<p>Returns: <em>string</em> or PS.ERROR</p>
+				</div>
+
+				<p>The required <b>image</b> parameter specifies the <a href="images.html#image">image <em>object</em></a>
+					that is used to create the sprite.</p>
+
+				<p>The optional <b>region</b> parameter specifies a zero-based rectangular region inside the <b>image</b> that will
+					be included in the sprite. It should be an <em>object</em> containing any of the following properties:</p>
+
+				<ul>
+					<li><b>.left</b> : <em>integer</em> or <b>PS.DEFAULT</b></li>
+					<li><b>.top</b> : <em>integer</em> or <b>PS.DEFAULT</b></li>
+					<li><b>.width</b> : <em>integer</em> or <b>PS.DEFAULT</b></li>
+					<li><b>.height</b> : <em>integer</em> or <b>PS.DEFAULT</b></li>
+				</ul>
+
+				<p>The <b>.left</b> property should be an <em>integer</em> between zero (0) and (<b>image.width</b> - 1), inclusive.
+					Non-integral values are floored.
+					An error occurs if <b>.left</b> is greater than or equal to <b>image.width</b>.
+					If <b>.left</b> is less than one (1), <b>PS.DEFAULT</b> or not supplied, the value zero (0) is used.</p>
+
+				<p>The <b>.top</b> property should be an <em>integer</em> between zero (0) and (<b>image.height</b> - 1), inclusive.
+					Non-integral values are floored.
+					An error occurs if <b>.top</b> is greater than or equal to <b>image.height</b>.
+					If <b>.top</b> is less than one (1), <b>PS.DEFAULT</b> or not supplied, the value zero (0) is used.</p>
+
+				<p>The <b>.width</b> property should be an <em>integer</em> between one (1) and <b>image.width</b>, inclusive.
+					Non-integral values are floored.
+					If <b>.width</b> is less than one (1), <b>PS.DEFAULT</b>, not supplied,
+					or (<b>.width</b> - <b>.left</b>) is greater than <b>image.width</b>, the value (<b>image.width</b> -
+					<b>.left</b>) is used.</p>
+
+				<p>The <b>.height</b> property should be an <em>integer</em> between one (1) and <b>image.height</b>, inclusive.
+					Non-integral values are floored.
+					If <b>.height</b> is less than one (1), <b>PS.DEFAULT</b>, not supplied,
+					or (<b>.height</b> - <b>.top</b>) is greater than <b>image.height</b>, the value (<b>image.height</b> -
+					<b>.top</b>) is used.</p>
+
+				<p>If <b>region</b> is <b>PS.DEFAULT</b> or not supplied, the entire <b>image</b> is used for the sprite.</p>
+
+				<p><strong>Usage notes</strong></p>
+
+				<p>1. Newly created sprites are not located anywhere. Call
+					<a href="#move">PS.spriteMove</a>() to position a sprite on the current grid plane.</p>
+
+				<p>3. By default, the positional axis of a sprite created with PS.spriteImage() is set to the top left
+					corner of the image (0, 0). You can change this with <a href="axis">PS.spriteAxis</a>().</p>
+
+				<p class="subitem">Return value</p>
+
+				<p>PS.spriteImage() returns a string that uniquely identifies the new image sprite. It can be passed into any Perlenspiel function expecting a sprite identifier
+					except <a href="#solidcolor">PS.spriteSolidColor</a>() or
+					<a href="#solidalpha">PS.spriteSolidAlpha</a>(), which can only be used with solid sprites.</p>
+
+				<p><b>PS.ERROR</b> is returned if an error occurs.</p>
+
+				<p>See below for an example of how to use PS.spriteRect().</p>
+			</div>
+
+			<div class="section">
+				<div id="plane" class="dot">&nbsp;</div>
+				<p class="subhead">PS.spritePlane ( sprite, plane )</p>
+				<p>PS.spritePlane() inspects or changes the color plane of a sprite.</p>
+				<div class="specs">
+					<p>Parameters:</p>
+					<ol>
+						<li><b>sprite</b> : <em>string</em></li>
+						<li>(optional) <b>plane</b> : <em>integer</em>, <b>PS.CURRENT</b> or <b>PS.DEFAULT</b></li>
+					</ol>
+					<p>Returns: <em>integer</em> or PS.ERROR</p>
+
+					<p>Default: 0</p>
+				</div>
+
+				<p>The required <b>sprite</b> parameter should be unique sprite identifier of the type returned by
+					<a href="#solid">PS.spriteSolid</a>() or <a href="#rect">PS.spriteImage</a>().</p>
+
+				<p>The optional
+					<b>plane</b> parameter can be any positive integer. Values less than one (1) are clamped to zero. Non-integral values are floored.
+				</p>
+
+				<p>If <b>plane</b> is <b>PS.DEFAULT</b>, the default plane (0) is used.
+					If <b>plane</b> is <b>PS.CURRENT</b> or not supplied, the plane is not changed.</p>
+
+				<p class="subitem">Usage notes</p>
+
+				<p>1. Calls to PS.spritePlane() do not trigger collision events.</p>
+
+				<p>2. If you change the plane of an invisible sprite,
+					or a sprite that has never been placed on the grid with
+					<a href="#move">PS.spriteMove</a>(), there is no visible effect.</p>
+
+				<p class="subitem">Return value</p>
+
+				<p>PS.spritePlane() returns an <em>integer</em> indicating the current sprite plane.</p>
+
+				<p><b>PS.ERROR</b> is returned if an error occurs.</p>
+
+			</div>
+
+			<div class="section">
+				<div id="show" class="dot">&nbsp;</div>
+				<p class="subhead">PS.spriteShow ( sprite, show )</p>
+				<p>PS.spriteShow() inspects or changes the visibility of a sprite.</p>
+				<div class="specs">
+					<p>Parameters:</p>
+					<ol>
+						<li><b>sprite</b> : <em>string</em></li>
+						<li>(optional) <b>show</b> : <em>boolean</em>, <b>PS.CURRENT</b> or <b>PS.DEFAULT</b></li>
+					</ol>
+					<p>Returns: <em>boolean</em> or PS.ERROR</p>
+
+					<p>Default: <em>true</em></p>
+				</div>
+
+				<p>The required <b>sprite</b> parameter should be unique sprite identifier of the type returned by
+					<a href="#solid">PS.spriteSolid</a>() or <a href="#rect">PS.spriteImage</a>().</p>
+
+				<p>If the optional <b>show</b> parameter is <em>false</em> or the number zero (0),
+					the specified sprite becomes <strong>invisible</strong>:</p>
+
+				<ul>
+					<li>The beads occupied by the sprite on the current grid plane become transparent.</li>
+					<li>Subsequent changes to any visual attribute of the sprite, such as its position or axis,
+						have no visible effect. However, the specified attributes are still modified,
+						and any changes will become evident if the sprite is made visible later.
+					</li>
+					<li>The sprite no longer collides with other sprites.</li>
+				</ul>
+
+				<p>If <b>show</b> is <em>true</em> or any nonzero number, the sprite becomes visible again.
+					If no visual attributes were changed while it was invisible, it assumes its previous state.</p>
+
+				<p>Calling PS.spriteShow( <b>sprite</b>, <em>true</em> ) on a visible sprite has no effect.
+					Similarly, calling PS.spriteShow( <b>sprite</b>, <em>false</em> ) on an invisible sprite has no effect.</p>
+
+				<p>If <b>show</b> is <b>PS.DEFAULT</b>, the default visibility (<em>true</em>, visible) is assigned to the sprite.
+					If <b>show</b> is <b>PS.CURRENT</b> or not supplied, the visibility is not changed.</p>
+
+				<p class="subitem">Usage notes</p>
+
+				<p>1. Making a sprite visible will trigger a collision event if that sprite is touching or overlapping any other visible sprite.</p>
+
+				<p class="subitem">Return value</p>
+
+				<p>PS.spriteShow() returns <em>true</em> if the specified sprite is visible, else <em>false</em>.</p>
+
+				<p><b>PS.ERROR</b> is returned if an error occurs.</p>
+
+			</div>
+
+			<div class="section">
+				<div id="axis" class="dot">&nbsp;</div>
+				<p class="subhead">PS.spriteAxis ( sprite, x, y )</p>
+				<p>PS.spriteAxis() inspects or changes the positional axis of a sprite.</p>
+				<div class="specs">
+					<p>Parameters:</p>
+					<ol>
+						<li><b>sprite</b> : <em>string</em></li>
+						<li>(optional) <b>x</b> : <em>integer</em>, <b>PS.CURRENT</b> or <b>PS.DEFAULT</b></li>
+						<li>(optional) <b>y</b> : <em>integer</em>, <b>PS.CURRENT</b> or <b>PS.DEFAULT</b></li>
+					</ol>
+					<p>Returns: <em>object</em> or PS.ERROR</p>
+					<p>Default: { x : 0, y : 0 }</p>
+				</div>
+
+				<p>The required <b>sprite</b> parameter should be unique sprite identifier of the type returned by
+					<a href="#solid">PS.spriteSolid</a>() or <a href="#rect">PS.spriteImage</a>().</p>
+
+				<p>The optional <b>x</b> and <b>y</b> parameters specify the location of the sprite's positional axis
+					relative to the top left corner of the sprite. They can be any positive or negative <em>integers</em>.
+					Non-integral values are floored.</p>
+
+				<p>If <b>x</b> or <b>y</b> are <b>PS.DEFAULT</b>, the default value zero (0) is used.</p>
+
+				<p>If <b>x</b> or <b>y</b> are <b>PS.CURRENT</b> or not supplied, the positional axis is not changed.</p>
+
+				<p><strong>Usage notes</strong></p>
+
+				<p>1. The axis of a sprite can placed anywhere, even outside the boundaries of the sprite.
+					However, it's possible that some or all of the sprite may not be visible when the sprite is subsequently moved.</p>
+
+				<p>2. Changing the axis of a sprite will trigger a collision event if the repositioned sprite touches or overlaps any other visible sprite.</p>
+
+				<p class="subitem">Return value</p>
+
+				<p>PS.spriteAxis() returns an <em>object</em> containing the following properties:</p>
+
+				<ul>
+					<li><b>.x</b> : <em>integer</em></li>
+					<li><b>.y</b> : <em>integer</em></li>
+				</ul>
+
+				<p>The <b>.x</b> and
+					<b>.y</b> properties specify the location of the sprite's positional axis, relative to the top left
+					corner of the sprite.</p>
+
+				<p><b>PS.ERROR</b> is returned if an error occurs.</p>
+			</div>
+
+			<div class="section">
+				<div id="move" class="dot">&nbsp;</div>
+				<p class="subhead">PS.spriteMove ( sprite, x, y )</p>
+				<p>PS.spriteMove() inspects or changes the location of a sprite on the current grid plane.</p>
+				<div class="specs">
+					<p>Parameters:</p>
+					<ol>
+						<li><b>sprite</b> : <em>string</em></li>
+						<li>(optional) <b>x</b> : <em>integer</em>, <b>PS.CURRENT</b> or <b>PS.DEFAULT</b></li>
+						<li>(optional) <b>y</b> : <em>integer</em>, <b>PS.CURRENT</b> or <b>PS.DEFAULT</b></li>
+					</ol>
+					<p>Returns: <em>object</em> or PS.ERROR</p>
+
+					<p>Default: { x : 0, y : 0 }</p>
+				</div>
+
+				<p>The required <b>sprite</b> parameter should be unique sprite identifier of the type returned by
+					<a href="#solid">PS.spriteSolid</a>() or <a href="#rect">PS.spriteImage</a>().</p>
+
+				<p>The optional <b>x</b> and <b>y</b> parameters specify the zero-based location
+					of the sprite's positional axis on the current grid plane. They can be any positive or negative
+					<em>integers</em>.
+					Non-intergral values are floored.</p>
+
+				<p>If <b>x</b> or <b>y</b> are
+					<b>PS.DEFAULT</b>, the default value (zero, 0) is used for the corresponding coordinate.</p>
+
+				<p>If <b>x</b> or <b>y</b> are <b>PS.CURRENT</b> or not supplied, the corresponding coordinate is not changed.</p>
+
+				<p><strong>Usage notes</strong></p>
+
+				<p>1. When a sprite is moved, the beads it previously occupied on the current grid plane become transparent (alpha = 0),
+					and their color is set to <b>PS.COLOR_WHITE</b>.</p>
+
+				<p>2. The values of <b>x</b> and <b>y</b> can be set outside the boundaries of the grid if desired.
+					However, it's possible that some or all of the sprite may not be visible.</p>
+
+				<p>3. Moving a sprite will cause a collision event if the moved sprite touches or overlaps any other visible sprite.</p>
+
+				<p>4. If an invisible sprite is moved, its coordinates are still updated, and it will appear at the new position when subsequently made visible.</p>
+
+				<p class="subitem">Return value</p>
+
+				<p>PS.spriteMove() returns an <em>object</em> containing the following properties:</p>
+
+				<ul>
+					<li><b>.x</b> : <em>integer</em></li>
+					<li><b>.y</b> : <em>integer</em></li>
+				</ul>
+
+				<p>The <b>.x</b> and <b>.y</b> properties specify the current coordinates of the sprite's positional axis on the grid.</p>
+
+				<p><b>PS.ERROR</b> is returned if an error occurs.</p>
+			</div>
+
+			<div class="section">
+				<div id="collide" class="dot">&nbsp;</div>
+				<p class="subhead">PS.spriteCollide ( sprite, exec )</p>
+				<p>PS.spriteCollide() inspects or changes the function that is called when a sprite collides with another.</p>
+				<div class="specs">
+					<p>Parameters:</p>
+					<ol>
+						<li><b>sprite</b> : <em>string</em></li>
+						<li>(optional) <b>exec</b> : <em>function</em>, <b>PS.CURRENT</b> or <b>PS.DEFAULT</b></li>
+					</ol>
+					<p>Returns: <em>function</em> or PS.ERROR</p>
+					<p>Default: <em>null</em></p>
+				</div>
+
+				<p>The required <b>sprite</b> parameter should be unique sprite identifier of the type returned by
+					<a href="#solid">PS.spriteSolid</a>() or <a href="#rect">PS.spriteImage</a>().</p>
+
+				<p>The optional <b>exec</b> parameter specifies a function that will be called when any call to
+					<a href="#move">PS.spriteMove</a>(), <a href="#show">PS.spriteShow</a>() or
+					<a href="#axis">PS.spriteAxis</a>() causes the specified <b>sprite</b> to collide with any other visible sprite,
+					whether or not the sprites occupy the same grid plane.</p>
+
+				<p>The <b>exec</b> function should expect at least five arguments, as follows:</p>
+
+				<div class="example">
+					<p>function collide( s1, p1, s2, p2, type ) {};</p>
+				</div>
+
+				<p>The first argument, <b>s1</b>, is set to <b>sprite</b>.</p>
+
+				<p>The second argument, <b>p1</b>, is set to the grid plane currently occupied by <b>sprite</b>.</p>
+
+				<p>The third argument, <b>s2</b>, is set to the unique identifier of the colliding sprite.</p>
+
+				<p>The fourth argument, <b>p2</b>, is set to the grid plane currently occupied by the colliding sprite.</p>
+
+				<p>The fifth argument, <b>type</b>, is set to the constant <b>PS.SPRITE_TOUCH</b> if any edge of the colliding
+					sprite is immediately adjacent to any edge of <b>sprite</b>, or
+					<b>PS.SPRITE_OVERLAP</b> if any region of the colliding sprite overlaps
+					any region of <b>sprite</b>.</p>
+
+				<p>If <b>exec</b> is <em>null</em> or
+					<b>PS.DEFAULT</b>, the default value (<em>null</em>, no collision function) is used.</p>
+
+				<p>If <b>exec</b> is <b>PS.CURRENT</b> or not supplied, the collision function is not changed.</p>
+
+				<p class="subitem">Usage notes</p>
+
+				<p>1. When you change a sprite's collision function, that function is called immediately if the sprite is currently in a collision state.</p>
+
+				<p>2. If <em>any</em> call to <a href="#move">PS.spriteMove</a>(), <a href="#show">PS.spriteShow</a>() or
+					<a href="#axis">PS.spriteAxis</a>() results in a sprite collision, <em>every</em>
+					sprite involved in the collision that has a collision function assigned to it will have that function called
+					<em>once</em> for <em>each</em> colliding sprite.</p>
+
+				<p class="subitem">Return value</p>
+
+				<p>PS.spriteCollide() returns the collision <em>function</em> currently assigned to <b>sprite</b>, or <em>null</em>
+					if no function is assigned.</p>
+
+				<p><b>PS.ERROR</b> is returned if an error occurs.</p>
+			</div>
+
+			<div class="section">
+				<div id="delete" class="dot">&nbsp;</div>
+				<p class="subhead">PS.spriteDelete ( sprite )</p>
+				<p>PS.spriteDelete() deletes a previously created sprite.</p>
+				<div class="specs">
+					<p>Parameters:</p>
+					<ol>
+						<li><b>sprite</b> : <em>string</em></li>
+					</ol>
+					<p>Returns: <b>PS.DONE</b> or <b>PS.ERROR</b></p>
+				</div>
+
+				<p>The required <b>sprite</b> parameter should be unique sprite identifier of the type returned by
+					<a href="#solid">PS.spriteSolid</a>() or <a href="#rect">PS.spriteImage</a>().</p>
+
+				<p>The specified sprite is deleted from the engine. Subsequent references to it using any sprite function will cause an error.</p>
+
+				<p class="subitem">Return value</p>
+
+				<p>PS.spriteDelete() returns <b>PS.DONE</b> on success, else <b>PS.ERROR</b>.</p>
+			</div>
+
+		</div>
+
+		<div id="footer">
+			<p>Interactive Media and Game Development<br/>
+				Worcester Polytechnic Institute<br/>
+				100 Institute Road, Worcester, MA 01609 USA<br/>
+				<a href="http://imgd.wpi.edu">imgd.wpi.edu</a><br/>&nbsp;</p>
+		</div>
+	</body>
+</html>
+

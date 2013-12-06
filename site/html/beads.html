@@ -1,0 +1,1156 @@
+<!DOCTYPE HTML>
+<html lang="en">
+	<head>
+		<title>Perlenspiel | API | Beads</title>
+		<meta charset="utf-8"/>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+		<meta name="description" content="Perlenspiel | API | Beads"/>
+		<meta name="keywords" content="perlenspiel, game, design, engine, gameclavier, moriarty, wpi"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+		<meta name="apple-mobile-web-app-capable" content="yes"/>
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+		<link rel="shortcut icon" href="http://users.wpi.edu/~bmoriarty/ps/favicon.png"/>
+		<link rel="apple-touch-icon" href="http://users.wpi.edu/~bmoriarty/ps/apple-touch-icon.png"/>
+		<link href='http://fonts.googleapis.com/css?family=Roboto:400,700,400italic,700italic,100' rel='stylesheet' type='text/css'>
+		<link rel="stylesheet" href="style.css" type="text/css">
+		<script type="text/javascript" src="play.js"></script>
+	</head>
+	<body onload="PSA.dots();">
+		<div id="header">
+			<p><img src="images/logosm.png" alt="[Logo]"><strong>Perlenspiel<sup class="sup3">3</sup></strong></p>
+
+			<ul id="nav">
+				<li><a href="index.html">Home</a></li>
+				<li><a href="download.html">Download</a></li>
+				<li><a href="learning.html">Learning</a></li>
+				<li><a href="examples.html">Examples</a></li>
+				<li><a href="api.html">API</a></li>
+				<li><a href="links.html">Links</a></li>
+			</ul>
+		</div>
+
+		<div id="main">
+			<p class="subhead">API | Beads</p>
+
+			<p>These commands let you change the appearance and behavior of beads.</p>
+
+			<p class="subitem">Bead commands</p>
+
+			<ul class="select">
+				<li><a href="#color">PS.color</a> ( x, y, color )</li>
+				<li><a href="#alpha">PS.alpha</a> ( x, y, alpha )</li>
+				<li><a href="#fade">PS.fade</a> ( x, y, rate, options )</li>
+				<li><a href="#scale">PS.scale</a> ( x, y, scale )</li>
+				<li><a href="#radius">PS.radius</a> ( x, y, radius )</li>
+				<li><a href="#data">PS.data</a> ( x, y, data )</li>
+				<li><a href="#exec">PS.exec</a> ( x, y, exec )</li>
+				<li><a href="#visible">PS.visible</a> ( x, y, show )</li>
+				<li><a href="#active">PS.active</a> ( x, y, active )</li>
+			</ul>
+
+			<p class="subitem">Border commands</p>
+
+			<ul class="select">
+				<li><a href="#border">PS.border</a> ( x, y, width )</li>
+				<li><a href="#bordercolor">PS.borderColor</a> ( x, y, color )</li>
+				<li><a href="#borderalpha">PS.borderAlpha</a> ( x, y, alpha )</li>
+				<li><a href="#borderfade">PS.borderFade</a> ( x, y, rate, options )</li>
+			</ul>
+
+			<p class="subitem">Glyph commands</p>
+
+			<ul class="select">
+				<li><a href="#glyph">PS.glyph</a> ( x, y, glyph )</li>
+				<li><a href="#glyphcolor">PS.glyphColor</a> ( x, y, color )</li>
+				<li><a href="#glyphalpha">PS.glyphAlpha</a> ( x, y, alpha )</li>
+				<li><a href="#glyphscale">PS.glyphScale</a> ( x, y, scale )</li>
+				<li><a href="#glyphfade">PS.glyphFade</a> ( x, y, rate, options )</li>
+			</ul>
+
+			<p id="multibead" class="subitem">Multiple bead assignment</p>
+
+			<p>Bead commands use <b>x</b> and <b>y</b> parameters to specify the bead you want to control.</p>
+
+			<p>The Perlenspiel constant <b>PS.ALL</b> can be used to modify all of the beads
+				in a given row or column, or every bead on the grid, with a single call.</p>
+
+			<p>If <b>x</b> is specified as <b>PS.ALL</b>, every bead in row <b>y</b> is modified,
+				and the return value is the status of the last bead in row <b>y</b>.</p>
+
+			<p>Similarly, if <b>y</b> is <b>PS.ALL</b>, every bead in column <b>x</b> is modified,
+				and the return value is the status the last bead in column <b>x</b>.</p>
+
+			<p>If both <b>x</b> and <b>y</b> are <b>PS.ALL</b>, every bead on the grid is modified,
+				and the return value is the status of the bead in the last column and row of the grid.</p>
+
+			<p>The handy <a href="utility.html#rectapply">PS.rectApply</a>() utility lets you apply any function
+				to a specific rectangular region of the grid.</p>
+
+			<div class="section">
+				<div id="color" class="dot">&nbsp;</div>
+				<p class="subhead">PS.color ( x, y, color )</p>
+				<p>PS.color() changes and inspects the color of beads.</p>
+				<div class="specs">
+					<p>Parameters:</p>
+					<ol>
+						<li><b>x</b> : <em>integer</em> or <b>PS.ALL</b></li>
+						<li><b>y</b> : <em>integer</em> or <b>PS.ALL</b></li>
+						<li>(optional) <b>color</b> : <a href="colors.html#express">color expression</a>, <b>PS.CURRENT</b> or
+							<b>PS.DEFAULT</b></li>
+					</ol>
+					<p>Returns : <em>integer</em> or <b>PS.ERROR</b></p>
+					<p>Default : <b>PS.COLOR_WHITE</b></p>
+				</div>
+
+				<p>The required <b>x</b> and
+					<b>y</b> parameters indicate the zero-based column and row position of the bead, respectively.
+					An error occurs if either parameter is negative, or exceeds the dimensions of the grid.
+					<a href="#multibead">Multiple bead assignment</a> is supported using <b>PS.ALL</b>.</p>
+
+				<p>The optional <b>color</b> parameter can be supplied in any of the four Perlenspiel
+					<a href="colors.html#express">color expression</a> formats.</p>
+
+				<p>If <b>color</b> is <b>PS.DEFAULT</b>, the default color (<b>PS.COLOR_WHITE</b>) is applied.
+					If <b>color</b> is <b>PS.CURRENT</b> or not supplied, the color is not changed.</p>
+
+				<p class="subitem">Return value</p>
+
+				<p>PS.color() returns a <a href="colors.html#plex">RGB multiplex</a> <em>integer</em>
+					indicating the current color of the bead.</p>
+
+				<p><b>PS.ERROR</b> is returned if an error occurs.</p>
+
+				<div class="example">
+					<p>// EXAMPLES:<br>
+						// Using different formats to change bead colors<br><br>
+						// Set bead to orange using separate r/g/b parameters<br><br>
+						PS.color( x, y, 255, 192, 64 );<br>
+						PS.color( x, y, 0xFF, 0xC0, 0x40 ); // hex notation<br><br>
+						// Set bead to orange using an RGB multiplexed value<br><br>
+						PS.color( x, y, 0xFFC040 );<br>
+						PS.color( x, y, PS.COLOR_ORANGE );<br><br>
+						// Change only the green component of bead's color<br><br>
+						PS.color( x, y, PS.CURRENT, 32, PS.CURRENT );<br><br>
+						// Report the color components of a bead<br><br>
+						var color = PS.unmakeRGB( PS.color( x , y ), {} );<br><br>
+						PS.debug("r = " + color.r + ", g = " + color.g +<br>
+						<span>&nbsp;&nbsp;&nbsp;</span>", b = " + color.b + "\n");</p>
+				</div>
+			</div>
+
+			<div class="section">
+				<div id="alpha" class="dot">&nbsp;</div>
+				<p class="subhead">PS.alpha ( x, y, alpha )</p>
+				<p>PS.alpha() changes and inspects the alpha transparency assigned to beads.</p>
+				<div class="specs">
+					<p>Parameters:</p>
+					<ol>
+						<li><b>x</b> : <em>integer</em> or <b>PS.ALL</b></li>
+						<li><b>y</b> : <em>integer</em> or <b>PS.ALL</b></li>
+						<li>(optional) <b>alpha</b> : <em>integer</em>, <b>PS.CURRENT</b> or <b>PS.DEFAULT</b></li>
+					</ol>
+					<p>Returns : <em>integer</em> or <b>PS.ERROR</b></p>
+					<p>Default : <b>PS.ALPHA_OPAQUE</b></p>
+				</div>
+
+				<p>The required <b>x</b> and
+					<b>y</b> parameters indicate the zero-based column and row position of the bead, respectively.
+					An error occurs if either parameter is negative, or exceeds the dimensions of the grid.
+					<a href="#multibead">Multiple bead assignment</a> is supported using <b>PS.ALL</b>.</p>
+
+				<p>The optional <b>alpha</b> parameter specifies the alpha transparency of the bead.
+					It should be an <em>integer</em> between 0 (completely transparent) and 255 (fully opaque) inclusive.
+					Values outside this range are clamped.</p>
+
+				<p>If <b>alpha</b> is <b>PS.DEFAULT</b>, the default alpha (<b>PS.ALPHA_OPAQUE</b>) is applied.
+					If <b>alpha</b> is <b>PS.CURRENT</b> or not supplied, the alpha is not changed.</p>
+
+				<p class="subitem">Return value</p>
+
+				<p>PS.alpha() returns an
+					<em>integer</em> in the range 0-255 inclusive indicating the current alpha transparency of the bead.</p>
+
+				<p><b>PS.ERROR</b> is returned if an error occurs.</p>
+			</div>
+
+			<div class="section">
+				<div id="fade" class="dot">&nbsp;</div>
+				<p class="subhead">PS.fade ( x, y, rate, options )</p>
+				<p>PS.fade() changes or inspects the color fade effect of beads.</p>
+				<div class="specs">
+					<p>Parameters:</p>
+					<ol>
+						<li><b>x</b> : <em>integer</em> or <b>PS.ALL</b></li>
+						<li><b>y</b> : <em>integer</em> or <b>PS.ALL</b></li>
+						<li>(optional) <b>rate</b> : <em>integer</em>, <b>PS.CURRENT</b> or <b>PS.DEFAULT</b></li>
+						<li>(optional) <b>options</b> : <em>object</em>, <b>PS.CURRENT</b> or <b>PS.DEFAULT</b></li>
+					</ol>
+					<p>Returns : <em>object</em> or <b>PS.ERROR</b></p>
+					<p>Default : { rate : 0, rgb : <em>null</em>, onEnd : <em>null</em>, params : <em>null</em> }</p>
+				</div>
+
+				<p>By default, the <a href="#color">PS.color</a>() and <a href="#alpha">PS.alpha</a>()
+					commands change the color of a bead instantly.
+					You can make the color fade smoothly from one hue to the next by using PS.fade().</p>
+
+				<p>Once a color fade effect is assigned to a bead with PS.fade(),
+					all subsequent calls to <a href="#color">PS.color</a>() and <a href="#alpha">PS.alpha</a>() will smoothly fade
+					from the current color (or an optionally specified color) to the new color.</p>
+
+				<p>The required <b>x</b> and
+					<b>y</b> parameters indicate the zero-based column and row position of the bead, respectively.
+					An error occurs if either parameter is negative, or exceeds the dimensions of the grid.
+					<a href="#multibead">Multiple bead assignment</a> is supported using <b>PS.ALL</b>.</p>
+
+				<p>The optional <b>rate</b> parameter(s) specifies the rate of the fade effect in 60ths of a second.
+					If <b>rate</b> is less than 1 or <b>PS.DEFAULT</b>, the bead's fade effect is disabled.
+					If <b>rate</b> is <b>PS.CURRENT</b> or not supplied, the currently assigned fade rate is not changed.</p>
+
+				<p>The optional <b>options</b> parameter specifies additional fade options.
+					It should be an <em>object</em> with one or more of the following properties:</p>
+
+				<ul>
+					<li><b>.rgb</b> : <a href="colors.html#plex">RGB multiplex</a>, <b>PS.CURRENT</b> or <b>PS.DEFAULT</b></li>
+					<li><b>.onEnd</b> : <em>function</em>, <b>PS.CURRENT</b> or <b>PS.DEFAULT</b></li>
+					<li><b>.params</b> : <em>array</em>, <b>PS.CURRENT</b> or <b>PS.DEFAULT</b></li>
+				</ul>
+
+				<p class="subitem">.rgb</p>
+
+				</b></p><p>The optional <b>.rgb</b> property specifies the initial color of the fade effect.
+					It should be an <a href="colors.html#plex">RGB multiplex</a> <em>integer</em> in the range 0-0xFFFFFF inclusive.
+					Values outside this range are clamped. Non-integral values are floored.
+					If <b>.rgb</b> is <b>PS.DEFAULT</b>, <em>null</em> or not supplied, the current bead color is used as the starting color.
+					If <b>.rgb</b> is <b>PS.CURRENT</b>, the currently assigned start color is not changed.</p>
+
+				<p class="subitem">.onEnd</p>
+
+				<p>The optional <b>.onEnd</b> property specifies a function that will be called when the fade effect is completed.
+					If <b>.onEnd</b> is <b>PS.DEFAULT</b>, <em>null,</em> or not supplied, the default behavior (no function call) is used.
+					If <b>.onEnd</b> is <b>PS.CURRENT</b>, the currently assigned function is not changed.</p>
+
+				<p class="subitem">.params</p>
+
+				<p>The optional <b>.params</b> property specifies the parameters that will be passed to the function
+					specified by the <b>.onEnd</b> property. It should be an <em>array</em> containing any number of elements.
+					If <b>.params</b> is <b>PS.DEFAULT</b>, <em>null,</em> or not supplied, no parameters are passed to the onEnd function.
+					If <b>.onEnd</b> is <b>PS.CURRENT</b>, the currently assigned parameters are not changed.</p>
+
+				<p>If <b>options</b> is <b>PS.CURRENT</b> or not supplied,
+					the currently assigned fade settings are not changed.</p>
+
+				<p>If <b>options</b> is <b>PS.DEFAULT</b>, all fade settings (except for the fade rate) are reset
+					to their default values.</p>
+
+				<p class="subitem">Return value</p>
+
+				<p>PS.fade() returns an <em>object</em> with the following properties:</p>
+
+				<ul>
+					<li><b>.rate</b> : <em>integer</em></li>
+					<li><b>.rgb</b> : <em>integer</em> or <em>null</em></li>
+					<li><b>.onEnd</b> : <em>function</em> or <em>null</em></li>
+					<li><b>.params</b> : <em>array</em> or <em>null</em></li>
+				</ul>
+
+				<p>The <b>.rate</b> property indicates the current bead fade rate, zero (0) if disabled.</p>
+
+				<p>The <b>.rgb</b> property is an <a href="colors.html#plex">RGB multiplex</a> <em>integer</em>
+					indicating the start color currently assigned to the fade, <em>null</em> if none.</p>
+
+				<p>The <b>.onEnd</b> property indicates the onEnd function currently assigned to the fade, <em>null</em> if none.
+				</p>
+
+				<p>The <b>.params</b> property is an <em>array</em> containing the parameters currently assigned to the
+					<b>.onEnd</b> function, <em>null</em> if none.</p>
+
+				<p><b>PS.ERROR</b> is returned if an error occurs.</p>
+
+				<div class="example">
+					<p>// EXAMPLE<br/>
+						// Fade bead 0, 0 to a random color<br/>
+						// when any bead on the grid is clicked.<br/>
+						// Status line reports when fade is complete.<br/><br/>
+						PS.init = function ( system, options ) {<br>
+						<span>&nbsp;&nbsp;&nbsp;&nbsp;</span>"use strict";<br/><br/>
+						<span>&nbsp;&nbsp;&nbsp;&nbsp;</span>// set up a 10 x 10 grid<br/><br/>
+						<span>&nbsp;&nbsp;&nbsp;&nbsp;</span>PS.gridSize( 10, 10 );<br/><br/>
+						<span>&nbsp;&nbsp;&nbsp;&nbsp;</span>// set 2-sec fade rate and onEnd function<br/>
+						<span>&nbsp;&nbsp;&nbsp;&nbsp;</span>// on bead 0, 0<br/><br/>
+						<span>&nbsp;&nbsp;&nbsp;&nbsp;</span>PS.fade( 0, 0, 120, { onEnd : fadeReporter } );<br/><br/>
+						<span>&nbsp;&nbsp;&nbsp;&nbsp;</span>// additional init code goes here<br/>
+						};<br/><br/>
+						// onEnd function for end-of-fade report<br/><br/>
+						function fadeReporter () {<br/>
+						<span>&nbsp;&nbsp;&nbsp;&nbsp;</span>"use strict";<br/><br/>
+						<span>&nbsp;&nbsp;&nbsp;&nbsp;</span>PS.statusText( "Fade complete" );<br/>
+						};<br/><br/>
+						PS.touch = function ( x, y, data, options ) {<br>
+						<span>&nbsp;&nbsp;&nbsp;&nbsp;</span>"use strict";<br/><br/>
+						<span>&nbsp;&nbsp;&nbsp;&nbsp;</span>// Erase status line<br/><br/>
+						<span>&nbsp;&nbsp;&nbsp;&nbsp;</span>PS.statusText( "" );<br/><br/>
+						<span>&nbsp;&nbsp;&nbsp;&nbsp;</span>// Change bead 0, 0 to random color<br/><br/>
+						<span>&nbsp;&nbsp;&nbsp;&nbsp;</span>PS.color( 0, 0, PS._random( 0xFFFFFF ) );<br/>
+						};</p></div>
+			</div>
+
+			<div class="section">
+				<div id="scale" class="dot">&nbsp;</div>
+				<p class="subhead">PS.scale ( x, y, scale )</p>
+				<p>PS.scale() changes and inspects the scaling of beads.</p>
+				<div class="specs">
+					<p>Parameters:</p>
+					<ol>
+						<li><b>x</b> : <em>integer</em> or <b>PS.ALL</b></li>
+						<li><b>y</b> : <em>integer</em> or <b>PS.ALL</b></li>
+						<li>(optional) <b>scale</b> : <em>integer</em>, <b>PS.CURRENT</b> or <b>PS.DEFAULT</b></li>
+					</ol>
+					<p>Returns : <em>integer</em> or <b>PS.ERROR</b></p>
+					<p>Default : 100 (full size)</p>
+				</div>
+
+				<p>The required <b>x</b> and
+					<b>y</b> parameters indicate the zero-based column and row position of the bead, respectively.
+					An error occurs if either parameter is negative, or exceeds the dimensions of the grid.
+					<a href="#multibead">Multiple bead assignment</a> is supported using <b>PS.ALL</b>.</p>
+
+				<p>The optional <b>scale</b> parameter specifies the bead scaling. It should be an
+					<em>integer</em> in the range 50 to 100 inclusive,
+					indicating a percentage of the full-size bead width. Values outside this range are clamped.</p>
+
+				<p style="clear: both;">If <b>scale</b> is <b>PS.DEFAULT</b>, the default scaling (100) is assigned to the bead.
+					If <b>scale</b> is <b>PS.CURRENT</b> or not supplied, the bead scaling is not changed.</p>
+
+				<p class="subitem">Usage notes</p>
+
+				<p>1. PS.scale() changes the size of a bead, but <em>not</em> the size of its glyph.
+					Use <a href="#glyphscale">PS.glyphScale</a>() to change the size of a bead's glyph.</p>
+
+				<p>2. Scaling a bead to less than 60% may allow some glyphs to interfere with the bead border,
+					depending on the glyph design and scaling, border width and bead shape.</p>
+
+				<p>3. Changing the scale of a bead also alters the maximum border width of that bead.
+					The maximum value depends on the scaling factor, the dimensions of the grid,
+					whether or not a glyph is currently being displayed in the bead, and the scaling of the glyph.
+					If a glyph is visible, the border width is clamped to avoid obscuring the glyph. If no glyph is visible, the width
+					is clamped to ensure that the area of the bead visible inside the border is at least 8 pixels wide.</p>
+
+				<p class="subitem">Return value</p>
+
+				<p>PS.scale() returns an <em>integer</em> indicating the current scaling of the bead.</p>
+
+				<p><b>PS.ERROR</b> is returned if an error occurs.</p>
+			</div>
+
+			<div class="section">
+				<div id="radius" class="dot">&nbsp;</div>
+				<p class="subhead">PS.radius ( x, y, radius )</p>
+				<p>PS.radius() changes and inspects the corner radius of beads.</p>
+				<div class="specs">
+					<p>Parameters:</p>
+					<ol>
+						<li><b>x</b> : <em>integer</em> or <b>PS.ALL</b></li>
+						<li><b>y</b> : <em>integer</em> or <b>PS.ALL</b></li>
+						<li>(optional) <b>radius</b> : <em>integer</em>, <b>PS.CURRENT</b> or <b>PS.DEFAULT</b></li>
+					</ol>
+					<p>Returns : <em>integer</em> or <b>PS.ERROR</b></p>
+					<p>Default : 0 (perfect square)</p>
+				</div>
+
+				<p>The required <b>x</b> and
+					<b>y</b> parameters indicate the zero-based column and row position of the bead, respectively.
+					An error occurs if either parameter is negative, or exceeds the dimensions of the grid.
+					<a href="#multibead">Multiple bead assignment</a> is supported using <b>PS.ALL</b>.</p>
+
+				<p>The optional <b>radius</b> parameter specifies the corner radius of the bead.
+					It should be an <em>integer</em> in the range 0 (perfect square) to 50 (perfect circle) inclusive.
+					Values outside this range are clamped.</p>
+
+				<p><img src="images/radii.png" alt="[Radii]"></p>
+
+				<p style="clear: both;">If <b>shape</b> is
+					<b>PS.DEFAULT</b>, the default radius (0, square) is assigned to the bead.
+					If <b>shape</b> is <b>PS.CURRENT</b> or not supplied, the radius is not changed.</p>
+
+				<p class="subitem">Usage notes</p>
+
+				<p>1. Only square beads (radius = 0) without glyphs are allowed to have unequal border widths.
+					If you change the radius of a bead to a value greater than zero (0), any unequal border sides
+					are automatically changed to the width of the <em>widest</em> existing border.</p>
+
+				<p class="subitem">Return value</p>
+
+				<p>PS.radius() returns an <em>integer</em> indicating the current radius of the bead.</p>
+
+				<p><b>PS.ERROR</b> is returned if an error occurs.</p>
+			</div>
+
+			<div class="section">
+				<div id="data" class="dot">&nbsp;</div>
+				<p class="subhead">PS.data ( x, y, data )</p>
+				<p>PS.data() changes and inspects the data associated with beads.</p>
+				<div class="specs">
+					<p>Parameters:</p>
+					<ol>
+						<li><b>x</b> : <em>integer</em> or <b>PS.ALL</b></li>
+						<li><b>y</b> : <em>integer</em> or <b>PS.ALL</b></li>
+						<li>(optional) data : any value, <b>PS.CURRENT</b> or <b>PS.DEFAULT</b></li>
+					</ol>
+					<p>Returns : <em>value</em> or <b>PS.ERROR</b></p>
+					<p>Default : 0</p>
+				</div>
+
+				<p>The required <b>x</b> and
+					<b>y</b> parameters indicate the zero-based column and row position of the bead, respectively.
+					An error occurs if either parameter is negative, or exceeds the dimensions of the grid.
+					<a href="#multibead">Multiple bead assignment</a> is supported using <b>PS.ALL</b>.</p>
+
+				<p>The optional <b>data</b> parameter specifies a data value to be assigned to the specified bead(s).
+					It can be any value (<em>number, string, function, array</em> or
+					<em>object</em>) that can be assigned to a Javascript variable.
+					This value will subsequently be passed through the <b>data</b> parameter of all subsequent
+					<a href="events.html#touch">PS.touch</a>(), <a href="events.html#release">PS.release</a>(),
+					<a href="events.html#enter">PS.enter</a>() and
+					<a href="events.html#exit">PS.exit</a>() event calls involving that bead.</p>
+
+				<p>If <b>data</b> is <b>PS.DEFAULT</b>, a data value of zero (0) is applied to the bead.
+					If <b>data</b> is <b>PS.CURRENT</b> or not supplied, the bead data is not changed.</p>
+
+				<p class="subitem">Return value</p>
+
+				<p>PS.data() returns the data value currently assigned to the bead.</p>
+
+				<p>If no data has been assigned, the value zero (0) is returned.</p>
+
+				<p><b>PS.ERROR</b> is returned if an error occurs.</p>
+
+			</div>
+
+			<div class="section">
+				<div id="exec" class="dot">&nbsp;</div>
+				<p class="subhead">PS.exec ( x, y, exec )</p>
+				<p>PS.exec() changes and inspects the functions assigned to beads.</p>
+				<div class="specs">
+					<p>Parameters:</p>
+					<ol>
+						<li><b>x</b> : <em>integer</em> or <b>PS.ALL</b></li>
+						<li><b>y</b> : <em>integer</em> or <b>PS.ALL</b></li>
+						<li>(optional) <b>exec</b> : <em>function</em></li>
+					</ol>
+					<p>Returns : <em>function</em>, <b>null</b> or <b>PS.ERROR</b></p>
+					<p>Default : <em>null</em> (no function)</p>
+				</div>
+
+				<p>The required <b>x</b> and
+					<b>y</b> parameters indicate the zero-based column and row position of the bead, respectively.
+					An error occurs if either parameter is negative, or exceeds the dimensions of the grid.
+					<a href="#multibead">Multiple bead assignment</a> is supported using <b>PS.ALL</b>.</p>
+
+				<p>The optional <b>exec</b> parameter specifies the bead function.
+					It should be a reference to a valid Javascript function that accepts the same three parameters as the
+					<a href="events.html#touch">PS.touch</a>() event handler,
+					namely:</p>
+
+				<ol>
+					<li><b>x</b> : <em>integer</em></li>
+					<li><b>y</b> : <em>integer</em></li>
+					<li><b>data</b> : any value</li>
+				</ol>
+
+				<p>The <b>exec</b> function will subsequently be called whenever the bead is clicked or touched,
+					with the <b>x</b> and <b>y</b> parameters set to the zero-based coordinates of the bead,
+					and the <b>data</b> parameter set to the bead's current data value.
+					This call occurs immediately <em>before</em> the usual system call to <a href="events.html#touch">PS.touch</a>().
+				</p>
+
+				<p>The function specified by <b>exec</b> doesn't need to return anything. Any returned values are ignored.</p>
+
+				<p>If <b>PS.DEFAULT</b> or <b>null</b> is specified for <b>exec</b>,
+					any previous function assignment is removed from the bead.
+					If <b>PS.CURRENT</b> is specified, or no <b>exec</b> is supplied, the bead function is not changed.</p>
+
+				<p class="subitem">Return value</p>
+
+				<p>PS.exec() returns the function currently assigned to the bead.</p>
+
+				<p>If no function is assigned, the value <b>null</b> is returned.</p>
+
+				<p><b>PS.ERROR</b> is returned if an error occurs.</p>
+			</div>
+
+			<div class="section">
+				<div id="visible" class="dot">&nbsp;</div>
+				<p class="subhead">PS.visible ( x, y, show )</p>
+				<p>PS.visible() lets you toggle the visibility of beads.</p>
+				<div class="specs">
+					<p>Parameters:</p>
+					<ol>
+						<li><b>x</b> : <em>integer</em> or <b>PS.ALL</b></li>
+						<li><b>y</b> : <em>integer</em> or <b>PS.ALL</b></li>
+						<li><b>show</b> : <em>boolean</em>, <b>PS.CURRENT</b> or <b>PS.DEFAULT</b></li>
+					</ol>
+					<p>Returns : <em>boolean</em> or <b>PS.ERROR</b></p>
+					<p>Default : <em>true</em></p>
+				</div>
+
+				<p>The required <b>x</b> and
+					<b>y</b> parameters indicate the zero-based row and column position of the bead, respectively.
+					An error occurs if either parameter is negative, or exceeds the dimensions of the grid.
+					<a href="#multibead">Multiple bead assignment</a> is supported using <b>PS.ALL</b>.</p>
+
+				<p>If the optional <b>show</b> parameter is <em>false</em> or the number zero (0),
+					the specified bead becomes <strong>invisible</strong>:</p>
+
+				<ul>
+					<li>Its color, border and glyph disappear, and the space it occupies assumes the background color of the grid.</li>
+					<li>Subsequent changes to any visual attribute of the bead
+						(color, scale, radius, border or glyph) have no visible effect. However, the specified attributes are still modified,
+						and any changes will become evident if the bead is made visible later.</li>
+				</ul>
+
+				<p>If <b>show</b> is <em>true</em> or any nonzero number, the bead becomes visible again.
+					If no visual attributes were changed while it was invisible, it assumes its previous state.</p>
+
+				<p>Calling PS.visible( x, y, <em>true</em> ) on a visible bead has no effect.
+					Similarly, calling PS.visible( x , y, <em>false</em> ) on an invisible bead has no effect.</p>
+
+				<p>If <b>show</b> is <b>PS.DEFAULT</b>, the default visibility (<em>true</em>, visible) is assigned to the bead.
+					If <b>show</b> is <b>PS.CURRENT</b> or not supplied, the visibility is not changed.</p>
+
+				<p class="subitem">Usage notes</p>
+
+				<p>1. An invisible bead retains all of its attributes.
+					Its state prior to being made invisible can determined by inspecting the return value of any bead command.</p>
+
+				<p>2. Invisible beads continue to produce the usual <a href="events.html#touch">PS.touch</a>(),
+					<a href="events.html#release">PS.release</a>(), <a href="events.html#enter">PS.enter</a>() and
+					<a href="events.html#exit">PS.exit</a>() events.</p>
+
+				<p>3. If a function has been assigned to an invisible bead with a previous call to <a href="#exec">PS.exec</a>(),
+					that function is still executed when the bead is clicked or touched.</p>
+
+				<p class="subitem">Return value</p>
+
+				<p>PS.visible() returns <em>true</em> if the specified bead is visible, else <em>false</em>.</p>
+
+				<p><b>PS.ERROR</b> is returned if an error occurs.</p>
+			</div>
+
+			<div class="section">
+				<div id="active" class="dot">&nbsp;</div>
+				<p class="subhead">PS.active ( x, y, active )</p>
+				<p>PS.active() lets you toggle the responsiveness of beads.</p>
+				<div class="specs">
+					<p>Parameters:</p>
+					<ol>
+						<li><b>x</b> : <em>integer</em> or <b>PS.ALL</b></li>
+						<li><b>y</b> : <em>integer</em> or <b>PS.ALL</b></li>
+						<li><b>active</b> : <em>boolean</em>, <b>PS.CURRENT</b> or <b>PS.DEFAULT</b></li>
+					</ol>
+					<p>Returns : <em>boolean</em> or <b>PS.ERROR</b></p>
+					<p>Default : <em>true</em></p>
+				</div>
+
+				<p>The required <b>x</b> and
+					<b>y</b> parameters indicate the zero-based row and column position of the bead, respectively.
+					An error occurs if either parameter is negative, or exceeds the dimensions of the grid.
+					<a href="#multibead">Multiple bead assignment</a> is supported using <b>PS.ALL</b>.</p>
+
+				<p>If the optional <b>active</b> parameter is <em>false</em> or the number zero (0),
+					the specified bead is immediately <strong>deactivated</strong>:
+
+				<ul>
+					<li>The bead stops producing any <a href="events.html#touch">PS.touch</a>(),
+						<a href="events.html#release">PS.release</a>(), <a href="events.html#enter">PS.enter</a>() or
+						<a href="events.html#exit">PS.exit</a>() events.
+					</li>
+					<li>If a function has been assigned to the bead with a previous call to <a href="#exec">PS.exec</a>(),
+						that function stops being executed when the bead is clicked or touched.
+					</li>
+					<li>Subsequent attempts to change any attribute of the bead (other than its activation status) have no effect.</li>
+				</ul>
+
+				<p>If <b>active</b> is <em>true</em> or any nonzero number, the bead is reactivated
+					and assumes the behavior it exhibited before deactivation.</p>
+
+				<p>Calling PS.active( x, y, <em>true</em> ) on an active bead has no effect.
+					Similarly, calling PS.active( x, y, <em>false</em> ) on a deactivated bead has no effect.</p>
+
+				<p>If <b>active</b> is
+					<b>PS.DEFAULT</b>, the default activation status (<em>true</em>, active) is assigned to the bead.
+					If <b>active</b> is <b>PS.CURRENT</b> or not supplied, the activation status is not changed.</p>
+
+				<p class="subitem">Notes</p>
+
+				<p>1. Deactivating a bead has no
+					<em>visual</em> effect. If you want to give an inactive bead a particular appearance,
+					make the changes <em>before</em> calling PS.active( <em>false</em> ).</p>
+
+				<p>2. A deactivated bead retains all of its attributes.
+					Its state prior to deactivation can determined by inspecting the return value of any bead command.</p>
+
+				<p class="subitem">Return value</p>
+
+				<p>PS.active() returns <em>true</em> if the specified bead is active, else <em>false</em>.</p>
+
+				<p><b>PS.ERROR</b> is returned if an error occurs.</p>
+			</div>
+
+			<div class="section">
+				<div id="border" class="dot">&nbsp;</div>
+				<p class="subhead">PS.border ( x, y, width )</p>
+				<p>PS.border() changes and inspects the width of bead borders.</p>
+				<div class="specs">
+					<p>Parameters:</p>
+					<ol>
+						<li><b>x</b> : <em>integer</em> or <b>PS.ALL</b></li>
+						<li><b>y</b> : <em>integer</em> or <b>PS.ALL</b></li>
+						<li>(optional) <b>width</b> : one of
+							<ul>
+								<li><em>integer</em></li>
+								<li><em>object</em></li>
+								<li><b>PS.CURRENT</b></li>
+								<li><b>PS.DEFAULT</b></li>
+							</ul>
+					</ol>
+					<p>Returns : <em>object</em> or <b>PS.ERROR</b></p>
+					<p>Default : { top : 1, left : 1, bottom : 1, right : 1, equal : <em>true</em>, width : 1 }</p>
+				</div>
+
+				<p>The required <b>x</b> and
+					<b>y</b> parameters indicate the zero-based column and row position of the bead, respectively.
+					An error occurs if either parameter is negative, or exceeds the dimensions of the grid.
+					<a href="#multibead">Multiple bead assignment</a> is supported using <b>PS.ALL</b>.</p>
+
+				<p>If <b>width</b> is an <em>integer</em>, the top, left, bottom and right borders of the bead
+					are changed to <b>width</b> pixels, up to the current maximum border width.
+					The maximum value depends on the dimensions of the grid, the scaling of the bead,
+					and whether or not a glyph is currently being displayed.
+					If a glyph is visible, the border width is clamped to avoid obscuring the glyph. If no glyph is visible, the width
+					is clamped to ensure that the area of the bead visible inside the border is at least 8 pixels wide.</p>
+
+				<p>A <em>width</em> of less than one (1) hides the border.</p>
+
+				<p>If <b>width</b> is <b>PS.DEFAULT</b>, the default width (1 pixel) is applied to all borders.
+					If <b>width</b> is <b>PS.CURRENT</b> or not supplied, the width is not changed.</p>
+
+				<p class="subitem">Individual border control</p>
+
+				<p>If a bead is square (radius = 0) and has no glyph,
+					you can control the width of the top, left, bottom and right borders individually.</p>
+
+				<p>To do this, specify <b>width</b> as an <em>object</em> with one or more of the following properties:</p>
+
+				<ul>
+					<li><b>.top</b> : <em>integer</em>, <b>PS.CURRENT</b> or <b>PS.DEFAULT</b></li>
+					<li><b>.left</b> : <em>integer</em>, <b>PS.CURRENT</b> or <b>PS.DEFAULT</b></li>
+					<li><b>.bottom</b> : <em>integer</em>, <b>PS.CURRENT</b> or <b>PS.DEFAULT</b></li>
+					<li><b>.right</b> : <em>integer</em>, <b>PS.CURRENT</b> or <b>PS.DEFAULT</b></li>
+				</ul>
+
+				<p>If a <b>width</b> property is an <em>integer</em>, the width of the corresponding border
+					is changed to <em>integer</em> pixels. The value is clamped to ensure that the area of the bead visible
+					inside the border is at least 8 pixels wide.</p>
+
+				<p>A value of less than one (1) hides the corresponding border.</p>
+
+				<p>If a <b>width</b> property is
+					<b>PS.DEFAULT</b>, the default width (1 pixel) is applied to the corresponding border.
+					If a property is <b>PS.CURRENT</b> or not supplied, the width of the corresponding border is not changed.</p>
+
+				<div class="notice">
+					<p><strong>Only square beads with no glyph are allowed to have unequal border widths.</strong></p>
+
+					<p>If you attempt to apply unequal borders to a non-square bead (radius > 0), or a bead containing a glyph,
+						the four borders are all changed to the width of the <em>widest</em> border specified.</p>
+
+					<p>Similarly, if you add a glyph to a bead with unequal borders, or change the radius of a bead with unequal
+						borders to greater than zero (0), the four borders are automatically changed to the width of the
+						<em>widest</em>
+						existing border.</p>
+				</div>
+
+				<p class="subitem">Return value</p>
+
+				<p>PS.border() returns an <em>object</em> with the following properties:</p>
+
+				<ul>
+					<li><b>.top</b> : <em>integer</em></li>
+					<li><b>.left</b> : <em>integer</em></li>
+					<li><b>.bottom</b> : <em>integer</em></li>
+					<li><b>.right</b> : <em>integer</em></li>
+					<li><b>.equal</b> : <em>boolean</em></li>
+					<li><b>.width</b> : <em>integer</em></li>
+				</ul>
+
+				<p>The <b>.top</b>, <b>.left</b>, <b>.bottom</b> and <b>.right</b> properties indicate the width of
+					the corresponding bead border, or zero (0) if the border is hidden.</p>
+
+				<p>If all borders are of equal width, the <b>.equal</b> property is set to <b>true</b>,
+					and the <b>.width</b> property indicates the common width, or zero (0) if all borders are hidden.</p>
+
+				<p>If the borders are unequal, the <b>.equal</b> property is set to <b>false</b>,
+					and the <b>.width</b> property indicates the width of the <em>widest</em> border.</p>
+
+				<p><b>PS.ERROR</b> is returned if an error occurs.</p>
+
+				<div class="example">
+					<p>// EXAMPLES<br/>
+						// Set bead border to 4 pixels<br/><br/>
+						PS.border( x, y, 4 );<br/><br/>
+						// Hide all bead borders<br/><br/>
+						PS.border( x, y, 0 );<br/><br/>
+						// Set each border to a different width<br/>
+						// Make sure bead is square and has no glyph!<br/><br/>
+						PS.radius( x, y, 0 ); // set to square<br/>
+						PS.glyph( x, y, 0 ); // hide glyph<br/>
+						PS.border( x, y, {<br/>
+						<span>&nbsp;&nbsp;&nbsp;&nbsp;</span>top : 2,<br/>
+						<span>&nbsp;&nbsp;&nbsp;&nbsp;</span>left : 4,<br/>
+						<span>&nbsp;&nbsp;&nbsp;&nbsp;</span>bottom : 6,<br/>
+						<span>&nbsp;&nbsp;&nbsp;&nbsp;</span>right : 8<br/>
+						} );<br/><br/>
+						// Report the border widths of a bead<br/><br/>
+						var result;<br/><br/>
+						result = PS.border( x, y );<br/><br/>
+						PS.debug( "top = " + result.top +<br/>
+						<span>&nbsp;&nbsp;&nbsp;&nbsp;</span>", left = " + result.left +<br/>
+						<span>&nbsp;&nbsp;&nbsp;&nbsp;</span>", bottom = " + result.bottom +<br/>
+						<span>&nbsp;&nbsp;&nbsp;&nbsp;</span>", right = " + result.right + "\n");</p>
+				</div>
+
+			</div>
+
+			<div class="section">
+				<div id="bordercolor" class="dot">&nbsp;</div>
+				<p class="subhead">PS.borderColor ( x, y, color )</p>
+				<p>PS.borderColor() changes and inspects the color of bead borders.</p>
+				<div class="specs">
+					<p>Parameters:</p>
+					<ol>
+						<li><b>x</b> : <em>integer</em> or <b>PS.ALL</b></li>
+						<li><b>y</b> : <em>integer</em> or <b>PS.ALL</b></li>
+						<li>(optional) <b>color</b> : <a href="colors.html#express">color expression</a>, <b>PS.CURRENT</b> or
+							<b>PS.DEFAULT</b></li>
+					</ol>
+					<p>Returns : <em>integer</em> or <b>PS.ERROR</b></p>
+					<p>Default : <b>PS.COLOR_GRAY</b></p>
+				</div>
+
+				<p>The required <b>x</b> and
+					<b>y</b> parameters indicate the zero-based column and row position of the bead, respectively.
+					An error occurs if either parameter is negative, or exceeds the dimensions of the grid.
+					<a href="#multibead">Multiple bead assignment</a> is supported using <b>PS.ALL</b>.</p>
+
+				<p>The optional <b>color</b> parameter can be supplied in any of the four Perlenspiel
+					<a href="colors.html#express">color expression</a> formats.</p>
+
+				<p>If <b>color</b> is <b>PS.DEFAULT</b>, the default color (<b>PS.COLOR_GRAY</b>) is applied.
+					If <b>color</b> is <b>PS.CURRENT</b> or not supplied, the color is not changed.</p>
+
+				<p class="subitem">Return value</p>
+
+				<p>PS.borderColor() returns a <a href="colors.html#plex">RGB multiplex</a> <em>integer</em>
+					indicating the current border color of the bead.</p>
+
+				<p><b>PS.ERROR</b> is returned if an error occurs.</p>
+			</div>
+
+			<div class="section">
+				<div id="borderalpha" class="dot">&nbsp;</div>
+				<p class="subhead">PS.borderAlpha ( x, y, alpha )</p>
+				<p>PS.borderAlpha() changes and inspects the alpha transparency assigned to bead borders.</p>
+				<div class="specs">
+					<p>Parameters:</p>
+					<ol>
+						<li><b>x</b> : <em>integer</em> or <b>PS.ALL</b></li>
+						<li><b>y</b> : <em>integer</em> or <b>PS.ALL</b></li>
+						<li>(optional) <b>alpha</b> : <em>integer</em>, <b>PS.CURRENT</b> or <b>PS.DEFAULT</b></li>
+					</ol>
+					<p>Returns : <em>integer</em> or <b>PS.ERROR</b></p>
+					<p>Default : <b>PS.ALPHA_OPAQUE</b></p>
+				</div>
+
+				<p>The required <b>x</b> and
+					<b>y</b> parameters indicate the zero-based column and row position of the bead, respectively.
+					An error occurs if either parameter is negative, or exceeds the dimensions of the grid.
+					<a href="#multibead">Multiple bead assignment</a> is supported using <b>PS.ALL</b>.</p>
+
+				<p>The optional <b>alpha</b> parameter specifies the alpha transparency of the bead's border.
+					It should be an <em>integer</em> between 0 (completely transparent) and 255 (fully opaque) inclusive.
+					Values outside this range are clamped.</p>
+
+				<p>If <b>alpha</b> is <b>PS.DEFAULT</b>, the default alpha (<b>PS.ALPHA_OPAQUE</b>) is applied.
+					If <b>alpha</b> is <b>PS.CURRENT</b> or not supplied, the alpha is not changed.</p>
+
+				<p class="subitem">Return value</p>
+
+				<p>PS.borderAlpha() returns an
+					<em>integer</em> in the range 0-255 inclusive indicating the current border alpha of the bead.</p>
+
+				<p><b>PS.ERROR</b> is returned if an error occurs.</p>
+			</div>
+
+			<div class="section">
+				<div id="borderfade" class="dot">&nbsp;</div>
+				<p class="subhead">PS.borderFade ( x, y, rate, options )</p>
+				<p>PS.borderFade() changes or inspects the color fade effect of bead borders.</p>
+				<div class="specs">
+					<p>Parameters:</p>
+					<ol>
+						<li><b>x</b> : <em>integer</em> or <b>PS.ALL</b></li>
+						<li><b>y</b> : <em>integer</em> or <b>PS.ALL</b></li>
+						<li>(optional) <b>rate</b> : <em>integer</em>, <b>PS.CURRENT</b> or <b>PS.DEFAULT</b></li>
+						<li>(optional) <b>options</b> : <em>object</em>, <b>PS.CURRENT</b> or <b>PS.DEFAULT</b></li>
+					</ol>
+					<p>Returns : <em>object</em> or <b>PS.ERROR</b></p>
+					<p>Default : { rate : 0, rgb : <em>null</em>, onEnd : <em>null</em>, params : <em>null</em> }</p>
+				</div>
+
+				<p>By default, the <a href="#bordercolor">PS.borderColor</a>() and <a href="#borderalpha">PS.borderAlpha</a>()
+					commands change the color of a bead border instantly.
+					You can make the color fade smoothly from one hue to the next by using PS.borderFade().</p>
+
+				<p>Once a border fade effect is assigned to a bead with PS.borderFade(),
+					all subsequent calls to <a href="#bordercolor">PS.borderColor</a>() and
+					<a href="#borderalpha">PS.borderAlpha</a>()
+					will smoothly fade from the current color (or an optionally specified color) to the new color.</p>
+
+				<p>The required <b>x</b> and
+					<b>y</b> parameters indicate the zero-based column and row position of the bead, respectively.
+					An error occurs if either parameter is negative, or exceeds the dimensions of the grid.
+					<a href="#multibead">Multiple bead assignment</a> is supported using <b>PS.ALL</b>.</p>
+
+				<p>The optional <b>rate</b> parameter(s) specifies the rate of the fade effect in 60ths of a second.
+					If <b>rate</b> is less than 1 or <b>PS.DEFAULT</b>, the border fade effect is disabled.
+					If <b>rate</b> is <b>PS.CURRENT</b> or not supplied, the currently assigned fade rate is not changed.</p>
+
+				<p>The optional <b>options</b> parameter specifies additional fade options.
+					It should be an <em>object</em> with one or more of the following properties:</p>
+
+				<ul>
+					<li><b>.rgb</b> : <a href="colors.html#plex">RGB multiplex</a>, <b>PS.CURRENT</b> or <b>PS.DEFAULT</b></li>
+					<li><b>.onEnd</b> : <em>function</em>, <b>PS.CURRENT</b> or <b>PS.DEFAULT</b></li>
+					<li><b>.params</b> : <em>array</em>, <b>PS.CURRENT</b> or <b>PS.DEFAULT</b></li>
+				</ul>
+
+				<p class="subitem">.rgb</p>
+
+				<p>The optional <b>.rgb</b> property specifies the initial color of the fade effect.
+					It should be an <a href="colors.html#plex">RGB multiplex</a> <em>integer</em> in the range 0-0xFFFFFF inclusive.
+					Values outside this range are clamped. Non-integral values are floored.
+					If <b>.rgb</b> is <b>PS.DEFAULT</b>, <em>null</em> or not supplied, the current border color is used as the starting color.
+					If <b>.rgb</b> is <b>PS.CURRENT</b>, the currently assigned start color is not changed.</p>
+
+				<p class="subitem">.onEnd</p>
+
+				<p>The optional <b>.onEnd</b> property specifies a function that will be called when the fade effect is completed.
+					If <b>.onEnd</b> is <b>PS.DEFAULT</b>, <em>null,</em> or not supplied, the default behavior (no function call) is used.
+					If <b>.onEnd</b> is <b>PS.CURRENT</b>, the currently assigned onEnd function is not changed.</p>
+
+				<p class="subitem">.params</p>
+
+				<p>The optional <b>.params</b> property specifies the parameters that will be passed to the function
+					specified by the <b>.onEnd</b> property. It should be an <em>array</em> containing at least one element.
+					If <b>.params</b> is <b>PS.DEFAULT</b>, <em>null,</em> or not supplied, no parameters are passed to the onEnd function.
+					If <b>.onEnd</b> is <b>PS.CURRENT</b>, the currently assigned parameters are not changed.</p>
+
+				<p>If <b>options</b> is <b>PS.CURRENT</b> or not supplied,
+					the currently assigned fade settings are not changed.</p>
+
+				<p>If <b>options</b> is <b>PS.DEFAULT</b>, all fade settings (except for the fade rate) are reset
+					to their default values.</p>
+
+				<p class="subitem">Return value</p>
+
+				<p>PS.borderFade() returns an <em>object</em> with the following properties:</p>
+
+				<ul>
+					<li><b>.rate</b> : <em>integer</em></li>
+					<li><b>.rgb</b> : <em>integer</em> or <em>null</em></li>
+					<li><b>.onEnd</b> : <em>function</em> or <em>null</em></li>
+					<li><b>.params</b> : <em>array</em> or <em>null</em></li>
+				</ul>
+
+				<p>The <b>.rate</b> property indicates the current border fade rate, zero (0) if disabled.</p>
+
+				<p>The <b>.rgb</b> property is an <a href="colors.html#plex">RGB multiplex</a> <em>integer</em>
+					indicating the start color currently assigned to the fade, <em>null</em> if none.</p>
+
+				<p>The <b>.onEnd</b> property indicates the onEnd function currently assigned to the fade, <em>null</em> if none.
+				</p>
+
+				<p>The <b>.params</b> property is an <em>array</em> containing the parameters currently assigned to the
+					<b>.onEnd</b> function, <em>null</em> if none.</p>
+
+				<p><b>PS.ERROR</b> is returned if an error occurs.</p>
+
+			</div>
+
+			<div class="section">
+				<div id="glyph" class="dot">&nbsp;</div>
+				<p class="subhead">PS.glyph ( x, y, glyph )</p>
+				<p>PS.glyph() changes and inspects the glyphs assigned to beads.</p>
+				<div class="specs">
+					<p>Parameters:</p>
+					<ol>
+						<li><b>x</b> : <em>integer</em> or <b>PS.ALL</b></li>
+						<li><b>y</b> : <em>integer</em> or <b>PS.ALL</b></li>
+						<li>(optional) <b>glyph</b> : <em>integer</em> or <em>string</em></li>
+					</ol>
+					<p>Returns : <em>integer</em> or <b>PS.ERROR</b></p>
+					<p>Default : 0 (no glyph)</p>
+				</div>
+
+				<p>The required <b>x</b> and
+					<b>y</b> parameters indicate the zero-based column and row position of the bead, respectively.
+					An error occurs if either parameter is negative, or exceeds the dimensions of the grid.
+					<a href="#multibead">Multiple bead assignment</a> is supported using <b>PS.ALL</b>.</p>
+
+				<p>The optional <b>glyph</b> parameter specifies the glyph to be displayed by the specified bead(s).
+					The parameter can be either an <em>integer</em> specifying a Unicode character, or a <em>string</em>.
+					The first character in the <em>string</em> specifies the glyph. Any additional characters in the
+					<em>string</em> are ignored.</p>
+
+				<p>Specifying zero (0) or the empty string ("") for <b>glyph</b> removes the glyph.</p>
+
+				<p>If <b>glyph</b> is <b>PS.DEFAULT</b>, the default glyph (none) is assigned to the specified bead.
+					If <b>glyph</b> is <b>PS.CURRENT</b> or not supplied, the glyph is not changed.</p>
+
+				<p class="subitem">Usage notes</p>
+
+				<p>1. Glyphs are scaled to slightly less than half of the full size of a bead, which varies depending on
+					the dimensions of the grid. They can become difficult to read if either grid dimension exceeds 16.</p>
+
+				<p>2. Glyphs reduce the maximum border size of a bead. If you add a glyph to a bead
+					with a wide border, the border width is reduced as necessary to avoid obscuring the glyph.</p>
+
+				<p>3. Only square beads without glyphs are allowed to have unequal border widths.
+					If you add a glyph to a bead with unequal borders, all four borders are automatically changed
+					to the width of the <em>widest</em> existing border.</p>
+
+				<p class="subitem">Return value</p>
+
+				<p>PS.glyph() returns an <em>integer</em> indicating the Unicode representation of the
+					glyph currently assigned to the bead.</p>
+
+				<p>If no glyph is assigned, the value zero (0) is returned.</p>
+
+				<p><b>PS.ERROR</b> is returned if an error occurs.</p>
+			</div>
+
+			<div class="section">
+				<div id="glyphcolor" class="dot">&nbsp;</div>
+				<p class="subhead">PS.glyphColor ( x, y, color )</p>
+				<p>PS.glyphColor() changes and inspects the color of bead glyphs.</p>
+				<div class="specs">
+					<p>Parameters:</p>
+					<ol>
+						<li><b>x</b> : <em>integer</em> or <b>PS.ALL</b></li>
+						<li><b>y</b> : <em>integer</em> or <b>PS.ALL</b></li>
+						<li>(optional) <b>color</b> : <a href="colors.html#express">color expression</a>, <b>PS.CURRENT</b> or
+							<b>PS.DEFAULT</b></li>
+					</ol>
+					<p>Returns : <em>integer</em> or <b>PS.ERROR</b></p>
+					<p>Default : <b>PS.COLOR_BLACK</b></p>
+				</div>
+
+				<p>The required <b>x</b> and
+					<b>y</b> parameters indicate the zero-based column and row position of the bead, respectively.
+					An error occurs if either parameter is negative, or exceeds the dimensions of the grid.
+					<a href="#multibead">Multiple bead assignment</a> is supported using <b>PS.ALL</b>.</p>
+
+				<p>The optional <b>color</b> parameter can be supplied in any of the four Perlenspiel
+					<a href="colors.html#express">color expression</a> formats.</p>
+
+				<p>If <b>color</b> is <b>PS.DEFAULT</b>, the default color (<b>PS.COLOR_BLACK</b>) is applied.
+					If <b>color</b> is <b>PS.CURRENT</b> or not supplied, the color is not changed.</p>
+
+				<p class="subitem">Return value</p>
+
+				<p>PS.glyphColor() returns a <a href="colors.html#plex">RGB multiplex</a> <em>integer</em>
+					indicating the current glyph color of the bead.</p>
+
+				<p><b>PS.ERROR</b> is returned if an error occurs.</p>
+
+			</div>
+
+			<div class="section">
+				<div id="glyphalpha" class="dot">&nbsp;</div>
+				<p class="subhead">PS.glyphAlpha ( x, y, alpha )</p>
+				<p>PS.glyphAlpha() changes and inspects the alpha transparency assigned to bead glyphs.</p>
+				<div class="specs">
+					<p>Parameters:</p>
+					<ol>
+						<li><b>x</b> : <em>integer</em> or <b>PS.ALL</b></li>
+						<li><b>y</b> : <em>integer</em> or <b>PS.ALL</b></li>
+						<li>(optional) <b>alpha</b> : <em>integer</em>, <b>PS.CURRENT</b> or <b>PS.DEFAULT</b></li>
+					</ol>
+					<p>Returns : <em>integer</em> or <b>PS.ERROR</b></p>
+					<p>Default : <b>PS.ALPHA_OPAQUE</b></p>
+				</div>
+
+				<p>The required <b>x</b> and
+					<b>y</b> parameters indicate the zero-based column and row position of the bead, respectively.
+					An error occurs if either parameter is negative, or exceeds the dimensions of the grid.
+					<a href="#multibead">Multiple bead assignment</a> is supported using <b>PS.ALL</b>.</p>
+
+				<p>The optional <b>alpha</b> parameter specifies the alpha transparency of the bead's glyph.
+					It should be an <em>integer</em> between 0 (completely transparent) and 255 (fully opaque) inclusive.
+					Values outside this range are clamped.</p>
+
+				<p>If <b>alpha</b> is <b>PS.DEFAULT</b>, the default alpha (<b>PS.ALPHA_OPAQUE</b>) is applied.
+					If <b>alpha</b> is <b>PS.CURRENT</b> or not supplied, the alpha is not changed.</p>
+
+				<p class="subitem">Return value</p>
+
+				<p>PS.glyphAlpha() returns an
+					<em>integer</em> in the range 0-255 inclusive indicating the current glyph alpha of the bead.</p>
+
+				<p><b>PS.ERROR</b> is returned if an error occurs.</p>
+			</div>
+
+			<div class="section">
+				<div id="glyphscale" class="dot">&nbsp;</div>
+				<p class="subhead">PS.glyphScale ( x, y, scale )</p>
+				<p>PS.glyphScale() changes and inspects the scale of bead glyphs.</p>
+				<div class="specs">
+					<p>Parameters:</p>
+					<ol>
+						<li><b>x</b> : <em>integer</em> or <b>PS.ALL</b></li>
+						<li><b>y</b> : <em>integer</em> or <b>PS.ALL</b></li>
+						<li>(optional) <b>scale</b> : <em>integer</em>, <b>PS.CURRENT</b> or <b>PS.DEFAULT</b></li>
+					</ol>
+					<p>Returns : <em>integer</em> or <b>PS.ERROR</b></p>
+					<p>Default : <b>100</b></p>
+				</div>
+
+				<p>The required <b>x</b> and
+					<b>y</b> parameters indicate the zero-based column and row position of the bead, respectively.
+					An error occurs if either parameter is negative, or exceeds the dimensions of the grid.
+					<a href="#multibead">Multiple bead assignment</a> is supported using <b>PS.ALL</b>.</p>
+
+				<p>The optional <b>scale</b> parameter specifies the scale of the bead's glyph.
+					It should be an <em>integer</em> between 50 (half size) and 100 (full size) inclusive.
+					Values outside this range are clamped.</p>
+
+				<p>If <b>scale</b> is <b>PS.DEFAULT</b>, the default scale (100, full size) is applied.
+					If <b>scale</b> is <b>PS.CURRENT</b> or not supplied, the glyph scale is not changed.</p>
+
+				<p class="subitem">Usage notes</p>
+
+				<p>1. Scaled-down glyphs may become difficult to read if either grid dimension exceeds 16 beads.</p>
+
+				<p class="subitem">Return value</p>
+
+				<p>PS.glyphScale() returns an
+					<em>integer</em> in the range 50-100 inclusive indicating the current glyph scale of the bead.</p>
+
+				<p><b>PS.ERROR</b> is returned if an error occurs.</p>
+			</div>
+
+			<div class="section">
+				<div id="glyphfade" class="dot">&nbsp;</div>
+				<p class="subhead">PS.glyphFade ( x, y, rate, options )</p>
+				<p>PS.glyphFade() changes or inspects the color fade effect of bead glyphs.</p>
+				<div class="specs">
+					<p>Parameters:</p>
+					<ol>
+						<li><b>x</b> : <em>integer</em> or <b>PS.ALL</b></li>
+						<li><b>y</b> : <em>integer</em> or <b>PS.ALL</b></li>
+						<li>(optional) <b>rate</b> : <em>integer</em>, <b>PS.CURRENT</b> or <b>PS.DEFAULT</b></li>
+						<li>(optional) <b>options</b> : <em>object</em>, <b>PS.CURRENT</b> or <b>PS.DEFAULT</b></li>
+					</ol>
+					<p>Returns : <em>object</em> or <b>PS.ERROR</b></p>
+					<p>Default : { rate : 0, rgb : <em>null</em>, onEnd : <em>null</em>, params : <em>null</em> }</p>
+				</div>
+
+				<p>By default, the <a href="#glyphcolor">PS.glyphColor</a>() and <a href="#glyphalpha">PS.glyphAlpha</a>()
+					commands change the color of a bead glyph instantly.
+					You can make the color fade smoothly from one hue to the next by using PS.glyphFade().</p>
+
+				<p>Once a glyph fade effect is assigned to a bead with PS.glyphFade(),
+					all subsequent calls to <a href="#glyphcolor">PS.glyphColor</a>() and <a href="#glyphalpha">PS.glyphAlpha</a>()
+					will smoothly fade from the current color (or an optionally specified color) to the new color.</p>
+
+				<p>The required <b>x</b> and
+					<b>y</b> parameters indicate the zero-based column and row position of the bead, respectively.
+					An error occurs if either parameter is negative, or exceeds the dimensions of the grid.
+					<a href="#multibead">Multiple bead assignment</a> is supported using <b>PS.ALL</b>.</p>
+
+				<p>The optional <b>rate</b> parameter(s) specifies the rate of the fade effect in 60ths of a second.
+					If <b>rate</b> is less than 1 or <b>PS.DEFAULT</b>, the bead's glyph fade effect is disabled.
+					If <b>rate</b> is <b>PS.CURRENT</b> or not supplied, the currently assigned fade rate is not changed.</p>
+
+				<p>The optional <b>options</b> parameter specifies additional fade options.
+					It should be an <em>object</em> with one or more of the following properties:</p>
+
+				<ul>
+					<li><b>.rgb</b> : <a href="colors.html#plex">RGB multiplex</a>, <b>PS.CURRENT</b> or <b>PS.DEFAULT</b></li>
+					<li><b>.onEnd</b> : <em>function</em>, <b>PS.CURRENT</b> or <b>PS.DEFAULT</b></li>
+					<li><b>.params</b> : <em>array</em>, <b>PS.CURRENT</b> or <b>PS.DEFAULT</b></li>
+				</ul>
+
+				<p class="subitem">.rgb</p>
+
+				<p>The optional <b>.rgb</b> property specifies the initial color of the fade effect.
+					It should be an <a href="colors.html#plex">RGB multiplex</a> <em>integer</em> in the range 0-0xFFFFFF inclusive.
+					Values outside this range are clamped. Non-integral values are floored.
+					If <b>.rgb</b> is <b>PS.DEFAULT</b>, <em>null</em> or not supplied, the current glyph color is used as the starting color.
+					If <b>.rgb</b> is <b>PS.CURRENT</b>, the currently assigned start color is not changed.</p>
+
+				<p class="subitem">.onEnd</p>
+
+				<p>The optional <b>.onEnd</b> property specifies a function that will be called when the fade effect is completed.
+					If <b>.onEnd</b> is <b>PS.DEFAULT</b>, <em>null,</em> or not supplied, the default behavior (no function call) is used.
+					If <b>.onEnd</b> is <b>PS.CURRENT</b>, the currently assigned onEnd function is not changed.</p>
+
+				<p class="subitem">.params</p>
+
+				<p>The optional <b>.params</b> property specifies the parameters that will be passed to the function
+					specified by the <b>.onEnd</b> property. It should be an <em>array</em> containing at least one element.
+					If <b>.params</b> is <b>PS.DEFAULT</b> or not supplied, no parameters are passed to the onEnd function.
+					If <b>.onEnd</b> is <b>PS.CURRENT</b>, the currently assigned onEnd parameters are not changed.</p>
+
+				<p>If <b>options</b> is <b>PS.CURRENT</b> or not supplied,
+					the currently assigned fade settings are not changed.</p>
+
+				<p>If <b>options</b> is <b>PS.DEFAULT</b>, all fade settings (except for the fade rate) are reset
+					to their default values.</p>
+
+				<p class="subitem">Return value</p>
+
+				<p>PS.glyphFade() returns an <em>object</em> with the following properties:</p>
+
+				<ul>
+					<li><b>.rate</b> : <em>integer</em></li>
+					<li><b>.rgb</b> : <em>integer</em> or <em>null</em></li>
+					<li><b>.onEnd</b> : <em>function</em> or <em>null</em></li>
+					<li><b>.params</b> : <em>array</em> or <em>null</em></li>
+				</ul>
+
+				<p>The <b>.rate</b> property indicates the current glyph fade rate, zero (0) if disabled.</p>
+
+				<p>The <b>.rgb</b> property is an <a href="colors.html#plex">RGB multiplex</a> <em>integer</em>
+					indicating the start color currently assigned to the fade, <em>null</em> if none.</p>
+
+				<p>The <b>.onEnd</b> property indicates the onEnd function currently assigned to the fade, <em>null</em> if none.
+				</p>
+
+				<p>The <b>.params</b> property is an <em>array</em> containing the parameters currently assigned to the
+					<b>.onEnd</b> function, <em>null</em> if none.</p>
+
+				<p><b>PS.ERROR</b> is returned if an error occurs.</p>
+
+			</div>
+		</div>
+
+		<div id="footer">
+			<p>Interactive Media and Game Development<br/>
+				Worcester Polytechnic Institute<br/>
+				100 Institute Road, Worcester, MA 01609 USA<br/>
+				<a href="http://imgd.wpi.edu">imgd.wpi.edu</a><br/>&nbsp;</p>
+		</div>
+	</body>
+</html>
+

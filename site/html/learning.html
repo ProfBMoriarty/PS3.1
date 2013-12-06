@@ -1,0 +1,382 @@
+<!DOCTYPE HTML>
+<html lang="en">
+	<head>
+		<title>Perlenspiel | Learning</title>
+		<meta charset="utf-8"/>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+		<meta name="description" content="Perlenspiel | Learning"/>
+		<meta name="keywords" content="perlenspiel, game, design, engine, gameclavier, moriarty, wpi"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+		<meta name="apple-mobile-web-app-capable" content="yes"/>
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+		<link rel="shortcut icon" href="http://users.wpi.edu/~bmoriarty/ps/favicon.png"/>
+		<link rel="apple-touch-icon" href="http://users.wpi.edu/~bmoriarty/ps/apple-touch-icon.png"/>
+		<link href='http://fonts.googleapis.com/css?family=Roboto:400,700,400italic,700italic,100' rel='stylesheet' type='text/css'>
+		<link rel="stylesheet" href="style.css" type="text/css">
+		<script type="text/javascript" src="play.js"></script>
+	</head>
+	<body onload="PSA.dots();">
+		<div id="header">
+			<p><img src="images/logosm.png" alt="[Logo]"><strong>Perlenspiel<sup class="sup3">3</sup></strong></p>
+
+			<ul id="nav">
+				<li><a href="index.html">Home</a></li>
+				<li><a href="download.html">Download</a></li>
+				<li><a href="learning.html">Learning</a></li>
+				<li><a href="examples.html">Examples</a></li>
+				<li><a href="api.html">API</a></li>
+				<li><a href="links.html">Links</a></li>
+			</ul>
+		</div>
+
+		<div id="main">
+		<p class="subhead">Learning</p>
+
+		<p>This is a summary of how to set up and begin experimenting with Perlenspiel.</p>
+
+		<p>The engine has many features not explained here.
+			Consult the <a href="api.html">API documentation</a> for a complete description.</p>
+		<ol class="select">
+			<li><a href="#framework">Set up your programming environment</a></li>
+			<li><a href="#basics">Basic concepts</a></li>
+			<li><a href="#how">How the engine works</a></li>
+			<li><a href="#first">Your first script</a></li>
+			<li><a href="#debug">Using the debugger</a></li>
+			<li><a href="#glyphs">Adding glyphs</a></li>
+		</ol>
+
+		<div class="section">
+			<div id="framework" class="dot">&nbsp;</div>
+			<p class="subhead">1. Set up your programming environment</p>
+
+			<p>Any basic text editor can be used to edit Javascript code.</p>
+
+			<p>However, you should <em>not</em> use a basic text editor for significant programming!</p>
+
+			<p>Your productivity will be greatly magnified by using an integrated development environment (IDE) specifically designed for HTML5/Javascript development.
+				An IDE combines facilities for editing and running code with powerful debugging tools that can save you hours and hours of frustration.</p>
+
+			<p>It can take an entire afternoon to track down an obscure syntax error in your code. A professional IDE will point out such errors
+				<em>as you type them</em>.</p>
+
+			<p>How would you rather spend your time?</p>
+
+			<a href="http://www.jetbrains.com/webstorm/"><img src="images/ws.png" alt="[Webstorm]"></a>
+
+			<p>My current IDE recommendation for Windows-based development is
+				<a href="http://www.jetbrains.com/webstorm/">Webstorm</a> by <a href="http://www.jetbrains.com">Jetbrains</a>.
+				Webstorm is loaded with impressive features that greatly facilitate the development of HTML5/Javascript applications,
+				including Perlenspiel games. If you’ve already used other professional IDEs like Visual Studio or Eclipse, Webstorm will
+				feel very familiar. If you haven’t, Webstorm will serve as a good introduction to what to expect from a good IDE.</p>
+
+			<p>Webstorm is commercial software, but it’s very inexpensive. Students and teachers can buy an academic license for just US$29.00 per seat,
+				an incredible bargain for software this useful.
+				However, schools, colleges and universities can apply for a free license that applies to the entire institution.
+				WPI has such a license. Ask your instructor for details.</p>
+
+			<p>Webstorm supports “live”  debugging in both Firefox and Chrome. Both browsers need a custom extension to enable this feature.
+			Webstorm automatically installs the Firefox extension the first time you need it, but the Chrome extension must be installed
+			manually. To do this, start Chrome and visit the <a href="https://chrome.google.com/webstore/category/apps">Chrome Web Store</a>.
+			Search for “Jetbrains” and install the free Jetbrains IDE Support extension.</p>
+
+			<p>Setting up a new Perlenspiel project with Webstorm is easy:</p>
+
+			<p>1. Create a directory for your project in a convenient place. Name the directory to match the title of your project.</p>
+
+			<p>2. Copy the Perlenspiel devkit files <b>game.html</b> and <b>game.js</b> into your project directory.</p>
+
+			<p>3. In Webstorm, select File->New Project from the main menu. A dialog box will appear.</p>
+
+			<p>4. Press the browse button at the end of the Location field, and navigate to the location of your project folder.
+			The Project Name field will be automatically filled in with the name of your folder.
+			Leave the Project Type field set to Empty Project. Click the OK button.</p>
+
+			<p>5. Webstorm will ask if you want to create your project using existing files. Click the Yes button.</p>
+
+			<p>That's it! Your new project will appear at the top of the file list on the left side of the IDE.
+				Press the + button beside your project name to reveal the <b>game.html</b> and <b>game.js</b> files.
+				Open the <b>game.js</b> file and edit it to create your game.</p>
+
+			<p>To test your work, open the <b>game.html</b> file. Move your cursor near the top-right corner of the editor window.
+			A line of icons representing the browsers available to Webstorm will appear. Click the icon of a browser and your game will launch.</p>
+
+			<p>When your project is finished, you can move it to the cloud by copying your entire project directory to a Web server,
+				and run it by linking to the <b>game.html</b> file.</p>
+
+		</div>
+
+		<div class="section">
+			<div id="basics" class="dot">&nbsp;</div>
+			<p class="subhead">2. Basic concepts</p>
+
+			<p class="subitem">Beads and the grid</p>
+
+			<p>A Perlenspiel page is divided into three areas.</p>
+			<img src="images/grid.png" alt="[Grid]">
+
+			<p>The center of the page displays the <b>grid</b>, a rectangular matrix of colored cells.</p>
+
+			<p>Each cell in the grid is called a <b>bead</b>.
+				You can change the color, transparency, scale and shape of each bead individually.</p>
+
+			<p class="subitem">Bead borders</p>
+
+			<p>By default, each bead on the grid is enclosed in a border.
+				You can individually control the width, color and transparency of the border on each bead.
+				If a bead is square, you can also make each side of the border a different width.</p>
+
+			<p class="subitem">Glyphs</p>
+
+			<p>Beads can contain a single Unicode character or <b>glyph</b>. The character code, color and transparency
+				of each bead's glyph can be specified.</p>
+
+			<p class="subitem">Referencing beads</p>
+
+			<p>The columns and rows on the grid are numbered from zero,
+				starting at the top left corner. Beads are referenced by their column/row position in the grid.
+				So the bead in the top left corner is always bead (0,0), the third bead in the second row is bead (2,1), etc.</p>
+
+			<p>This numbering convention is used for all bead-related commands. Get used to it.</p>
+
+			<p class="subitem">Grid dimensions</p>
+
+			<p>The number of rows and columns in the grid is not fixed.
+				You can specify any horizontal or vertical dimensions from a minimum of 1x1 (a single mighty bead)
+				to a maximum of 32x32.</p>
+
+			<p>You can resize the grid anytime, even in the middle of a game. You can also change its background color.</p>
+
+			<p class="subitem">Status and message lines</p>
+
+			<p>There are also two single-line text boxes, one above and one below the grid.</p>
+
+			<p>The text box above the grid is the <b>status line</b>.
+				You can use the status line to communicate short messages to your players such as high scores,
+				time limits or simple instructions.</p>
+
+			<p>The text box below the grid is the <b>message line</b>.
+				This is used by the Perlenspiel engine to display internal status and error messages.
+				You can't control the text that appears in the message line.</p>
+		</div>
+
+		<div class="section">
+			<div id="how" class="dot">&nbsp;</div>
+			<p class="subhead">3. How the engine works</p>
+
+			<p>Despite its radical simplicity, Perlenspiel actually models the operation of a
+				full-fledged industrial game engine.</p>
+
+			<p>By itself, Perlenspiel is dumb. It knows practically nothing about games or interactivity.
+				All it knows how to do is draw beads in the grid, display text in the status line,
+				and read the mouse, keyboard and/or touchpad. Without a game script, nothing happens.</p>
+
+			<p class="subitem">Game scripts</p>
+
+			<p>Perlenspiel uses the Javascript programming language to control its behavior.
+				Javascript is the most popular and widely-deployed programming language in the world.
+				It is used to control the look and behavior of nearly all of the billions of pages on the World Wide Web.
+				Using the latest HTML5 technology, Javascript is now being used to write complex Web-based applications,
+				including many games. In fact, Perlenspiel is itself written in Javascript!</p>
+
+			<p>With Javascript, you can bring Perlenspiel to life.</p>
+
+			<img src="images/engine.png" alt="[Engine]">
+
+			<p>Whenever the player moves or clicks the mouse, presses a key on the keyboard, or touches the screen,
+				the engine tells Javascript where the cursor is, which bead got clicked or touched, or which key got pressed.</p>
+
+			<p>Javascript can respond by commanding the engine to change the appearance of one or more beads,
+				play sounds, or display a text message in the status line.
+				This <b>event-driven interchange</b> between the Perlenspiel engine and Javascript
+				creates the entire game experience.
+				Change the Javascript, and the behavior of the engine is completely redefined.</p>
+		</div>
+
+		<div class="section">
+			<div id="first" class="dot">&nbsp;</div>
+			<p class="subhead">4. Your first script</p>
+
+			<p>This section is not going to teach you how to program, or the details of Javascript.
+				It's just a quick demonstration of how to edit and run Perlenspiel scripts.</p>
+
+			<p>Using Webstorm, or the IDE of your choice, navigate to your project's <b>game.js</b> file and open it.</p>
+
+			<p>Scroll down a bit until you find some code that looks like this:</p>
+
+			<div class="example">
+				<p>PS.init = function( system, options ) {<br/>
+					<span>&nbsp;&nbsp;&nbsp;</span>"use strict";<br/><br/>
+					<span>&nbsp;&nbsp;&nbsp;</span>// Use PS.gridSize( x, y ) to set the grid to<br/>
+					<span>&nbsp;&nbsp;&nbsp;</span>// the initial dimensions you want (32 x 32 maximum)<br/>
+					<span>&nbsp;&nbsp;&nbsp;</span>// Do this FIRST to avoid problems!<br/>
+					<span>&nbsp;&nbsp;&nbsp;</span>// Otherwise you will get the default 8x8 grid<br/><br/>
+					<span>&nbsp;&nbsp;&nbsp;</span>PS.gridSize ( 8, 8 );<br/><br/>
+					<span>&nbsp;&nbsp;&nbsp;</span>// Add any other initialization code you need here<br/>
+					};</p>
+			</div>
+
+			<p>This function, <a href="events.html#init">PS.init</a>(), is called whenever the player opens a Perlenspiel page.
+				The function currently contains a call to <a href="grid.html#gridsize">PS.gridSize</a>(),
+				which tells the engine what the dimensions of the game grid should be.</p>
+
+			<p>Note that the function name begins with <b>PS.</b> in upper-case letters.
+				All Perlenspiel function names follow this convention.
+				Also note that single-line Javascript comments begin with an adjacent pair of left slashes (<b>//</b>).</p>
+
+			<p>Add the following code after the last comment line:</p>
+
+			<div class="example">
+				<p>PS.init = function ( system, options ) {<br/>
+					<span>&nbsp;&nbsp;&nbsp;</span>"use strict";<br/><br/>
+					<span>&nbsp;&nbsp;&nbsp;</span>// Use PS.gridSize( x, y ) to set the grid to<br/>
+					<span>&nbsp;&nbsp;&nbsp;</span>// the initial dimensions you want (32 x 32 maximum)<br/>
+					<span>&nbsp;&nbsp;&nbsp;</span>// Do this FIRST to avoid problems!<br/>
+					<span>&nbsp;&nbsp;&nbsp;</span>// Otherwise you will get the default 8x8 grid<br/><br/>
+					<span>&nbsp;&nbsp;&nbsp;</span>PS.gridSize ( 8, 8 );<br/><br/>
+					<span>&nbsp;&nbsp;&nbsp;</span>// Add any other initialization code you need here<br/><br/>
+					<span>&nbsp;&nbsp;&nbsp;</span>PS.statusText( "Hello, world!" );<br/>
+					};</p>
+			</div>
+
+			<p>The <a href="status.html#statustext">PS.statusText</a>() function puts a text message in the status line.
+				This call will display the classic "Hello, world!" message when the game is initialized.</p>
+
+			<p>Scroll down a bit more until you find this code:</p>
+
+			<div class="example">
+				<p>PS.touch = function( x, y, data, options ) {<br/>
+					<span>&nbsp;&nbsp;&nbsp;</span>"use strict";<br/><br/>
+					<span>&nbsp;&nbsp;&nbsp;</span>// Uncomment the following line to inspect parameters<br/>
+					<span>&nbsp;&nbsp;&nbsp;</span>// PS.debug( "PS.touch() @ " + x + ", " + y + "\n" );<br/><br/>
+					<span>&nbsp;&nbsp;&nbsp;</span>// Add code here for mouse clicks/touches over a bead<br/>
+					};</p>
+			</div>
+
+			<p>This important function,
+				<a href="events.html#touch">PS.touch</a>(), gets called every time the player clicks on or touches a bead.
+				The <b>x</b> and <b>y</b> parameters indicate the column and row of the bead that was pressed. (Ignore the
+				<b>data</b> parameter for now.)</p>
+
+			<p>Add these two lines of code under the second comment line:</p>
+
+			<div class="example">
+				<p>PS.touch = function( x, y, data, options ) {<br/>
+					<span>&nbsp;&nbsp;&nbsp;</span>"use strict";<br/><br/>
+					<span>&nbsp;&nbsp;&nbsp;</span>// Uncomment the following line to inspect parameters<br/>
+					<span>&nbsp;&nbsp;&nbsp;</span>// PS.debug( "PS.touch() @ " + x + ", " + y + "\n" );<br/><br/>
+					<span>&nbsp;&nbsp;&nbsp;</span>// Add code here for mouse clicks/touches over a bead<br/><br/>
+					<span>&nbsp;&nbsp;&nbsp;</span>PS.color( x, y, PS.COLOR_RED );<br/>
+					<span>&nbsp;&nbsp;&nbsp;</span>PS.audioPlay( "fx_click" );<br/>
+					};</p>
+			</div>
+
+			<p>The command <a href="beads.html#color">PS.color</a>() tells the engine to change the color of a particular bead.
+				The first and second parameters indicate the column and row of the bead to change.
+				In this case, we are specifying the same row and column that was sent to the
+				<a href="events.html#touch">PS.touch</a>() function,
+				so it will always affect the bead that was just clicked.</p>
+
+			<p>The third parameter, <b>PS.COLOR_RED</b>, is the desired color (in this case, red).
+				Note that the color constant begins with <b>PS.</b> and is in upper-case letters.
+				All Perlenspiel constant names follow this convention.</p>
+
+			<p>The function <a href="audio.html#play">PS.audioPlay</a>() commands the engine to play a sound file.</p>
+
+			<p>Once you have made these changes, save the <b>game.js</b> file. Open the <b>game.html</b> file and run it.</p>
+
+			<p>The message <b>Hello, world!</b> should now be visible in the status line.</p>
+
+			<p>Click on any bead on the grid. It should change to red and play a &ldquo;click&rdquo; sound.</p>
+
+			<p>Congratulations. You are now a Perlenspiel engineer.</p>
+		</div>
+
+		<div class="section">
+			<div id="debug" class="dot">&nbsp;</div>
+			<p class="subhead">5. Using the debugger</p>
+
+			<p>When writing any type of program, it's very useful to be able to see what's going on in your code as it runs.
+				The Perlenspiel debugger makes this fairly easy.</p>
+
+			<p>Go back to <b>game.js</b> and remove the <b>//</b> from the beginning of the second comment line:</p>
+
+			<div class="example">
+				<p>PS.touch = function( x, y, data, options ) {<br/>
+					<span>&nbsp;&nbsp;&nbsp;</span>"use strict";<br/><br/>
+					<span>&nbsp;&nbsp;&nbsp;</span>// Uncomment the following line to inspect parameters<br/>
+					<span>&nbsp;&nbsp;&nbsp;</span>PS.debug( "PS.touch() @ " + x + ", " + y + "\n" );<br/><br/>
+					<span>&nbsp;&nbsp;&nbsp;</span>// Add code here for mouse clicks/touches over a bead<br/><br/>
+					<span>&nbsp;&nbsp;&nbsp;</span>PS.color( x, y, PS.COLOR_RED );<br/>
+					<span>&nbsp;&nbsp;&nbsp;</span>PS.audioPlay( "fx_click" );<br/>
+					};</p>
+			</div>
+
+			<p>The <a href="debug.html#debug">PS.debug</a>() command sends a text string to the Perlenspiel debugger, which is
+				a special text box that is normally hidden under the message line.
+				The code in the example uses Javascript's string concatenation syntax (the + sign)
+				to construct a string that reports the x and y position of the bead that was clicked.</p>
+
+			<p>Save the file and run <b>game.html</b> again. When you click on a bead,
+				you should now see its coordinates on the grid being reported in the debugger box.</p>
+
+			<p>If you are using Webstorm to edit your code, you have access to a whole range of
+				professional debugging features, including breakpoints, expression evaluation and variable watching.
+				These capabilities can save you many hours of work. Consult the Webstorm documentation for details.</p>
+
+			<p class="subitem">A handy little shortcut</p>
+
+			<p>It would be very tedious to open and close Perlenspiel every time you make a change in a script.
+				Luckily, you don't have to.</p>
+
+			<p>Return to your editor and change the <a href="beads.html#color">PS.color</a>() command
+				so that the third parameter is <b>PS.COLOR_BLUE</b> instead of <b>PS.COLOR_RED</b>. Save the file.</p>
+
+			<p>Now switch back to your browser and click the Reload icon.
+				This reloads the last page that was opened. The grid will clear as the engine is reset.</p>
+
+			<p>Click on a few beads to verify that they are now turning blue.</p>
+		</div>
+
+		<div class="section">
+			<div id="glyphs" class="dot">&nbsp;</div>
+			<p class="subhead">6. Adding glyphs</p>
+
+			<p>Go back to your <b>game.js</b> file. All the following line to the bottom of the function:</p>
+
+			<div class="example">
+				<p>PS.touch = function( x, y, data, options )<br/>
+					{<br/>
+					<span>&nbsp;&nbsp;&nbsp;</span>"use strict";<br/><br/>
+					<span>&nbsp;&nbsp;&nbsp;</span>// Uncomment the following line to inspect parameters<br/>
+					<span>&nbsp;&nbsp;&nbsp;</span>PS.debug( "PS.touch() @ " + x + ", " + y + "\n" );<br/><br/>
+					<span>&nbsp;&nbsp;&nbsp;</span>// Add code here for mouse clicks/touches over a bead<br/><br/>
+					<span>&nbsp;&nbsp;&nbsp;</span>PS.color( x, y, PS.COLOR_RED );<br/>
+					<span>&nbsp;&nbsp;&nbsp;</span>PS.audioPlay( "fx_click" );<br/>
+					<span>&nbsp;&nbsp;&nbsp;</span>PS.glyph( x, y, "P" );<br/>
+					};</p>
+			</div>
+
+			<p>The
+				<a href="beads.html#glyph">PS.glyph</a>() command tells Perlenspiel to display a character inside the specified bead.
+				The first two arguments are the x and y coordinates of the bead on the grid.
+				The third argument is a string with the character you want to display.
+				In this example, we use the capital letter P.</p>
+
+			<p>Save the script and run it. When you click on the grid, each blue bead should now contain a capital P.</p>
+
+			<p>If you prefer, you can pass an integer in the third parameter of
+				<a href="beads.html#glyph">PS.glyph</a>() instead of a string.
+				The integer should be the Unicode value corresponding to the desired glyph.</p>
+
+			</div>
+
+		</div>
+
+		<div id="footer">
+			<p>Interactive Media and Game Development<br/>
+				Worcester Polytechnic Institute<br/>
+				100 Institute Road, Worcester, MA 01609 USA<br/>
+				<a href="http://imgd.wpi.edu">imgd.wpi.edu</a><br/>&nbsp;</p>
+		</div>
+	</body>
+</html>
