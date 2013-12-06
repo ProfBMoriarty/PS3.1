@@ -12,8 +12,8 @@
 		<link rel="shortcut icon" href="http://users.wpi.edu/~bmoriarty/ps/favicon.png"/>
 		<link rel="apple-touch-icon" href="http://users.wpi.edu/~bmoriarty/ps/apple-touch-icon.png"/>
 		<link href='http://fonts.googleapis.com/css?family=Roboto:400,700,400italic,700italic,100' rel='stylesheet' type='text/css'>
-		<link rel="stylesheet" href="style.css" type="text/css">
-		<script type="text/javascript" src="play.js"></script>
+		<link rel="stylesheet" href="css/style.css" type="text/css">
+		<script type="text/javascript" src="js/play.js"></script>
 	</head>
 	<body onload="PSA.dots();">
 		<div id="header">
@@ -66,12 +66,14 @@
 				</p>
 
 				<p>The text is centered in the status box. If the text is too wide to fit inside the box,
-					the left and right edges of the text are clipped without warning.</p>
+					the right edge of the text is clipped without warning.</p>
 
 				<p>If <b>text</b> is <b>PS.DEFAULT</b> or an empty string (""), the status box is erased.</p>
 
-				<p>If <b>text</b> is <b>PS.CURRENT</b>, or no <b>text</b> is supplied, or a parameter error occurs,
-					the status box text is unchanged.</p>
+				<p>If <b>text</b> is <b>PS.CURRENT</b> or not supplied, the status box text is unchanged.</p>
+
+				<p>If <b>text</b> is not a string, the supplied parameter is converted to a string
+					and displayed.</p>
 
 				<p class="subitem">Return value</p>
 

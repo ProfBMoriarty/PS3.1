@@ -1,7 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="b12e5ae2-2cfa-458c-9c7e-94910f0a0f24" name="Default" comment="" />
+    <list default="true" id="b12e5ae2-2cfa-458c-9c7e-94910f0a0f24" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/codeStyleSettings.xml" />
+      <change type="DELETED" beforePath="C:\Users\bmoriarty\Dropbox\git\PS3.1\site\html\api.html" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\bmoriarty\Dropbox\git\PS3.1\site\html\audio.html" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\bmoriarty\Dropbox\git\PS3.1\site\html\beads.html" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\bmoriarty\Dropbox\git\PS3.1\site\html\colors.html" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\bmoriarty\Dropbox\git\PS3.1\site\html\constants.html" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\bmoriarty\Dropbox\git\PS3.1\site\html\debug.html" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\bmoriarty\Dropbox\git\PS3.1\site\html\download.html" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\bmoriarty\Dropbox\git\PS3.1\site\html\events.html" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\bmoriarty\Dropbox\git\PS3.1\site\html\examples.html" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\bmoriarty\Dropbox\git\PS3.1\site\html\glossary.html" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\bmoriarty\Dropbox\git\PS3.1\site\html\grid.html" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\bmoriarty\Dropbox\git\PS3.1\site\html\images.html" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\bmoriarty\Dropbox\git\PS3.1\site\html\learning.html" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\bmoriarty\Dropbox\git\PS3.1\site\html\links.html" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\bmoriarty\Dropbox\git\PS3.1\site\html\paths.html" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\bmoriarty\Dropbox\git\PS3.1\site\html\sprites.html" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\bmoriarty\Dropbox\git\PS3.1\site\html\status.html" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\bmoriarty\Dropbox\git\PS3.1\site\html\timer.html" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\bmoriarty\Dropbox\git\PS3.1\site\html\utility.html" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/site/index.html" afterPath="$PROJECT_DIR$/site/index.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ps3.1.0.js" afterPath="$PROJECT_DIR$/ps3.1.0.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+    </list>
     <ignored path="PS3.1.iws" />
     <ignored path=".idea/workspace.xml" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -21,12 +45,79 @@
   <component name="FavoritesManager">
     <favorites_list name="PS3.1" />
   </component>
+  <component name="FileEditorManager">
+    <leaf>
+      <file leaf-file-name="links.html" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/site/links.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="21" column="47" selection-start="1450" selection-end="1450" vertical-scroll-proportion="-14.903226" vertical-offset="0" max-vertical-offset="2618">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="paths.html" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/site/paths.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="15" column="47" selection-start="979" selection-end="979" vertical-scroll-proportion="-10.645162" vertical-offset="0" max-vertical-offset="7326">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="sprites.html" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/site/sprites.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="15" column="47" selection-start="971" selection-end="971" vertical-scroll-proportion="-10.645162" vertical-offset="0" max-vertical-offset="11682">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="status.html" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/site/status.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="68" column="49" selection-start="2643" selection-end="2643" vertical-scroll-proportion="0.655704" vertical-offset="858" max-vertical-offset="5434">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
+  </component>
+  <component name="FindManager">
+    <FindUsagesManager>
+      <setting name="OPEN_NEW_TAB" value="false" />
+    </FindUsagesManager>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="GitLogSettings">
     <option name="myDateState">
       <MyDateState />
+    </option>
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="changedFiles">
+      <list>
+        <option value="$PROJECT_DIR$/site/constants.html" />
+        <option value="$PROJECT_DIR$/site/events.html" />
+        <option value="$PROJECT_DIR$/site/examples.html" />
+        <option value="$PROJECT_DIR$/site/glossary.html" />
+        <option value="$PROJECT_DIR$/site/grid.html" />
+        <option value="$PROJECT_DIR$/site/images.html" />
+        <option value="$PROJECT_DIR$/site/learning.html" />
+        <option value="$PROJECT_DIR$/site/links.html" />
+        <option value="$PROJECT_DIR$/site/paths.html" />
+        <option value="$PROJECT_DIR$/site/sprites.html" />
+        <option value="$PROJECT_DIR$/site/timer.html" />
+        <option value="$PROJECT_DIR$/site/utility.html" />
+        <option value="$PROJECT_DIR$/site/download.html" />
+        <option value="$PROJECT_DIR$/ps3.1.0.js" />
+        <option value="$PROJECT_DIR$/site/status.html" />
+        <option value="$PROJECT_DIR$/site/debug.html" />
+      </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
@@ -61,7 +152,6 @@
       <sortByType />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -80,18 +170,70 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="PS3.1" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="PS3.1" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="site" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="options.splitter.main.proportions" value="0.3" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="options.lastSelected" value="vcs.Git" />
-    <property name="options.searchVisible" value="true" />
+    <property name="options.lastSelected" value="preferences.sourceCode.JavaScript" />
+    <property name="FullScreen" value="false" />
     <property name="options.splitter.details.proportions" value="0.2" />
+    <property name="options.searchVisible" value="true" />
   </component>
   <component name="RunManager">
+    <configuration default="true" type="DartUnitRunConfigurationType" factoryName="DartUnit">
+      <option name="VMOptions" />
+      <option name="arguments" />
+      <option name="filePath" />
+      <option name="scope" value="ALL" />
+      <option name="testName" />
+      <method />
+    </configuration>
+    <configuration default="true" type="DartCommandLineRunConfigurationType" factoryName="Dart Command Line Application">
+      <option name="VMOptions" />
+      <option name="arguments" />
+      <option name="filePath" />
+      <option name="name" value="Dart" />
+      <option name="saveOutputToFile" value="false" />
+      <option name="showConsoleOnStdErr" value="false" />
+      <option name="showConsoleOnStdOut" value="false" />
+      <method />
+    </configuration>
+    <configuration default="true" type="JSTestDriver:ConfigurationType" factoryName="JsTestDriver">
+      <setting name="configLocationType" value="CONFIG_FILE" />
+      <setting name="settingsFile" value="" />
+      <setting name="serverType" value="INTERNAL" />
+      <setting name="preferredDebugBrowser" value="CHROME" />
+      <method />
+    </configuration>
+    <configuration default="true" type="JavaScriptTestRunnerKarma" factoryName="Karma" singleton="true" config-file="">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="true" type="JavascriptDebugType" factoryName="JavaScript Debug" singleton="true">
+      <method />
+    </configuration>
+    <configuration default="true" type="NodeJSConfigurationType" factoryName="Node.js" working-dir="">
+      <browser start="false" url="" with-js-debugger="false" />
+      <method />
+    </configuration>
     <list size="0" />
   </component>
   <component name="ShelveChangesManager" show_recycled="false" />
@@ -124,24 +266,24 @@
     <frame x="-4" y="-4" width="1928" height="1164" extended-state="6" />
     <editor active="false" />
     <layout>
-      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.25" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.25" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="JsTestDriver Server" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="JsTestDriver Server" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
   <component name="VcsContentAnnotationSettings">
@@ -154,6 +296,124 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/site/events.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="15" column="43" selection-start="955" selection-end="955" vertical-scroll-proportion="-10.645162" vertical-offset="0" max-vertical-offset="11220">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/site/examples.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="76" column="48" selection-start="3484" selection-end="3484" vertical-scroll-proportion="-22.0" vertical-offset="990" max-vertical-offset="2068">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/site/glossary.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="15" column="47" selection-start="973" selection-end="973" vertical-scroll-proportion="-10.645162" vertical-offset="0" max-vertical-offset="4928">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/site/grid.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="15" column="47" selection-start="965" selection-end="965" vertical-scroll-proportion="-10.645162" vertical-offset="0" max-vertical-offset="7238">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/site/images.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="15" column="47" selection-start="969" selection-end="969" vertical-scroll-proportion="-10.645162" vertical-offset="0" max-vertical-offset="10934">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/site/learning.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="15" column="47" selection-start="961" selection-end="961" vertical-scroll-proportion="-10.645162" vertical-offset="0" max-vertical-offset="8514">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/site/links.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="21" column="47" selection-start="1450" selection-end="1450" vertical-scroll-proportion="-14.903226" vertical-offset="0" max-vertical-offset="2618">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/site/paths.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="15" column="47" selection-start="979" selection-end="979" vertical-scroll-proportion="-10.645162" vertical-offset="0" max-vertical-offset="7326">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/site/sprites.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="15" column="47" selection-start="971" selection-end="971" vertical-scroll-proportion="-10.645162" vertical-offset="0" max-vertical-offset="11682">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/site/js/play.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1188">
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ps3.1.0.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="11144" column="15" selection-start="210065" selection-end="210072" vertical-scroll-proportion="1.0745659" vertical-offset="244116" max-vertical-offset="259336">
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/site/download.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="37" column="53" selection-start="1621" selection-end="1621" vertical-scroll-proportion="0.7235355" vertical-offset="110" max-vertical-offset="2244">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/site/utility.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="15" column="47" selection-start="975" selection-end="975" vertical-scroll-proportion="0.33915725" vertical-offset="0" max-vertical-offset="8712">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/site/timer.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="15" column="47" selection-start="982" selection-end="982" vertical-scroll-proportion="0.33915725" vertical-offset="0" max-vertical-offset="3102">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/site/debug.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="58" column="51" selection-start="2384" selection-end="2384" vertical-scroll-proportion="0.6693712" vertical-offset="616" max-vertical-offset="3102">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/site/status.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="68" column="49" selection-start="2643" selection-end="2643" vertical-scroll-proportion="0.655704" vertical-offset="858" max-vertical-offset="5434">
+          <folding />
+        </state>
+      </provider>
+    </entry>
   </component>
 </project>
 

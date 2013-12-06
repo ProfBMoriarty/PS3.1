@@ -1,4 +1,4 @@
-// ps3.0.9.js for Perlenspiel 3.0
+// ps3.1.0.js for Perlenspiel 3.1
 // Remember to update version number in _system!
 
 /*
@@ -96,10 +96,6 @@ var PS; // Global namespace for public API
 		"c6", "db6", "d6", "eb6", "e6", "f6", "gb6", "g6", "ab6", "a6", "bb6", "b6",
 		"c7", "db7", "d7", "eb7", "e7", "f7", "gb7", "g7", "ab7", "a7", "bb7", "b7"
 	];
-
-	// Flag to reluctantly permit multiline status; remove for 3.1
-
-	var _MULTILINE = true;
 
 	// All system defaults kept in this object
 	// On startup, they are copied into [_defaults] for referencing
@@ -208,8 +204,8 @@ var PS; // Global namespace for public API
 	var _system = {
 		engine : "Perlenspiel",
 		major : 3,
-		minor : 0,
-		revision : 9,
+		minor : 1,
+		revision : 0,
 		host : {
 			app : "Unknown App",
 			version : "?",
@@ -6422,35 +6418,21 @@ var PS; // Global namespace for public API
 
 			// Status line, append to main
 
-			if ( _MULTILINE ) // for compatibility; eliminate in 3.1
+			status = document.createElement( "input" );
+			if ( !status )
 			{
-				status = document.createElement( "p" );
-				if ( !status )
-				{
-					window.alert( errm );
-					return;
-				}
-				status.innerHTML = "Perlenspiel";
+				window.alert( errm );
+				return;
 			}
-			else
+			status.type = "text";
+			status.readonly = "readonly";
+			status.onfocus = function ()
 			{
-				status = document.createElement( "input" );
-				if ( !status )
-				{
-					window.alert( errm );
-					return;
-				}
-				status.type = "text";
-				status.readonly = "readonly";
-				status.onfocus = function ()
-				{
-					this.blur();
-				};
-				status.tabindex = -1;
-				status.value = "Perlenspiel";
-				status.wrap = "soft";
-			}
-
+				this.blur();
+			};
+			status.tabindex = -1;
+			status.value = "Perlenspiel 3.1";
+			status.wrap = "soft";
 			status.id = _STATUS_ID;
 			main.appendChild( status );
 
@@ -8098,14 +8080,10 @@ var PS; // Global namespace for public API
 			}
 
 			str = strP; // prevent arg mutation
-			if ( str !== PS.CURRENT )
+			type = _typeOf( str );
+			if ( ( str !== PS.CURRENT ) && ( type !== "undefined" ) )
 			{
-				type = _typeOf( str );
-				if ( type === "undefined" )
-				{
-					str = "";
-				}
-				else if ( str === PS.DEFAULT )
+				if ( str === PS.DEFAULT )
 				{
 					str = _defaults.status.text;
 				}
@@ -8114,19 +8092,7 @@ var PS; // Global namespace for public API
 					str = str.toString();
 				}
 
-				_status.text = str;
-				if ( _MULTILINE )
-				{
-					if ( str.length < 1 )
-					{
-						str = "&nbsp;";
-					}
-					_status.div.innerHTML = str;
-				}
-				else
-				{
-					_status.div.value = str;
-				}
+				_status.div.value = _status.text = str;
 			}
 
 			return _status.text;

@@ -12,8 +12,8 @@
 		<link rel="shortcut icon" href="http://users.wpi.edu/~bmoriarty/ps/favicon.png"/>
 		<link rel="apple-touch-icon" href="http://users.wpi.edu/~bmoriarty/ps/apple-touch-icon.png"/>
 		<link href='http://fonts.googleapis.com/css?family=Roboto:400,700,400italic,700italic,100' rel='stylesheet' type='text/css'>
-		<link rel="stylesheet" href="style.css" type="text/css">
-		<script type="text/javascript" src="play.js"></script>
+		<link rel="stylesheet" href="css/style.css" type="text/css">
+		<script type="text/javascript" src="js/play.js"></script>
 	</head>
 	<body onload="PSA.dots();">
 		<div id="header">
@@ -56,12 +56,14 @@
 				<p>The string specified in the optional <b>text</b> parameter is
 					<em>appended</em> to the text already in the debugger window (if any).</p>
 
-				<p>If you want the text to terminate with a newline ("\n"), you must include one at the end of the
+				<p>If you want your debugger output to terminate with a newline ("\n"), you must include one at the end of the
 					<b>text</b> string.</p>
 
-				<p>If
-					<b>text</b> is the empty string ("") or not supplied, the debugger window is opened without appending anything.
-				</p>
+				<p>If <b>text</b> is the empty string ("") or not supplied,
+					the debugger window is opened without appending anything.</p>
+
+				<p>If <b>text</b> is not a string, the supplied parameter is converted to a string
+					and displayed.</p>
 
 				<p class="subitem">Return value</p>
 

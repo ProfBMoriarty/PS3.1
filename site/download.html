@@ -12,8 +12,8 @@
 		<link rel="shortcut icon" href="http://users.wpi.edu/~bmoriarty/ps/favicon.png"/>
 		<link rel="apple-touch-icon" href="http://users.wpi.edu/~bmoriarty/ps/apple-touch-icon.png"/>
 		<link href='http://fonts.googleapis.com/css?family=Roboto:400,700,400italic,700italic,100' rel='stylesheet' type='text/css'>
-		<link rel="stylesheet" href="style.css" type="text/css">
-		<script type="text/javascript" src="play.js"></script>
+		<link rel="stylesheet" href="css/style.css" type="text/css">
+		<script type="text/javascript" src="js/play.js"></script>
 	</head>
 	<body onload="PSA.dots();">
 		<div id="header">
@@ -32,15 +32,15 @@
 		<div id="main">
 			<p class="subhead">Download</p>
 
-			<p>Click the arrow to download the file <b>PS.zip</b> (4 KB).</p>
+			<p>Click the arrow to download the file <b>PS3.1.zip</b> (4 KB).</p>
 
 			<p>
-				<a href="PS.zip"><img src="images/arrow.png" alt="[Logo]"></a>&nbsp;<a href="PS.zip">Perlenspiel 3 Devkit</a>
+				<a href="PS3.1.zip"><img src="images/arrow.png" alt="[Logo]"></a>&nbsp;<a href="PS3.1.zip">Perlenspiel 3.1 Devkit</a>
 			</p>
 
-			<p>Extract the archive to any convenient place on a local drive. You'll end up with a directory named <b>PS</b> containing all the files you need.</p>
+			<p>Extract the archive to any convenient place on a local drive. You'll end up with a directory named <b>PS3.1</b> containing all the files you need.</p>
 
-			<p>Keep a backup of the PS directory. You'll need a fresh copy for every new Perlenspiel project.</p>
+			<p>Keep a backup of the PS3.1 directory. You'll need a fresh copy for every new Perlenspiel project.</p>
 
 			<div class="section">
 				<p><strong>Version notes</strong></p>
@@ -48,55 +48,11 @@
 				<p>Email suspected bugs, ideas and comments to bmoriarty [at] wpi [dot] edu.</p>
 
 				<ul>
-					<li><strong>Version 3.0.8</strong> (12.03.13)</li>
-					<ul>
-						<li>A bug prevented variable border widths from working properly. Discovered and fixed by Mark Diehr.</li>
-						<li><a href="images.html#load">PS.imageLoad</a>() now passes <b>PS.ERROR</b> to the
-							<b>exec</b> function if a loading error occurs.</li>
-					</ul>
-					<li><strong>Version 3.0.7</strong> (11.18.13)</li>
-					<ul>
-						<li><a href="images.html#load">PS.imageLoad</a>() now defaults to format 4 instead of format 3.</li>
-						<li>Problems with dubious reporting of sprite collisions have been fixed.</li>
-						<li><a href="events.html#keydown">PS.keyDown</a>() and <a href="events.html#keyup">PS.keyUp</a>() now respond
-							correctly to the enter and backspace keys.</li>
-						<li>Other obscure bug fixes and code improvements.</li>
-					</ul>
-					<li><strong>Version 3.0.6</strong> (11.16.13)</li>
-					<ul>
-						<li>Problems with <a href="events.html#keydown">PS.keyDown</a>() and
-							<a href="events.html#keyup">PS.keyUp</a>() have been fixed.</li>
-						<li>A new utility call, <a href="utility.html#keyrepeat">PS.keyRepeat</a>(),
-							lets you inspect and change the auto-repeat behavior of the keyboard.</li>
-					</ul>
-                    <li><strong>Version 3.0.5</strong> (11.07.13)</li>
-                    <ul>
-                        <li>Issues with <a href="events.html#keydown">PS.keyDown</a>() and <a href="events.html#keyup">PS.keyUp</a>()
-                            were addressed, together with odd status line behavior under Firefox.</li>
-                    </ul>
-					<li><strong>Version 3.0.4</strong> (11.05.13)</li>
-					<ul>
-						<li>Mark Diehr discovered a bug in the alpha blending of bead planes. Fixed.</li>
-					</ul>
-					<li><strong>Version 3.0.3</strong> (11.04.13)</li>
-					<ul>
-						<li>A parameter issue was discovered in <a href="timer.html#start">PS.timerStart</a>(). Fixed.</li>
-					</ul>
-					<li><strong>Version 3.0.2</strong> (10.30.13)</li>
-					<ul>
-						<li>Mark Diehr discovered a drawing bug with Opera browsers. Fixed.</li>
-					</ul>
-					<li><strong>Version 3.0.1</strong> (10.28.13)</li>
-					<ul>
-						<li>Bugs in the code and documentation for <a href="utility.html#applyrect">PS.applyRect</a>() have been fixed.
-							Thanks to Eric Anumba for spotting these issues.</li>
-						<li>Stalled HTML5 audio loads (which seem to occur with annoying frequency under Android) no longer throw an error message.</li>
-					</ul>
-					<li><strong>Version 3.0.0</strong> (10.25.13)</li>
+					<li><strong>Version 3.1.0</strong> (10.25.13)</li>
 					<ul>
 						<li>First release. There will be issues! Report curious behaviors to Professor Moriarty for immediate investigation.</li>
-						<li>Thanks to WPI students Ben Carlson, Patrick Feeney and Ian Fite for their valuable help in preparing
-							Version 3 for release.
+						<li>Thanks to WPI students Ben Carlson, Patrick Feeney and Ian Fite, and my colleague Gary Pollice
+						for their help in preparing Version 3.1 for release.
 						</li>
 						<li>Special thanks to Mark Diehr at <a href="http://www.fullsail.edu">Full Sail</a> for ideas, code and bug fixes.</li>
 					</ul>
@@ -110,7 +66,7 @@
 					<p>Perlenspiel is a scheme by Professor Moriarty (bmoriarty -at- wpi -dot- edu).</p>
 
 					<p>This web site and the Perlenspiel software are
-						Copyright &copy; 2009-13 Worcester Polytechnic Institute.</p>
+						Copyright &copy; 2009-14 Worcester Polytechnic Institute.</p>
 
 					<p>Perlenspiel is open source software, released under the
 						<a href="http://www.opensource.org/licenses/lgpl-3.0.html">GNU LGPL-3.0</a> (Lesser General Public License 3.0).
