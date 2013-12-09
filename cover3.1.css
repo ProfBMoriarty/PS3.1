@@ -176,12 +176,7 @@ body
 {
 	color: #000000;
 	background-color: #FFFFFF;
-	font-family: 'droid', sans-serif;
-}
-
-#outer
-{
-
+	font-family: droid, sans-serif;
 }
 
 #main
@@ -190,7 +185,7 @@ body
 	margin: 0 auto;
 }
 
-#status
+#sts
 {
 	width: 100%;
 	font-size: 18pt;
@@ -199,31 +194,8 @@ body
 	margin-bottom: 16px;
 	border: 0px;
 	box-shadow: none;
-}
-
-.tiny
-{
-	font-size: 9pt;
-}
-
-#debug
-{
-	display: none;
-}
-
-#monitor
-{
-	width: 100%;
-	text-align: left;
-	font-family: monospace;
-	font-size: 12pt;
-	color: #000000;
-	background-color: #FFFFFF;
-	overflow-y: scroll;
-	box-shadow: none;
-/*	box-sizing: border-box;
-	-moz-box-sizing: border-box;
-	-webkit-box-sizing: border-box; */
+	tab-index: -1;
+	wrap: soft;
 }
 
 #footer

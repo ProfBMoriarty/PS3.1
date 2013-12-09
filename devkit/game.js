@@ -44,7 +44,6 @@ PS.init = function( system, options ) {
 	// Otherwise you will get the default 8x8 grid
 
 	PS.gridSize( 8, 8 );
-	PS.statusText("This line is deplorably long.");
 
 	// Add any other initialization code you need here
 };
@@ -145,15 +144,7 @@ PS.keyDown = function( key, shift, ctrl, options ) {
 	"use strict";
 
 	// Uncomment the following line to inspect parameters
-
-//	PS.debug( "DOWN: key = " + key + ", shift = " + shift + "\n" );
-
-//	if ( ( key !== okey ) || ( shift !== oshift ) )
-//	{
-//		okey = key;
-//		oshift = shift;
-//		PS.debug( "DOWN: key = " + key + ", shift = " + shift + "\n" );
-//	}
+	//	PS.debug( "DOWN: key = " + key + ", shift = " + shift + "\n" );
 
 	// Add code here for when a key is pressed
 };
@@ -195,7 +186,7 @@ PS.input = function( sensors, options ) {
 		PS.debug( "sensors.wheel = " + device + "\n" );
 	}
 	*/
-
+	
 	// Add code here for when an input event is detected
 };
 
