@@ -4891,7 +4891,8 @@ var PS; // Global namespace for public API
 
 	function _drawSprite ( s )
 	{
-		var width, height, xmax, ymax, left, top, right, bottom, scolor, x, y, bead, i, bcolor, data, ptr, r, g, b, a;
+		var width, height, xmax, ymax, left, top, right, bottom, srcLeft, srcTop, scolor,
+			x, y, bead, i, bcolor, data, ptr, r, g, b, a;
 
 		width = s.width;
 		height = s.height;
@@ -4903,6 +4904,7 @@ var PS; // Global namespace for public API
 		// Calc actual left/width
 
 		xmax = _grid.x;
+		srcLeft = 0;
 		left = s.x - s.ax;
 		if ( left >= xmax ) // off grid?
 		{
@@ -4916,6 +4918,7 @@ var PS; // Global namespace for public API
 				return;
 			}
 			left = 0;
+			srcLeft = s.width - width;
 		}
 		if ( ( left + width ) > xmax )
 		{
@@ -4926,7 +4929,8 @@ var PS; // Global namespace for public API
 		// Calc actual top/height
 
 		ymax = _grid.y;
-		top = s.y + s.ay;
+		srcTop = 0;
+		top = s.y - s.ay;
 		if ( top >= ymax ) // off grid?
 		{
 			return;
@@ -4939,6 +4943,7 @@ var PS; // Global namespace for public API
 				return;
 			}
 			top = 0;
+			srcTop = s.height - height;
 		}
 		if ( ( top + height ) > ymax )
 		{
@@ -4971,9 +4976,9 @@ var PS; // Global namespace for public API
 		else // image sprite
 		{
 			data = s.image.data;
-			ptr = 0;
 			for ( y = top; y < bottom; y += 1 )
 			{
+				ptr = ( ( srcTop * s.width ) + srcLeft ) * 4;
 				for ( x = left; x < right; x += 1 )
 				{
 					i = x + ( y * xmax ); // get index of bead
@@ -4986,7 +4991,7 @@ var PS; // Global namespace for public API
 						a = data[ ptr + 3 ];
 
 						bcolor = _colorPlane( bead, s.plane );
-						bcolor.rgb = ( r * _RSHIFT ) + ( g + _GSHIFT ) + b;
+						bcolor.rgb = ( r * _RSHIFT ) + ( g * _GSHIFT ) + b;
 						bcolor.r = r;
 						bcolor.g = g;
 						bcolor.b = b;
@@ -4995,6 +5000,7 @@ var PS; // Global namespace for public API
 					}
 					ptr += 4;
 				}
+				srcTop += 1;
 			}
 		}
 	}
@@ -6451,11 +6457,6 @@ var PS; // Global namespace for public API
 			_overGrid = false;
 			_resetCursor();
 
-			grid.addEventListener( "mousedown", _mouseDown, false );
-			grid.addEventListener( "mouseup", _mouseUp, false );
-			grid.addEventListener( "mousemove", _mouseMove, false );
-			grid.addEventListener( "mouseout", _gridOut, false );
-
 			main.appendChild( grid );
 
 			// Footer, append to main
@@ -6506,21 +6507,6 @@ var PS; // Global namespace for public API
 
 			_debugging = false;
 			_debugFocus = false;
-
-			// enable touch events
-
-			if ( _touchScreen )
-			{
-				// init finger & bead to empty
-
-				_currentFinger = _CLEAR;
-				_underBead = _CLEAR;
-
-				document.addEventListener( "touchmove", _touchMove, false );
-				document.addEventListener( "touchstart", _touchStart, false );
-				document.addEventListener( "touchend", _touchEnd, false );
-				document.addEventListener( "touchcancel", _touchEnd, false );
-			}
 
 			// Init keypress variables and arrays
 
@@ -6633,21 +6619,6 @@ var PS; // Global namespace for public API
 					_pressed[ x ] = 0;
 				}
 			};
-
-			if ( window.addEventListener )
-			{
-				document.addEventListener( "keydown", _keyDown, false );
-				document.addEventListener( "keyup", _keyUp, false );
-				window.addEventListener( "DOMMouseScroll", _wheel, false ); // for Firefox
-				window.addEventListener( "mousewheel", _wheel, false ); // for others
-			}
-			else
-			{
-				document.onkeydown = _keyDown;
-				document.onkeyup = _keyUp;
-				window.onmousewheel = _wheel;
-				document.onmousewheel = _wheel; // for IE, maybe
-			}
 
 			ctx = grid.getContext( "2d" );
 
@@ -6876,6 +6847,32 @@ var PS; // Global namespace for public API
 
 			_clockActive = true;
 			PS._clock();
+
+			// Init all event listeners
+
+			grid.addEventListener( "mousedown", _mouseDown, false );
+			grid.addEventListener( "mouseup", _mouseUp, false );
+			grid.addEventListener( "mousemove", _mouseMove, false );
+			grid.addEventListener( "mouseout", _gridOut, false );
+
+			document.addEventListener( "keydown", _keyDown, false );
+			document.addEventListener( "keyup", _keyUp, false );
+
+			window.addEventListener( "DOMMouseScroll", _wheel, false ); // for Firefox
+			window.addEventListener( "mousewheel", _wheel, false ); // for others
+
+			if ( _touchScreen )
+			{
+				// init finger & bead to empty
+
+				_currentFinger = _CLEAR;
+				_underBead = _CLEAR;
+
+				document.addEventListener( "touchmove", _touchMove, false );
+				document.addEventListener( "touchstart", _touchStart, false );
+				document.addEventListener( "touchend", _touchEnd, false );
+				document.addEventListener( "touchcancel", _touchEnd, false );
+			}
 
 			if ( PS.init )
 			{
@@ -9010,7 +9007,7 @@ var PS; // Global namespace for public API
 		imageBlit : function ( imageP, xposP, yposP, regionP )
 		{
 			var fn, args, xmax, ymax, image, xpos, ypos, region, w, h, format, data, type, top, left, width, height, plane,
-				val, wsize, rowptr, ptr, drawx, drawy, y, x, r, g, b, a, rgb, rval, gval, i, bead, color;
+				val, wsize, rowptr, ptr, drawx, drawy, y, x, r, g, b, a, rgb, rval, gval, i, bead, color, any;
 
 			fn = "[PS.imageBlit] ";
 
@@ -9269,7 +9266,7 @@ var PS; // Global namespace for public API
 			}
 
 			wsize = ( w * format ); // size of each image row (calc only once)
-
+			any = false;
 			a = 255; // assume default alpha
 			plane = _grid.plane;
 
@@ -9283,51 +9280,52 @@ var PS; // Global namespace for public API
 				drawx = xpos;
 				for ( x = 0; x < width; x += 1 )
 				{
-					// handle multiplexed rgb
-
-					if ( format < 3 ) // formats 1 and 2
-					{
-						rgb = data[ ptr ];
-
-						// decode multiplex
-
-						r = rgb / _RSHIFT;
-						r = Math.floor( r );
-						rval = r * _RSHIFT;
-
-						g = (rgb - rval) / _GSHIFT;
-						g = Math.floor( g );
-						gval = g * _GSHIFT;
-
-						b = rgb - rval - gval;
-
-						if ( format === 2 )
-						{
-							a = data[ ptr + 1 ];
-						}
-					}
-
-					// handle r g b (a)
-
-					else  // formats 3 and 4
-					{
-						r = data[ptr];
-						g = data[ptr + 1];
-						b = data[ptr + 2];
-						rgb = ( r * _RSHIFT ) + ( g * _GSHIFT ) + b;
-						if ( format === 4 )
-						{
-							a = data[ptr + 3];
-						}
-					}
-
-					// rgb, r, g, b and a are now determined
-
 					i = drawx + ( drawy * xmax ); // get index of bead
 					bead = _beads[ i ];
-					//				PS.debug("drawx = " + drawx + ", drawy = " + drawy + "\n");
 					if ( bead.active )
 					{
+						any = true;
+
+						// handle multiplexed rgb
+
+						if ( format < 3 ) // formats 1 and 2
+						{
+							rgb = data[ ptr ];
+
+							// decode multiplex
+
+							r = rgb / _RSHIFT;
+							r = Math.floor( r );
+							rval = r * _RSHIFT;
+
+							g = (rgb - rval) / _GSHIFT;
+							g = Math.floor( g );
+							gval = g * _GSHIFT;
+
+							b = rgb - rval - gval;
+
+							if ( format === 2 )
+							{
+								a = data[ ptr + 1 ];
+							}
+						}
+
+						// handle r g b (a)
+
+						else  // formats 3 and 4
+						{
+							r = data[ptr];
+							g = data[ptr + 1];
+							b = data[ptr + 2];
+							rgb = ( r * _RSHIFT ) + ( g * _GSHIFT ) + b;
+							if ( format === 4 )
+							{
+								a = data[ptr + 3];
+							}
+						}
+
+						// rgb, r, g, b and a are now determined
+
 						color = _colorPlane( bead, plane );
 						color.r = r;
 						color.g = g;
@@ -9344,6 +9342,10 @@ var PS; // Global namespace for public API
 				rowptr += wsize; // point to start of next row
 			}
 
+			if ( any )
+			{
+				_gridDraw();
+			}
 			return true;
 		},
 
@@ -10036,6 +10038,7 @@ var PS; // Global namespace for public API
 					if ( s.visible && s.placed )
 					{
 						_drawSprite( s );
+						_gridDraw();
 					}
 				}
 			}
@@ -10109,6 +10112,7 @@ var PS; // Global namespace for public API
 					if ( s.visible && s.placed )
 					{
 						_drawSprite( s );
+						_gridDraw();
 					}
 				}
 			}
@@ -10392,6 +10396,7 @@ var PS; // Global namespace for public API
 						{
 							_eraseSprite( s );
 						}
+						_gridDraw();
 					}
 				}
 			}
@@ -10481,6 +10486,7 @@ var PS; // Global namespace for public API
 				{
 					_drawSprite( s );
 					_collisionCheck( s, sprite );
+					_gridDraw();
 				}
 			}
 
@@ -10558,6 +10564,7 @@ var PS; // Global namespace for public API
 					if ( s.visible && s.placed )
 					{
 						_drawSprite( s );
+						_gridDraw();
 					}
 				}
 			}
@@ -10578,7 +10585,7 @@ var PS; // Global namespace for public API
 
 		spriteMove : function ( spriteP, xP, yP )
 		{
-			var fn, args, sprite, x, y, s, type, h_left, h_top, h_width, h_height, v_left, v_top, v_width, v_height;
+			var fn, args, sprite, x, y, s, type, h_left, h_top, h_width, h_height, v_left, v_top, v_width, v_height, any;
 
 			fn = "[PS.spriteMove] ";
 
@@ -10648,6 +10655,8 @@ var PS; // Global namespace for public API
 
 			if ( !s.placed || ( x !== s.x ) || ( y !== s.y ) )
 			{
+				any = false;
+
 				// If no plane assigned, use current
 
 				if ( s.plane < 0 )
@@ -10685,7 +10694,8 @@ var PS; // Global namespace for public API
 
 					if ( h_width >= s.width )
 					{
-						_eraseSprite( s, s.x, s.y, s.width, s.height );
+						any = true;
+						_eraseSprite( s );
 					}
 					else
 					{
@@ -10712,21 +10722,25 @@ var PS; // Global namespace for public API
 
 						if ( v_height >= s.height )
 						{
-							_eraseSprite( s, s.x, s.y, s.width, s.height );
+							any = true;
+							_eraseSprite( s );
 						}
 
 						// Which rects need erasing?
 
 						else if ( v_height < 1 ) // not moving vertically
 						{
+							any = true;
 							_eraseSprite( s, h_left, h_top, h_width, h_height );
 						}
 						else if ( v_width < 1 ) // not moving horizontally
 						{
+							any = true;
 							_eraseSprite( s, v_left, v_top, v_width, v_height );
 						}
 						else // Both must be erased
 						{
+							any = true;
 							v_width -= h_width; // trim v_width
 
 							if ( x > s.x ) // moving right, so move v_left right
@@ -10746,8 +10760,14 @@ var PS; // Global namespace for public API
 
 				if ( s.visible )
 				{
+					any = true;
 					_drawSprite( s );
 					_collisionCheck( s, sprite );
+				}
+
+				if ( any )
+				{
+					_gridDraw();
 				}
 			}
 
@@ -10839,6 +10859,7 @@ var PS; // Global namespace for public API
 				{
 					_eraseSprite( s );
 					_sprites.splice( i, 1 );
+					_gridDraw();
 					return PS.DONE;
 				}
 			}
