@@ -169,13 +169,13 @@ html
 
   /* Sets the color and opacity of the highlight color when a user taps a link or clickable element.
     Set this to an opacity of zero to eliminate the highlight entirely. */
-	-webkit-tap-highlight-color: rgba(0,0,0,0);	
+	-webkit-tap-highlight-color: rgba(0,0,0,0);
 }
 
 body
 {
-	color: #000000;
-	background-color: #FFFFFF;
+	color: #FFFFFF;
+	background-color: #303030;
 	font-family: droid, sans-serif;
 }
 
@@ -196,9 +196,16 @@ body
 	box-shadow: none;
 	tab-index: -1;
 	wrap: soft;
+	background-color: #303030;
+	color: #FFFFFF;
 }
 
-#footer
+#cvr
+{
+	outline: 0;
+}
+
+#ftr
 {
 	width: 100%;
 	font-size: 9pt;

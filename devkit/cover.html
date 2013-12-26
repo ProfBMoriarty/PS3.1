@@ -23,7 +23,7 @@ along with Perlenspiel. If not, see <http://www.gnu.org/licenses/>.
 <head>
 	<title>Perlenspiel 3.1</title>
 	<meta charset="utf-8" />
-	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
 	<meta name="description" content="Perlenspiel 3.1" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 	<meta name="apple-mobile-web-app-capable" content="yes" />
@@ -31,6 +31,7 @@ along with Perlenspiel. If not, see <http://www.gnu.org/licenses/>.
 	<link rel="shortcut icon" href="http://users.wpi.edu/~bmoriarty/ps/favicon.png" />
 	<link rel="apple-touch-icon" href="http://users.wpi.edu/~bmoriarty/ps/apple-touch-icon.png" />
 	<link rel="stylesheet" type="text/css" href="http://users.wpi.edu/~bmoriarty/ps/cover3.1.css">
+	<script type="text/javascript" src="http://users.wpi.edu/~bmoriarty/ps/cover.js"></script>
 </head>
 <body onload="init();">
 	<div id="main">
@@ -44,9 +45,7 @@ along with Perlenspiel. If not, see <http://www.gnu.org/licenses/>.
 		Altering this file in any other way can result in breakage!
 		-->
 		<input id="sts" type="text" readonly="readonly" value="Touch image to play" />
-		<a href="game.html"><img src="cover.png" width=512 height=512 alt="Game"></a>
-		<p id="footer">Perlenspiel 3.1</p>
+		<a id="cvr" href="game.html"><img src="cover.png" width=512 height=512 alt="Game"></a>
 	</div>
-	<script>function init(){var e=document.getElementById('sts');e.onfocus=function(){this.blur();};};</script>
 </body>
 </html>

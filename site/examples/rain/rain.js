@@ -1,4 +1,4 @@
-// Simple Rain Toy for Perlenspiel 3
+// Simple Rain Toy for Perlenspiel 3.1
 // Composed for the edification of students by Brian Moriarty
 // Released under GLPL-3.0
 

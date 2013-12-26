@@ -6240,6 +6240,8 @@ var PS; // Global namespace for public API
 		UNEQUAL : "PS.UNEQUAL",
 		GRID : "PS.GRID",
 		STATUS : "PS.STATUS",
+		HTML5_AUDIO : "PS.HTML5_AUDIO",
+		WEB_AUDIO : "PS.WEB_AUDIO",
 
 		SPRITE_TOUCH : "PS.SPRITE_TOUCH",
 		SPRITE_OVERLAP : "PS.SPRITE_OVERLAP",
@@ -6337,7 +6339,7 @@ var PS; // Global namespace for public API
 
 		_sys : function ()
 		{
-			var fn, errm, i, outer, main, debug, status, grid, footer, monitor, ctx, cnt, bead, snd, str;
+			var fn, errm, i, outer, main, debug, status, grid, footer, monitor, ctx, cnt, bead, result, str;
 
 			fn = "[PS.sys] ";
 			errm = fn + "Invalid element";
@@ -6727,7 +6729,7 @@ var PS; // Global namespace for public API
 
 			// init audio system
 
-			snd = AQ.init(
+			result = AQ.init(
 				{
 					defaultPath : _defaults.audio.path,
 					defaultFileTypes : [ "ogg", "mp3", "wav" ],
@@ -6736,14 +6738,16 @@ var PS; // Global namespace for public API
 					forceHTML5 : true // never use Web Audio; sigh
 				} );
 
-			if ( snd === AQ.ERROR )
+			if ( result.status === AQ.ERROR )
 			{
 				return;
 			}
 
 			// load and lock error sound
 
-			if ( PS.audioLoad( _defaults.audio.error_sound, { path : _defaults.audio.path, lock : true } ) === PS.ERROR )
+			_errorSound = null;
+			result = PS.audioLoad( _defaults.audio.error_sound, { path : _defaults.audio.path, lock : true } );
+			if ( result === PS.ERROR )
 			{
 				_errorSound = null;
 				_warning( "Error sound '" + _defaults.audio.error_sound + "' not loaded" );
@@ -10884,7 +10888,7 @@ var PS; // Global namespace for public API
 		// .onEnd (default: null) = function to call when audio ends, with .data as parameter
 		// .data (default: name) = data that will be passed as parameter to .onLoad/.onEnd functions if present
 		// .lock (default: false) = true to lock channel
-		// Returns channel id if load succeeds, or PS.ERROR on error
+		// Returns channel id or PS.ERROR
 
 		audioLoad : function ( filename, params )
 		{
@@ -10906,7 +10910,7 @@ var PS; // Global namespace for public API
 			{
 				return PS.ERROR;
 			}
-			return result;
+			return result.channel;
 		},
 
 		// PS.audioPlay()
@@ -10960,7 +10964,7 @@ var PS; // Global namespace for public API
 			{
 				return PS.ERROR;
 			}
-			return result;
+			return result.channel;
 		},
 
 		// PS.audioPause()

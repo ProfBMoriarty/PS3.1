@@ -114,14 +114,41 @@
 			<p class="subitem">.onLoad</p>
 
 			<p>The <b>.onLoad</b> property specifies a Javascript function that is called when the audio file specified by
-				<b>filename</b> is actually loaded. It should be a reference to a valid Javascript function expecting one parameter.
+				<b>filename</b> is actually loaded. It should be a reference to a valid Javascript function expecting one parameter.</p>
+
+				<p>The parameter passed to the <b>.onLoad</b> function is an <em>object</em>
+					with the following properties:</p>
+
+				<ul>
+					<li><b>.channel</b> : <em>string</em></li>
+					<li><b>.name</b> : <em>string</em></li>
+					<li><b>.path</b> : <em>string</em></li>
+					<li><b>.duration</b> : <em>integer</em></li>
+					<li><b>.data</b> : user-supplied, or <em>string</em></li>
+				</ul>
+
+				<p>The <b>.channel</b> property is the id of the channel assigned to the file.</p>
+
+				<p>The <b>.name</b> property is the same as the <b>filename</b> parameter.</p>
+
+				<p>The <b>.path</b> property is the complete pathname of the file, including its file extension.</p>
+
+				<p>The <b>.duration</b> property is the duration of the file in milliseconds.</p>
+
+				<p>The <b>.data</b> property is the value specified in the <b>.data</b> property of the <b>params</b> object.
+					If no <b>.data</b> property was specified, this property is set to <b>filename</b>.</p>
+
 				If <b>.onLoad</b> is <em>null</em>, <b>PS.DEFAULT</b> or not supplied, no function is called.</p>
 
 			<p class="subitem">.onEnd</p>
 
-			<p>The <b>.onEnd</b> property specifies a Javascript function that is called each time the audio file specified by
-				<b>filename</b> completes playback (including the end of each loop, if enabled).
-				It should be a reference to a valid Javascript function expecting one parameter.
+			<p>The <b>.onEnd</b> property specifies a Javascript function that is called each time the audio file
+				specified by <b>filename</b> completes playback (including the end of each loop, if enabled).
+				It should be a reference to a valid Javascript function expecting one parameter.</p>
+
+				<p><p>The parameter passed to the <b>.onEnd</b> function is an <em>object</em>
+					with the same properties as those sent to the <b>.onLoad</b> function (see above).</p>
+
 				If <b>.onEnd</b> is <em>null</em>, <b>PS.DEFAULT</b> or not supplied, no function is called.</p>
 
 			<p class="subitem">.data</p>

@@ -1,5 +1,5 @@
 // Quadacity by Wyatt Gray and Jeffrey Thomas
-// Adapted to Perlenspiel 3 by Professor Moriarty
+// Adapted to Perlenspiel 3.1 by Professor Moriarty
 // The following comment lines are for JSLint. Don't remove them!
 
 /*jslint nomen: true, white: true */

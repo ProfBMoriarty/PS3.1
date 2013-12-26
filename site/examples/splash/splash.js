@@ -1,23 +1,6 @@
-// splash.js for Perlenspiel 3.0
-
-/*
-Perlenspiel is a scheme by Professor Moriarty (bmoriarty@wpi.edu).
-Perlenspiel is Copyright © 2009-13 Worcester Polytechnic Institute.
-This file is part of Perlenspiel.
-
-Perlenspiel is free software: you can redistribute it and/or modify
-it under the terms of the GNU Lesser General Public License as published
-by the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Perlenspiel is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-GNU Lesser General Public License for more details.
-
-You may have received a copy of the GNU Lesser General Public License
-along with Perlenspiel. If not, see <http://www.gnu.org/licenses/>.
-*/
+// splash.js for Perlenspiel 3.1
+// Composed for the edification of students by Brian Moriarty
+// Released under GLPL-3.0
 
 // The following comment lines are for JSLint. Don't remove them!
 
