@@ -3,7 +3,7 @@
 
 /*
  Perlenspiel is a scheme by Professor Moriarty (bmoriarty@wpi.edu).
- Perlenspiel is Copyright © 2009-13 Worcester Polytechnic Institute.
+ Perlenspiel is Copyright © 2009-14 Worcester Polytechnic Institute.
  This file is part of Perlenspiel.
 
  Perlenspiel is free software: you can redistribute it and/or modify
@@ -98,7 +98,7 @@ var PS; // Global namespace for public API
 	];
 
 	// All system defaults kept in this object
-	// On startup, they are copied into [_defaults] for referencing
+	// On startup, they are copied into [_DEFAULTS] for referencing
 	// This will (someday) permit defaults to be overwritten by user
 
 	var _DEFAULTS = {
@@ -217,7 +217,7 @@ var PS; // Global namespace for public API
 
 	var _RSTR, _GBSTR, _BASTR, _ASTR; // color strings
 
-	var _defaults; // working copy of _DEFAULTS
+	var _DEFAULTS; // working copy of _DEFAULTS
 
 	var _grid; // master grid object
 	var _beads; // master list of bead objects
@@ -954,7 +954,7 @@ var PS; // Global namespace for public API
 
 		if ( _errorSound )
 		{
-			PS.audioPlay( _defaults.audio.error_sound, { path : _defaults.audio.path } );
+			PS.audioPlay( _DEFAULTS.audio.error_sound, { path : _DEFAULTS.audio.path } );
 		}
 
 		return PS.ERROR;
@@ -1002,7 +1002,7 @@ var PS; // Global namespace for public API
 	{
 		var def;
 
-		def = _defaults.fader;
+		def = _DEFAULTS.fader;
 
 		fader.active = false;
 		fader.kill = false;
@@ -1809,12 +1809,12 @@ var PS; // Global namespace for public API
 	{
 		var color;
 
-		_copy( _defaults.bead, bead ); // copy default properties
+		_copy( _DEFAULTS.bead, bead ); // copy default properties
 
 		// Make a copy of default colors
 
 		color = {};
-		_copy( _defaults.bead.color, color );
+		_copy( _DEFAULTS.bead.color, color );
 
 		bead.planes = [
 			{ height : 0, color : color }
@@ -1860,7 +1860,7 @@ var PS; // Global namespace for public API
 
 		// Make a copy of default colors with zero alpha
 
-		def = _defaults.bead.color;
+		def = _DEFAULTS.bead.color;
 		color = {
 			rgb : def.rgb,
 			r : def.r,
@@ -2868,7 +2868,7 @@ var PS; // Global namespace for public API
 			}
 			else if ( r === PS.DEFAULT )
 			{
-				colors.r = r = _defaults.grid.color.r;
+				colors.r = r = _DEFAULTS.grid.color.r;
 			}
 
 			g = colors.g;
@@ -2878,7 +2878,7 @@ var PS; // Global namespace for public API
 			}
 			else if ( g === PS.DEFAULT )
 			{
-				colors.g = g = _defaults.grid.color.g;
+				colors.g = g = _DEFAULTS.grid.color.g;
 			}
 
 			b = colors.b;
@@ -2888,14 +2888,14 @@ var PS; // Global namespace for public API
 			}
 			else if ( b === PS.DEFAULT )
 			{
-				colors.b = b = _defaults.grid.color.b;
+				colors.b = b = _DEFAULTS.grid.color.b;
 			}
 
 			colors.rgb = (r * _RSHIFT) + (g * _GSHIFT) + b;
 		}
 		else if ( rgb === PS.DEFAULT )
 		{
-			_copy( _defaults.grid.color, colors );
+			_copy( _DEFAULTS.grid.color, colors );
 		}
 
 		// Only change color if different
@@ -3217,7 +3217,7 @@ var PS; // Global namespace for public API
 		id = ( y * _grid.x ) + x;
 		bead = _beads[ id ];
 
-		def = _defaults.bead.color;
+		def = _DEFAULTS.bead.color;
 		current = _colorPlane( bead, _grid.plane );
 		fader = bead.fader;
 
@@ -3444,7 +3444,7 @@ var PS; // Global namespace for public API
 			{
 				if ( rate === PS.DEFAULT )
 				{
-					fader.rate = _defaults.fader.rate;
+					fader.rate = _DEFAULTS.fader.rate;
 				}
 				else
 				{
@@ -3457,7 +3457,7 @@ var PS; // Global namespace for public API
 			{
 				if ( val === PS.DEFAULT )
 				{
-					fader.rgb = _defaults.fader.rgb;
+					fader.rgb = _DEFAULTS.fader.rgb;
 				}
 				else
 				{
@@ -3473,7 +3473,7 @@ var PS; // Global namespace for public API
 			{
 				if ( val === PS.DEFAULT )
 				{
-					fader.onEnd = _defaults.fader.onEnd;
+					fader.onEnd = _DEFAULTS.fader.onEnd;
 				}
 				else
 				{
@@ -3486,7 +3486,7 @@ var PS; // Global namespace for public API
 			{
 				if ( val === PS.DEFAULT )
 				{
-					fader.params = _defaults.fader.params;
+					fader.params = _DEFAULTS.fader.params;
 				}
 				else
 				{
@@ -3556,7 +3556,7 @@ var PS; // Global namespace for public API
 		{
 			if ( data === null )
 			{
-				bead.data = _defaults.bead.data;
+				bead.data = _DEFAULTS.bead.data;
 				bead.fader.data = bead.data;
 				bead.borderFader.data = bead.data;
 				bead.glyphFader.data = bead.data;
@@ -3817,7 +3817,7 @@ var PS; // Global namespace for public API
 				}
 				else if ( r === PS.DEFAULT )
 				{
-					colors.r = r = _defaults.bead.border.color.r;
+					colors.r = r = _DEFAULTS.bead.border.color.r;
 				}
 
 				g = colors.g;
@@ -3827,7 +3827,7 @@ var PS; // Global namespace for public API
 				}
 				else if ( g === PS.DEFAULT )
 				{
-					colors.g = g = _defaults.bead.border.color.g;
+					colors.g = g = _DEFAULTS.bead.border.color.g;
 				}
 
 				b = colors.b;
@@ -3837,7 +3837,7 @@ var PS; // Global namespace for public API
 				}
 				else if ( b === PS.DEFAULT )
 				{
-					colors.b = b = _defaults.bead.border.color.b;
+					colors.b = b = _DEFAULTS.bead.border.color.b;
 				}
 
 				colors.rgb = (r * _RSHIFT) + (g * _GSHIFT) + b;
@@ -3845,7 +3845,7 @@ var PS; // Global namespace for public API
 
 			else if ( rgb === PS.DEFAULT )
 			{
-				_copy( _defaults.bead.border.color, colors );
+				_copy( _DEFAULTS.bead.border.color, colors );
 			}
 
 			// Only change color if different
@@ -3973,7 +3973,7 @@ var PS; // Global namespace for public API
 			{
 				if ( rate === PS.DEFAULT )
 				{
-					fader.rate = _defaults.fader.rate;
+					fader.rate = _DEFAULTS.fader.rate;
 				}
 				else
 				{
@@ -3986,7 +3986,7 @@ var PS; // Global namespace for public API
 			{
 				if ( val === PS.DEFAULT )
 				{
-					fader.rgb = _defaults.fader.rgb;
+					fader.rgb = _DEFAULTS.fader.rgb;
 				}
 				else
 				{
@@ -4002,7 +4002,7 @@ var PS; // Global namespace for public API
 			{
 				if ( val === PS.DEFAULT )
 				{
-					fader.onEnd = _defaults.fader.onEnd;
+					fader.onEnd = _DEFAULTS.fader.onEnd;
 				}
 				else
 				{
@@ -4015,7 +4015,7 @@ var PS; // Global namespace for public API
 			{
 				if ( val === PS.DEFAULT )
 				{
-					fader.params = _defaults.fader.params;
+					fader.params = _DEFAULTS.fader.params;
 				}
 				else
 				{
@@ -4131,7 +4131,7 @@ var PS; // Global namespace for public API
 				}
 				else if ( r === PS.DEFAULT )
 				{
-					colors.r = r = _defaults.bead.glyph.color.r;
+					colors.r = r = _DEFAULTS.bead.glyph.color.r;
 				}
 
 				g = colors.g;
@@ -4141,7 +4141,7 @@ var PS; // Global namespace for public API
 				}
 				else if ( g === PS.DEFAULT )
 				{
-					colors.g = g = _defaults.bead.glyph.color.g;
+					colors.g = g = _DEFAULTS.bead.glyph.color.g;
 				}
 
 				b = colors.b;
@@ -4151,7 +4151,7 @@ var PS; // Global namespace for public API
 				}
 				else if ( b === PS.DEFAULT )
 				{
-					colors.b = b = _defaults.bead.glyph.color.b;
+					colors.b = b = _DEFAULTS.bead.glyph.color.b;
 				}
 
 				colors.rgb = (r * _RSHIFT) + (g * _GSHIFT) + b;
@@ -4159,7 +4159,7 @@ var PS; // Global namespace for public API
 
 			else if ( rgb === PS.DEFAULT )
 			{
-				_copy( _defaults.bead.glyph.color, colors );
+				_copy( _DEFAULTS.bead.glyph.color, colors );
 			}
 
 			// Only change color if different
@@ -4303,7 +4303,7 @@ var PS; // Global namespace for public API
 			{
 				if ( rate === PS.DEFAULT )
 				{
-					fader.rate = _defaults.fader.rate;
+					fader.rate = _DEFAULTS.fader.rate;
 				}
 				else
 				{
@@ -4316,7 +4316,7 @@ var PS; // Global namespace for public API
 			{
 				if ( val === PS.DEFAULT )
 				{
-					fader.rgb = _defaults.fader.rgb;
+					fader.rgb = _DEFAULTS.fader.rgb;
 				}
 				else
 				{
@@ -4332,7 +4332,7 @@ var PS; // Global namespace for public API
 			{
 				if ( val === PS.DEFAULT )
 				{
-					fader.onEnd = _defaults.fader.onEnd;
+					fader.onEnd = _DEFAULTS.fader.onEnd;
 				}
 				else
 				{
@@ -4345,7 +4345,7 @@ var PS; // Global namespace for public API
 			{
 				if ( val === PS.DEFAULT )
 				{
-					fader.params = _defaults.fader.params;
+					fader.params = _DEFAULTS.fader.params;
 				}
 				else
 				{
@@ -6344,11 +6344,6 @@ var PS; // Global namespace for public API
 			fn = "[PS.sys] ";
 			errm = fn + "Invalid element";
 
-			// Establish system defaults
-
-			_defaults = {};
-			_copy( _DEFAULTS, _defaults );
-
 			if ( !String.fromCodePoint )
 			{
 				String.fromCodePoint = _newCodePoint;
@@ -6399,7 +6394,7 @@ var PS; // Global namespace for public API
 			// Main div
 
 			document.body.id = "body";
-			document.body.style.backgroundColor = _defaults.grid.color.str;
+			document.body.style.backgroundColor = _DEFAULTS.grid.color.str;
 
 			outer = document.createElement( "div" );
 			if ( !outer )
@@ -6454,7 +6449,7 @@ var PS; // Global namespace for public API
 			}
 			grid.id = _GRID_ID;
 			grid.width = _CLIENT_SIZE;
-			grid.backgroundColor = _defaults.grid.color.str;
+			grid.backgroundColor = _DEFAULTS.grid.color.str;
 
 			_overGrid = false;
 			_resetCursor();
@@ -6682,7 +6677,7 @@ var PS; // Global namespace for public API
 
 			// copy default properties
 
-			_copy( _defaults.grid, _grid );
+			_copy( _DEFAULTS.grid, _grid );
 
 			// Set up master 32 x 32 bead array
 
@@ -6715,7 +6710,7 @@ var PS; // Global namespace for public API
 
 			// copy default properties
 
-			_copy( _defaults.status, _status );
+			_copy( _DEFAULTS.status, _status );
 
 			// Init sprite engine
 
@@ -6731,7 +6726,7 @@ var PS; // Global namespace for public API
 
 			result = AQ.init(
 				{
-					defaultPath : _defaults.audio.path,
+					defaultPath : _DEFAULTS.audio.path,
 					defaultFileTypes : [ "ogg", "mp3", "wav" ],
 					onAlert : PS.debug,
 					stack : true,
@@ -6746,15 +6741,14 @@ var PS; // Global namespace for public API
 			// load and lock error sound
 
 			_errorSound = null;
-			result = PS.audioLoad( _defaults.audio.error_sound, { path : _defaults.audio.path, lock : true } );
+			result = PS.audioLoad( _DEFAULTS.audio.error_sound, { path : _DEFAULTS.audio.path, lock : true } );
 			if ( result === PS.ERROR )
 			{
-				_errorSound = null;
-				_warning( "Error sound '" + _defaults.audio.error_sound + "' not loaded" );
+				_warning( "Error sound '" + _DEFAULTS.audio.error_sound + "' not loaded" );
 			}
 			else
 			{
-				_errorSound = _defaults.audio.error_sound;
+				_errorSound = _DEFAULTS.audio.error_sound;
 			}
 
 			// Create offscreen canvas for image manipulation
@@ -6842,7 +6836,7 @@ var PS; // Global namespace for public API
 
 			// Set up default grid & grid color
 
-			_gridSize( _defaults.grid.x, _defaults.grid.y );
+			_gridSize( _DEFAULTS.grid.x, _DEFAULTS.grid.y );
 
 			//	Init fader and timer engines, start the global clock
 
@@ -6918,13 +6912,13 @@ var PS; // Global namespace for public API
 			x = xP;
 			y = yP;
 
-			max = _defaults.grid.max;
+			max = _DEFAULTS.grid.max;
 
 			// Check x dimension
 
 			if ( x === PS.DEFAULT )
 			{
-				x = _defaults.grid.x;
+				x = _DEFAULTS.grid.x;
 			}
 			else if ( x === PS.CURRENT )
 			{
@@ -6951,7 +6945,7 @@ var PS; // Global namespace for public API
 
 			if ( y === PS.DEFAULT )
 			{
-				y = _defaults.grid.y;
+				y = _DEFAULTS.grid.y;
 			}
 			else if ( y === PS.CURRENT )
 			{
@@ -7072,7 +7066,7 @@ var PS; // Global namespace for public API
 				{
 					if ( val === PS.DEFAULT )
 					{
-						fader.rate = _defaults.fader.rate;
+						fader.rate = _DEFAULTS.fader.rate;
 					}
 					else if ( type === "number" )
 					{
@@ -7101,7 +7095,7 @@ var PS; // Global namespace for public API
 			{
 				if ( val === PS.DEFAULT )
 				{
-					fader.rgb = _defaults.fader.rgb;
+					fader.rgb = _DEFAULTS.fader.rgb;
 				}
 				else
 				{
@@ -7117,7 +7111,7 @@ var PS; // Global namespace for public API
 			{
 				if ( val === PS.DEFAULT )
 				{
-					fader.onEnd = _defaults.fader.onEnd;
+					fader.onEnd = _DEFAULTS.fader.onEnd;
 				}
 				else
 				{
@@ -7130,7 +7124,7 @@ var PS; // Global namespace for public API
 			{
 				if ( val === PS.DEFAULT )
 				{
-					fader.params = _defaults.fader.params;
+					fader.params = _DEFAULTS.fader.params;
 				}
 				else
 				{
@@ -7219,7 +7213,7 @@ var PS; // Global namespace for public API
 				}
 				else if ( alpha === PS.DEFAULT )
 				{
-					alpha = _defaults.bead.color.a;
+					alpha = _DEFAULTS.bead.color.a;
 				}
 				else
 				{
@@ -7452,7 +7446,7 @@ var PS; // Global namespace for public API
 				}
 				else if ( exec === PS.DEFAULT )
 				{
-					exec = _defaults.bead.exec;
+					exec = _DEFAULTS.bead.exec;
 				}
 				else if ( type !== "function" )
 				{
@@ -7540,7 +7534,7 @@ var PS; // Global namespace for public API
 				return _error( fn + "Too many arguments" );
 			}
 
-			def = _defaults.bead.border;
+			def = _DEFAULTS.bead.border;
 
 			// check a number
 
@@ -7759,7 +7753,7 @@ var PS; // Global namespace for public API
 				}
 				else if ( alpha === PS.DEFAULT )
 				{
-					alpha = _defaults.bead.border.color.a;
+					alpha = _DEFAULTS.bead.border.color.a;
 				}
 				else
 				{
@@ -7952,7 +7946,7 @@ var PS; // Global namespace for public API
 				}
 				else if ( alpha === PS.DEFAULT )
 				{
-					alpha = _defaults.bead.glyph.color.a;
+					alpha = _DEFAULTS.bead.glyph.color.a;
 				}
 				else
 				{
@@ -8003,7 +7997,7 @@ var PS; // Global namespace for public API
 				}
 				else if ( scale === PS.DEFAULT )
 				{
-					scale = _defaults.bead.glyph.scale;
+					scale = _DEFAULTS.bead.glyph.scale;
 				}
 				else
 				{
@@ -8086,7 +8080,7 @@ var PS; // Global namespace for public API
 			{
 				if ( str === PS.DEFAULT )
 				{
-					str = _defaults.status.text;
+					str = _DEFAULTS.status.text;
 				}
 				else if ( type !== "string" )
 				{
@@ -8131,7 +8125,7 @@ var PS; // Global namespace for public API
 					}
 					else if ( r === PS.DEFAULT )
 					{
-						colors.r = r = _defaults.status.color.r;
+						colors.r = r = _DEFAULTS.status.color.r;
 					}
 
 					g = colors.g;
@@ -8141,7 +8135,7 @@ var PS; // Global namespace for public API
 					}
 					else if ( g === PS.DEFAULT )
 					{
-						colors.g = g = _defaults.status.color.g;
+						colors.g = g = _DEFAULTS.status.color.g;
 					}
 
 					b = colors.b;
@@ -8151,14 +8145,14 @@ var PS; // Global namespace for public API
 					}
 					else if ( b === PS.DEFAULT )
 					{
-						colors.b = b = _defaults.status.color.b;
+						colors.b = b = _DEFAULTS.status.color.b;
 					}
 
 					colors.rgb = (r * _RSHIFT) + (g * _GSHIFT) + b;
 				}
 				else if ( rgb === PS.DEFAULT )
 				{
-					_copy( _defaults.status.color, colors );
+					_copy( _DEFAULTS.status.color, colors );
 				}
 
 				// Only change color if different
@@ -8224,7 +8218,7 @@ var PS; // Global namespace for public API
 				{
 					if ( val === PS.DEFAULT )
 					{
-						fader.rate = _defaults.fader.rate;
+						fader.rate = _DEFAULTS.fader.rate;
 					}
 					else if ( type === "number" )
 					{
@@ -8253,7 +8247,7 @@ var PS; // Global namespace for public API
 			{
 				if ( val === PS.DEFAULT )
 				{
-					fader.rgb = _defaults.fader.rgb;
+					fader.rgb = _DEFAULTS.fader.rgb;
 				}
 				else
 				{
@@ -8269,7 +8263,7 @@ var PS; // Global namespace for public API
 			{
 				if ( val === PS.DEFAULT )
 				{
-					fader.onEnd = _defaults.fader.onEnd;
+					fader.onEnd = _DEFAULTS.fader.onEnd;
 				}
 				else
 				{
@@ -8282,7 +8276,7 @@ var PS; // Global namespace for public API
 			{
 				if ( val === PS.DEFAULT )
 				{
-					fader.params = _defaults.fader.params;
+					fader.params = _DEFAULTS.fader.params;
 				}
 				else
 				{
@@ -8607,7 +8601,7 @@ var PS; // Global namespace for public API
 		},
 
 		// PS.applyRect()
-		// Apply a function to a rectanglular region of beads
+		// Apply a function to a rectangular region of beads
 		// [left, top, width, height] define a region inside the grid
 		// [exec] is a function to be called on each bead
 		// Arguments supplied after [exec] are passed as parameters to [exec]
