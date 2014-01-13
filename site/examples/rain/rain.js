@@ -7,9 +7,13 @@
 /*jslint nomen: true, white: true */
 /*global PS */
 
+// The global variable RAIN is used to encapsulate game-specific variables and functions
+// This strategy helps prevent possible clashes with other scripts
+
 var RAIN = {
 
-	// Constants
+	// CONSTANTS
+	// Constant names are all upper-case to make them easy to distinguish
 
 	GRID_WIDTH: 24, // width of grid
 	GRID_HEIGHT: 24, // height of grid
@@ -18,16 +22,21 @@ var RAIN = {
 	BG_COLOR: 0x8080FF, // background color
 	DROP_COLOR: 0x4040FF, // raindrop color
 
-	// Variables
-	// These arrays store the x and y positions of the active raindrops (initially empty)
+	// VARIABLES
+	// Variable names are lower-case with camelCaps
+
+	// These two arrays store the X and Y positions of active drops
 
 	dropsX: [],
 	dropsY: [],
 
-	// Functions
+	// FUNCTIONS
+	// Function names are lower case with camelCaps
 
-	splash : function ( x, y )
-	{
+	// RAIN.splash()
+	// "Splash" a bead when it reaches bottom row
+
+	splash : function ( x, y ) {
 		"use strict";
 
 		// Paint using background color
@@ -39,11 +48,11 @@ var RAIN = {
 		PS.audioPlay( "fx_drip2" );
 	},
 
+	// RAIN.tick()
 	// Called on every clock tick
 	// Used to animate the raindrops
 
-	tick : function ()
-	{
+	tick : function () {
 		"use strict";
 		var len, i, x, y;
 
@@ -51,15 +60,18 @@ var RAIN = {
 
 		len = RAIN.dropsX.length; // number of drops
 
-		// loop through each active raindrop
+		// Loop through each active raindrop
+		// NOTE: We can't use a for/next loop in this case,
+		// because we need to dynamically modify the index variable [i]
+		// Javascript doesn't allow this in for/next loops
 
 		i = 0;
 		while ( i < len )
 		{
 			// get current position of raindrop
 
-			x = RAIN.dropsX[i];
-			y = RAIN.dropsY[i];
+			x = RAIN.dropsX[ i ];
+			y = RAIN.dropsY[ i ];
 
 			// If bead is above last row, erase it and redraw one bead lower
 
@@ -75,7 +87,7 @@ var RAIN = {
 
 				// update its y position in the array
 
-				RAIN.dropsY[i] = y;
+				RAIN.dropsY[ i ] = y;
 
 				// Has drop reached the bottom row yet?
 
@@ -86,7 +98,7 @@ var RAIN = {
 					PS.color( x, y, RAIN.DROP_COLOR );
 				}
 
-				// Drop has reached bottom! Splash it
+				// Drop has reached bottom! Splash it!
 
 				else
 				{
@@ -98,12 +110,10 @@ var RAIN = {
 				i += 1;
 			}
 
-			// Bead is on last row
+			// Bead has already been splashed, so remove it from animation list
 
 			else
 			{
-				// Remove this drop from x/y arrays
-
 				RAIN.dropsX.splice( i, 1 );
 				RAIN.dropsY.splice( i, 1 );
 
@@ -139,15 +149,15 @@ PS.init = function( system, options ) {
 
 	PS.color( PS.ALL, PS.ALL, RAIN.BG_COLOR );
 
-	// Add fader FX to bottom row
-	// This makes the bead flash white when it "splashes"
+	// Add fader FX to bottom row only
+	// This makes the beads flash white when they "splash"
 
 	PS.fade( PS.ALL, RAIN.BOTTOM_ROW, 30, { rgb : PS.COLOR_WHITE } );
 
-	// preload audio files
+	// Load and lock audio files
 
-	PS.audioLoad( "fx_drip1" );
-	PS.audioLoad( "fx_drip2" );
+	PS.audioLoad( "fx_drip1", { lock : true } );
+	PS.audioLoad( "fx_drip2", { lock : true } );
 
 	// Set color and text of title
 
@@ -165,15 +175,15 @@ PS.init = function( system, options ) {
 PS.touch = function( x, y, data, options ) {
 	"use strict";
 
-	// Add x & y position of raindrop to animation list
-
-	RAIN.dropsX.push( x );
-	RAIN.dropsY.push( y );
-
 	// If drop is above bottom row, start a drop
 
 	if ( y < RAIN.BOTTOM_ROW )
 	{
+		// Add initial X and Y positions of raindrop to animation list
+
+		RAIN.dropsX.push( x );
+		RAIN.dropsY.push( y );
+
 		PS.color( x, y, RAIN.DROP_COLOR ); // set the color
 		PS.audioPlay( "fx_drip1" ); // play drip sound
 	}

@@ -30,15 +30,10 @@ function init ()
 	var e, m, f;
 
 	e = document.getElementById( 'sts' );
-	e.onfocus = function ()
-	{
-		this.blur();
-	};
-
+	e.onfocus = function () { this.blur(); };
 	f = document.createElement( "p" );
 	f.id = "ftr";
 	f.innerHTML = "Perlenspiel 3.1";
-
 	m = document.getElementById( 'main' )
 	m.appendChild( f );
 };

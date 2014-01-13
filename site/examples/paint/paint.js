@@ -7,9 +7,13 @@
 /*jslint nomen: true, white: true */
 /*global PS */
 
+// The global variable PAINT is used to encapsulate most game-specific variables and functions
+// This strategy helps prevent possible clashes with other scripts
+
 var PAINT = {
 
-	// Constants
+	// CONSTANTS
+	// Constant names are all upper-case to make them easy to distinguish
 
 	WIDTH: 16, // width of grid
 	HEIGHT: 17, // height of grid (one extra row for palette)
@@ -17,7 +21,7 @@ var PAINT = {
 	WHITE: 8, // x-position of white in palette
 	ERASE_X: 15, // x-position of X in palette
 
-	// the palette colors, scientifically chosen!
+	// The palette colors, scientifically chosen! :)
 
 	COLORS: [
 		0xFF0000, 0xFF8000, 0xFFFF00, 0x00C000, 0x00FFFF,
@@ -25,7 +29,8 @@ var PAINT = {
 		0xA0A0A0, 0x808080, 0x606060, 0x404040, 0x000000
 	],
 
-	// Variables
+	// VARIABLES
+	// Variable names are lower-case with camelCaps
 
 	current: 8, // x-pos of current palette selection
 	color: PS.COLOR_WHITE, // color of current palette selection
@@ -33,10 +38,13 @@ var PAINT = {
 	dragging: false, // true if dragging brush
 	prompt: false, // true if instructions displayed
 
-	// Functions
+	// FUNCTIONS
+	// Function names are lower case with camelCaps
 
-	select : function ( x, y, data )
-	{
+	// PAINT.select ( x, y, data )
+	// Selects a new color for painting
+
+	select : function ( x, y, data ) {
 		"use strict";
 
 		// activate border if changing selection
@@ -51,10 +59,10 @@ var PAINT = {
 		}
 	},
 
-// Clear the canvas
+	// PAINT.reset ()
+	// Clears the canvas, except the bottom row
 
-	reset : function ()
-	{
+	reset : function () {
 		"use strict";
 		var i;
 
@@ -78,10 +86,10 @@ PS.init = function( system, options ) {
 	PS.gridSize( PAINT.WIDTH, PAINT.HEIGHT );
 	PS.border( PS.ALL, PS.ALL, 0 ); // disable all borders
 
-	// preload sounds
+	// Load and lock sounds
 
-	PS.audioLoad( "fx_click" );
-	PS.audioLoad( "fx_pop" );
+	PS.audioLoad( "fx_click", { lock : true } );
+	PS.audioLoad( "fx_pop", { lock : true } );
 
 	// Draw palette
 
@@ -94,7 +102,7 @@ PS.init = function( system, options ) {
 		PS.data( i, lasty, color ); // also store color as bead data
 		PS.exec( i, lasty, PAINT.select ); // call PAINT.select when clicked
 
-		// set border color according to position
+		// Set border color according to palette position
 
 		if ( i < 12 )
 		{
@@ -107,14 +115,14 @@ PS.init = function( system, options ) {
 		PS.borderColor( i, lasty, color );
 	}
 
-	// set up reset button
+	// Set up reset button
 
 	PAINT.ERASE_X = lastx; // remember the x-position
 	PS.glyphColor( lastx, lasty, PS.COLOR_BLACK );
 	PS.glyph( lastx, lasty, "X" );
 	PS.exec( lastx, lasty, PAINT.reset ); // call PAINT.Reset when clicked
 
-	// start with white selected
+	// Start with white selected
 
 	PS.border( PAINT.WHITE, PAINT.PALETTE_ROW, 2 );
 	PAINT.current = PAINT.WHITE;

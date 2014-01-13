@@ -36,12 +36,13 @@ var AQ; // Global namespace for public API
 		loop : false,
 		lock : false,
 		onLoad : null,
+		onPlay : null,
 		onEnd : null,
 		data : 0
 	};
 
-	var _PREFIX_BUFFER = "buffer_";
-	var _PREFIX_CHANNEL = "channel_";
+	var _PREFIX_BUFFER = "bf_";
+	var _PREFIX_CHANNEL = "ch_";
 
 	// Channel modes
 
@@ -51,11 +52,11 @@ var AQ; // Global namespace for public API
 	var _CHANNEL_PLAYING = "PLAYING";
 	var _CHANNEL_PAUSED = "PAUSED";
 
-	/*
+	// Web Audio buffer states
+
 	var _WEBAUDIO_UNSCHEDULED_STATE = 0;
 	var _WEBAUDIO_SCHEDULED_STATE = 1;
 	var _WEBAUDIO_PLAYING_STATE = 2;
-	*/
 	var _WEBAUDIO_FINISHED_STATE = 3;
 
 	// These shared globals are set up by init()
@@ -94,6 +95,7 @@ var AQ; // Global namespace for public API
 
 	var _loadExec = null;
 	var _playExec = null;
+	var _playChannelExec = null;
 	var _pauseExec = null;
 	var _stopExec = null;
 
@@ -129,6 +131,24 @@ var AQ; // Global namespace for public API
 		}
 
 		return type;
+	}
+
+	// _endEvent( event )
+	// Properly terminates a DOM event
+
+	function _endEvent ( event )
+	{
+		if ( event.stopPropagation )
+		{
+			event.stopPropagation();
+		}
+		else
+		{
+			event.cancelBubble = true;
+		}
+
+		event.returnValue = false;
+		return false;
 	}
 
 	// Report a debug string through user's onAlert function if available
@@ -378,7 +398,7 @@ var AQ; // Global namespace for public API
 				}
 				else if ( val === null )
 				{
-				   val = false;
+					val = false;
 				}
 				else if ( type === "number" )
 				{
@@ -543,6 +563,23 @@ var AQ; // Global namespace for public API
 			current.onLoad = val;
 		}
 
+		// check .onPlay property
+
+		val = changes.onPlay;
+		type = _typeOf( val );
+		if ( type !== "undefined" )
+		{
+			if ( val === AQ.DEFAULT )
+			{
+				val = _DEFAULT.onPlay;
+			}
+			else if ( type !== "function" )
+			{
+				return _error( fn + ".onPlay property not a function" );
+			}
+			current.onPlay = val;
+		}
+
 		// check .onEnd property
 
 		val = changes.onEnd;
@@ -580,9 +617,16 @@ var AQ; // Global namespace for public API
 	// Web Audio Support
 	// -----------------
 
-	function _stopChannel ( channel )
+	function _webStopChannel ( channel )
 	{
-		var source, type;
+		var fn, source, type;
+
+		fn = "[_webStopChannel] ";
+
+		if ( _MONITOR )
+		{
+			_debug ( fn + channel.id );
+		}
 
 		source = channel.source;
 		if ( source && ( source.playbackState !== _WEBAUDIO_FINISHED_STATE ) ) // if not finished, pause it
@@ -590,9 +634,8 @@ var AQ; // Global namespace for public API
 			if ( channel.thandle )
 			{
 				window.clearTimeout( channel.thandle );
-				channel.thandle = null;
+//				channel.thandle = null;
 			}
-
 			type = _typeOf ( source.stop );
 			if ( type !== "undefined" )
 			{
@@ -602,13 +645,14 @@ var AQ; // Global namespace for public API
 			{
 				source.noteOff( 0 ); // deprecated!
 			}
+
+			channel.status = _CHANNEL_READY;
 		}
-		return AQ.DONE;
 	}
 
 	// Generate a channel id
 
-	function _assignChannel ()
+	function _webAssignChannel ()
 	{
 		var id;
 
@@ -617,15 +661,15 @@ var AQ; // Global namespace for public API
 		return id;
 	}
 
-	// _playBuffer()
+	// _webPlayBuffer()
 	// Play file in [buffer] with optional [offset]
 	// Returns channel id
 
-	function _playBuffer ( buffer, offset )
+	function _webPlayBuffer ( buffer, offset )
 	{
-		var fn, ctx, source, gainNode, duration, timeout, id, channel, type;
+		var fn, ctx, source, gainNode, duration, timeout, id, channel, type, params, exec;
 
-		fn = "[_playBuffer] ";
+		fn = "[_webPlayBuffer] ";
 
 		ctx = _context;
 
@@ -668,7 +712,7 @@ var AQ; // Global namespace for public API
 
 		if ( !buffer.channel_id )
 		{
-			buffer.channel_id = _assignChannel();
+			buffer.channel_id = _webAssignChannel();
 		}
 		id = buffer.channel_id;
 
@@ -689,9 +733,7 @@ var AQ; // Global namespace for public API
 
 		channel.thandle = window.setTimeout( function ()
 		{
-			var fn, len, i, channel, buffer, params, exec;
-
-			fn = "[Web Audio .onDone] ";
+			var len, i, buffer;
 
 			// find the channel
 
@@ -703,18 +745,20 @@ var AQ; // Global namespace for public API
 				{
 					if ( _MONITOR )
 					{
-						_debug( fn + "Ending " + id );
+						_debug( fn + "Ending " + id + ": " + params.pathname );
 					}
 
-					_stopChannel( channel );
-
-					// call user onDone function if valid
+					// call user onEnd function if valid
 
 					buffer = channel.buffer;
 					params = buffer.params;
-					exec = params.onDone;
+					exec = params.onEnd;
 					if ( exec && ( typeof exec === "function" ) )
 					{
+						if ( _MONITOR )
+						{
+							_debug( fn + "Calling user .onEnd on " + id + ": " + params.pathname );
+						}
 						try
 						{
 							exec( {
@@ -727,19 +771,19 @@ var AQ; // Global namespace for public API
 						}
 						catch ( err )
 						{
-							_errorCatch( fn + ".onDone error [" + err.message + "]", err );
+							_errorCatch( fn + "User .onEnd failed on " + id + ": " +
+								params.pathname + " [" + err.message + "]", err );
 						}
 					}
 
-					// delete the channel last (why? who knows?)
-
+					_webStopChannel( channel );
 					_channels.splice( i, 1 );
 
 					// restart if looping
 
 					if ( params.loop )
 					{
-						_playBuffer( buffer, 0 ); // fix offset later
+						_webPlayBuffer( buffer, 0 ); // fix offset later
 					}
 					return;
 				}
@@ -765,17 +809,44 @@ var AQ; // Global namespace for public API
 			source.noteGrainOn( 0, offset, duration ); // this call is deprecated!
 		}
 
+		// Handle onPlay function if present
+
+		params = buffer.params;
+		exec = params.onPlay;
+		if ( exec && ( typeof exec === "function" ) )
+		{
+			if ( _MONITOR )
+			{
+				_debug( fn + "Calling user .onPlay for " + buffer.channel_id + ": " + params.pathname );
+			}
+			try
+			{
+				exec( {
+					channel : buffer.channel_id,
+					name : params.name,
+					path : params.pathname,
+					duration : buffer.duration,
+					data : params.data
+				} );
+			}
+			catch ( err )
+			{
+				_errorCatch( fn + "User .onPlay failed on " + buffer.channel_id + ": " +
+					params.pathname + " [" + err.message + "]", err );
+			}
+		}
+
 		return id;
 	}
 
 	// Load file per [params]
 	// Return assigned channel id
 
-	function _loadWebAudio ( params )
+	function _webLoad ( params )
 	{
 		var fn, len, i, buffer, id, request;
 
-		fn = "[_loadWebAudio] ";
+		fn = "[_webLoad] ";
 
 		// see if this file is already loaded
 
@@ -787,7 +858,7 @@ var AQ; // Global namespace for public API
 			{
 				if ( _MONITOR )
 				{
-					_debug( fn + params.pathname + " already loaded in " + buffer.id );
+					_debug( fn + params.pathname + " found in " + buffer.id );
 				}
 				return buffer.channel_id;
 			}
@@ -800,7 +871,7 @@ var AQ; // Global namespace for public API
 
 		buffer = {
 			id : id,
-			channel_id : _assignChannel(), // pre-assign the channel id
+			channel_id : _webAssignChannel(), // pre-assign the channel id
 			audio : null, // will get this when loaded
 			duration : 0, // this too
 			params : params
@@ -831,14 +902,15 @@ var AQ; // Global namespace for public API
 				{
 					var exec;
 
-					if ( _MONITOR )
-					{
-						_debug( fn + "Decoded " + params.pathname + " in " + buffer.id );
-					}
-
 					buffer.audio = audio; // save decoded audio in buffer
 					buffer.duration = Math.floor( audio.duration * 1000 ); // convert to milliseconds
 					_buffers.push( buffer ); // save buffer object
+
+					if ( _MONITOR )
+					{
+						_debug( fn + "Decoded " + params.pathname + " in " + buffer.id +
+							" (" + buffer.duration + " ms)" );
+					}
 
 					// Call .onLoad function if present
 
@@ -848,7 +920,7 @@ var AQ; // Global namespace for public API
 						params.onLoad = null; // make sure it doesn't get called again!
 						if ( _MONITOR )
 						{
-							_debug( fn + "Calling .onLoad for " + buffer.id );
+							_debug( fn + "Calling user .onLoad for " + buffer.channel_id + ": " + params.pathname );
 						}
 						try
 						{
@@ -862,7 +934,8 @@ var AQ; // Global namespace for public API
 						}
 						catch ( err )
 						{
-							_errorCatch( fn + ".onLoad failed @ " + params.pathname + " [" + err.message + "]", err );
+							_errorCatch( fn + "User .onLoad failed on " + buffer.channel_id + ": " +
+								params.pathname + " [" + err.message + "]", err );
 						}
 					}
 
@@ -872,9 +945,9 @@ var AQ; // Global namespace for public API
 					{
 						if ( _MONITOR )
 						{
-							_debug( fn + "Autoplaying " + buffer.id );
+							_debug( fn + "Autoplaying " + buffer.id + " :" + params.pathname );
 						}
-						_playBuffer( buffer );
+						_webPlayBuffer( buffer );
 					}
 
 				},
@@ -891,15 +964,20 @@ var AQ; // Global namespace for public API
 		}
 		catch ( err2 )
 		{
-			return _errorCatch( fn + "XMLHttpRequest failed @ " + params.pathname + " [" + err2.message + "]", err2 );
+			return _errorCatch( fn + "XMLHttpRequest failed: " + params.pathname + " [" + err2.message + "]", err2 );
 		}
 
 		return buffer.channel_id;
 	}
 
-	function _playWebAudio ( params )
+	// _webPlay ( params )
+	// Returns same id if paused, NEW id if restarted, else silent AQ.ERROR
+
+	function _webPlay ( params )
 	{
-		var len, i, buffer;
+		var fn, len, i, buffer;
+
+		fn = "[_webPlay] ";
 
 		len = _buffers.length;
 		for ( i = 0; i < len; i += 1 )
@@ -907,21 +985,54 @@ var AQ; // Global namespace for public API
 			buffer = _buffers[ i ];
 			if ( buffer.params.pathname === params.pathname ) // found it!
 			{
-				return _playBuffer( buffer );
+				if ( _MONITOR )
+				{
+					_debug( fn + "Found " + params.pathname );
+				}
+				return _webPlayBuffer( buffer );
 			}
 		}
 
+		if ( _MONITOR )
+		{
+			_debug( fn + params.pathname + " unavailable; loading" );
+		}
+
 		params.autoplay = true;
-		return _loadWebAudio( params );
+		return _webLoad( params );
 	}
 
-	// _pauseWebAudio
+	// _webPlayChannel ( id )
+	// Returns same id if paused, NEW id if restarted, else silent AQ.ERROR
+
+	function _webPlayChannel ( id )
+	{
+		var fn, len, i, buffer;
+
+		fn = "[_webPlayChannel] ";
+
+		len = _buffers.length;
+		for ( i = 0; i < len; i += 1 )
+		{
+			buffer = _buffers[ i ];
+			if ( buffer.channel_id === id ) // found it!
+			{
+				return _webPlayBuffer( buffer );
+			}
+		}
+
+		return _error( fn + id + " not found" );
+	}
+
+	// _webPause
 	// [id] is a channel id
 	// Returns same id if paused, NEW id if restarted, else silent AQ.ERROR
 
-	function _pauseWebAudio ( id )
+	function _webPause ( id )
 	{
-		var len, i, channel, buffer, source, ptime, type;
+		var fn, len, i, channel, buffer, source, ptime, type;
+
+		fn = "[_webPause] ";
 
 		len = _channels.length;
 		for ( i = 0; i < len; i += 1 )
@@ -935,7 +1046,7 @@ var AQ; // Global namespace for public API
 				if ( ( ptime > 0 ) && ( channel.status === _CHANNEL_PAUSED ) ) // if paused, restart
 				{
 					_channels.splice( i, 1 ); // remove this channel
-					return _playBuffer( buffer, ptime ); // restart on new channel
+					return _webPlayBuffer( buffer, ptime ); // restart on new channel
 				}
 
 				// if channel not finished, stop it
@@ -973,12 +1084,19 @@ var AQ; // Global namespace for public API
 			}
 		}
 
+		if ( _MONITOR )
+		{
+			_debug( fn + id + " not found" );
+		}
+
 		return AQ.ERROR; // fail silently
 	}
 
-	function _stopWebAudio ( id )
+	function _webStop ( id )
 	{
-		var len, i, channel;
+		var fn, len, i, channel;
+
+		fn = "[_webStop] ";
 
 		len = _channels.length;
 		for ( i = 0; i < len; i += 1 )
@@ -986,23 +1104,29 @@ var AQ; // Global namespace for public API
 			channel = _channels[ i ];
 			if ( channel.id === id )
 			{
-				_stopChannel( channel );
+				_webStopChannel( channel );
 				_channels.splice( i, 1 ); // delete this channel
 				return AQ.DONE;
 			}
 		}
 
+		if ( _MONITOR )
+		{
+			_debug( fn + id + " not found" );
+		}
+
 		return AQ.ERROR; // fail silently
 	}
 
-	function _initWebAudio ()
+	function _webInit ()
 	{
 		// set up executives
 
-		_loadExec = _loadWebAudio;
-		_playExec = _playWebAudio;
-		_pauseExec = _pauseWebAudio;
-		_stopExec = _stopWebAudio;
+		_loadExec = _webLoad;
+		_playExec = _webPlay;
+		_playChannelExec = _webPlayChannel;
+		_pauseExec = _webPause;
+		_stopExec = _webStop;
 
 		return AQ.WEB_AUDIO;
 	}
@@ -1013,13 +1137,14 @@ var AQ; // Global namespace for public API
 
 	// HTML5 Audio onError handler
 
-	function _onErrorHTML5 ( event )
+	function _htmlOnError ( event )
 	{
-		var fn, i, channel, c, str;
+		var fn, e, i, channel, c, str;
 
-		fn = "[_onErrorHTML5] ";
+		fn = "[_htmlOnError] ";
 
-		i = this.getAttribute( "data-channel" );
+		e = event.currentTarget;
+		i = e.getAttribute( "data-channel" );
 		i = parseInt( i, 10 );
 		channel = _channels[ i ];
 
@@ -1043,17 +1168,18 @@ var AQ; // Global namespace for public API
 				break;
 		}
 
-		return _error( fn + "Audio error " + c + " [" + str + "] : " + channel.params.pathname );
+		_error( fn + str + " @ " + channel.id + ": " + channel.params.pathname );
+		return _endEvent( event );
 	}
 
 	// HTML5 Audio onStalled event handler
 	// Called by browser if file stalls during loading
 
-	function _onStalledHTML5 ()
+	function _htmlOnStalled ( event )
 	{
-		var fn, i, channel;
+		var fn, e, i, channel;
 
-		fn = "[_onStalledHTML5] ";
+		fn = "[_htmlOnStalled] ";
 
 		// Android always seems to stall ...
 
@@ -1061,24 +1187,27 @@ var AQ; // Global namespace for public API
 		{
 			// Retrieve associated channel index
 
-			i = this.getAttribute( "data-channel" );
+			e = event.currentTarget;
+			i = e.getAttribute( "data-channel" );
 			i = parseInt( i, 10 );
 			channel = _channels[ i ];
-
-			_debug( fn + "Channel " + channel.id + " stalled: " + channel.params.pathname );
+			_debug( fn + channel.id + ": " + channel.params.pathname );
 		}
+		return _endEvent( event );
 	}
 
-	// _playHTLM5Channel()
-	// Plays [channel] using [params] parameters
+	// _htmlStartChannel()
+	// Starts [channel] using optional [params]
 
-	function _playHTML5Channel ( channel, params )
+	function _htmlStartChannel ( channel, params )
 	{
-		var audio, val, type;
+		var fn, audio, val, type;
+
+		fn = "[_htmlStartChannel] ";
 
 		if ( _MONITOR )
 		{
-			_debug( "Playing " + channel.id + ": " + params.pathname );
+			_debug( fn + "Playing " + channel.id );
 		}
 
 		channel.status = _CHANNEL_PLAYING;
@@ -1130,23 +1259,27 @@ var AQ; // Global namespace for public API
 
 	// HTML5 Audio onLoad handler
 
-	function _onLoadHTML5 ()
+	function _htmlOnLoad ( event )
 	{
-		var fn, i, channel, params, exec;
+		var fn, e, i, channel, params, exec;
 
-		fn = "[_onLoadHTML5] ";
+		fn = "[_htmlOnLoad] ";
 
-		i = this.getAttribute( "data-channel" );
+		e = event.currentTarget;
+		i = e.getAttribute( "data-channel" );
 		i = parseInt( i, 10 );
 		channel = _channels[ i ];
+		channel.status = _CHANNEL_READY;
 		params = channel.params;
 
 		if ( _MONITOR )
 		{
-			_debug( "Loaded " + channel.id + ": " + params.pathname );
+			_debug( fn + channel.id + ": " + params.pathname );
 		}
 
-		channel.audio.removeEventListener( "canplaythrough", _onLoadHTML5, false ); // must be removed after initial load!
+		// NOTE: Safari doesn't use canplaythrough event!
+
+		channel.audio.removeEventListener( "canplaythrough", _htmlOnLoad, false ); // must be removed after initial load!
 
 		// Call .onLoad function if present
 
@@ -1154,6 +1287,10 @@ var AQ; // Global namespace for public API
 		if ( exec && ( typeof exec === "function" ) )
 		{
 			params.onLoad = null; // make sure it doesn't get called again!
+			if ( _MONITOR )
+			{
+				_debug( fn + "Calling user .onLoad on " + channel.id + ": " + params.pathname );
+			}
 			try
 			{
 				exec( {
@@ -1166,8 +1303,8 @@ var AQ; // Global namespace for public API
 			}
 			catch ( err )
 			{
-				_errorCatch( fn + "HTML5 load failed @ " + params.pathname + " [" + err.message + "]", err );
-				return;
+				_errorCatch( fn + "User .onLoad failed on " + channel.id + ": " + params.pathname + " [" + err.message + "]", err );
+				return _endEvent( event );
 			}
 		}
 
@@ -1177,43 +1314,47 @@ var AQ; // Global namespace for public API
 		{
 			if ( _MONITOR )
 			{
-				_debug( "Autoplaying " + channel.id + " on load: " + channel.params.pathname );
+				_debug( fn + "Autoplaying " + channel.id );
 			}
 
 			params.autoplay = false; // only autoplay once!
-			_playHTML5Channel( channel, params );
+			_htmlStartChannel( channel, params );
 		}
-		else
-		{
-			channel.status = _CHANNEL_READY;
-		}
+
+		return _endEvent( event );
 	}
 
-	// HTML5 Audio onEnd handler
+	// HTML5 Audio play handler
 
-	function _onDoneHTML5 ()
+	function _htmlOnPlay ( event )
 	{
-		var fn, i, channel, params, exec;
+		var fn, e, i, channel, params, exec;
 
-		fn = "[_onDoneHTML5] ";
+		fn = "[_htmlOnPlay] ";
 
-		i = this.getAttribute( "data-channel" );
+		e = event.currentTarget;
+		i = e.getAttribute( "data-channel" );
 		i = parseInt( i, 10 );
 		channel = _channels[ i ];
 		params = channel.params;
 
 		if ( _MONITOR )
 		{
-			_debug( "Ending " + channel.id + ": " + params.pathname );
+			_debug( fn + channel.id + ": " + params.pathname + " (" +
+				channel.duration + "ms)"  );
 		}
 
-		channel.status = _CHANNEL_READY;
+//		channel.audio.removeEventListener( "play", _htmlOnPlay, false ); // must be removed?
 
 		// if channel has an onDone function, call it
 
-		exec = params.onDone;
+		exec = params.onPlay;
 		if ( exec && ( typeof exec === "function" ) ) // one more check
 		{
+			if ( _MONITOR )
+			{
+				_debug( fn + "Calling user .onPlay on " + channel.id + ": " + params.pathname );
+			}
 			try
 			{
 				exec( {
@@ -1226,37 +1367,102 @@ var AQ; // Global namespace for public API
 			}
 			catch ( err )
 			{
-				_errorCatch( fn + ".onDone function failed @ " + params.pathname + " [" + err.message + "]", err );
+				_errorCatch( fn + "User .onPlay failed on " + channel.id + ": " +
+					params.pathname + " [" + err.message + "]", err );
 			}
 		}
+		return _endEvent( event );
 	}
 
-	// _loadHTML5Channel()
+	// HTML5 Audio onEnd handler
+
+	function _htmlOnEnd ( event )
+	{
+		var fn, e, i, channel, params, exec;
+
+		fn = "[_htmlOnEnd] ";
+
+		e = event.currentTarget;
+		i = e.getAttribute( "data-channel" );
+		i = parseInt( i, 10 );
+		channel = _channels[ i ];
+		params = channel.params;
+
+		if ( _MONITOR )
+		{
+			_debug( fn + channel.id + ": " + params.pathname );
+		}
+
+		channel.status = _CHANNEL_READY;
+
+		// if channel has an onEnd function, call it
+
+		exec = params.onEnd;
+		if ( exec && ( typeof exec === "function" ) ) // one more check
+		{
+			if ( _MONITOR )
+			{
+				_debug( fn + "Calling user .onEnd on " + channel.id + ": " + params.pathname );
+			}
+			try
+			{
+				exec( {
+					channel : channel.id,
+					name : params.name,
+					path : params.pathname,
+					duration: channel.duration,
+					data : params.data
+				} );
+			}
+			catch ( err )
+			{
+				_errorCatch( fn + "User .onEnd failed on " + channel.id + ": " +
+					params.pathname + " [" + err.message + "]", err );
+			}
+		}
+		return _endEvent( event );
+	}
+
+	// _htmlLoadChannel()
 	// Loads [channel] with an audio file defined by [params]
 
-	function _loadHTML5Channel ( channel, params )
+	function _htmlLoadChannel( channel, params )
 	{
-		var audio;
+		var fn, audio;
+
+		fn = "[_htmlLoadChannel] ";
 
 		channel.params = params;
 		channel.status = _CHANNEL_LOADING;
 
 		audio = channel.audio;
 		channel.duration = Math.floor( audio.duration * 1000 );
-		audio.addEventListener( "canplaythrough", _onLoadHTML5, false ); // must be reset on every new load
+
+		// NOTE: Safari supposedly does not support canplaythrough!
+
+		audio.addEventListener( "canplaythrough", _htmlOnLoad, false ); // must be reset on every new load
 		audio.preload = "auto";
 		audio.volume = params.volume;
 		audio.loop = params.loop;
+
+		if ( _MONITOR )
+		{
+			_debug( fn + channel.id + ": " + params.filepath + " (" +
+				channel.duration + "ms)" );
+		}
+
 		audio.setAttribute( "src", params.pathname ); // actually starts the load
 	}
 
-	// _loadHTML5Audio()
+	// _htmlLoad()
 	// Loads an audio file defined by [params]
 	// Returns { .filename, .channel } or AQ.ERROR
 
-	function _loadHTML5Audio ( params )
+	function _htmlLoad ( params )
 	{
-		var i, channel, cnt;
+		var fn, i, channel, cnt;
+
+		fn = "[_htmlLoad] ";
 
 		// is this sound already available in an ended, unpaused channel?
 
@@ -1267,12 +1473,12 @@ var AQ; // Global namespace for public API
 			{
 				if ( _MONITOR )
 				{
-					_debug( "Found " + channel.id + " ready with " + params.pathname );
+					_debug( fn + channel.id + " ready: " + params.pathname );
 				}
 				channel.audio.currentTime = 0; // reset to start
 				if ( params.autoplay )
 				{
-					_playHTML5Channel( channel, params ); // just play it again
+					_htmlStartChannel( channel, params ); // just play it again
 				}
 				return channel.id;
 			}
@@ -1287,14 +1493,14 @@ var AQ; // Global namespace for public API
 			{
 				if ( _MONITOR )
 				{
-					_debug( "Found unused " + channel.id );
+					_debug( fn + channel.id + " unused: " + params.pathname );
 				}
 				cnt = i + 1;
 				if ( cnt > _channelCnt )
 				{
 					_channelCnt = cnt; // new channel now in use
 				}
-				_loadHTML5Channel( channel, params );
+				_htmlLoadChannel( channel, params );
 				return channel.id;
 			}
 		}
@@ -1308,28 +1514,30 @@ var AQ; // Global namespace for public API
 			{
 				if ( _MONITOR )
 				{
-					_debug( "Hijacking " + channel.id + " for " + params.pathname );
+					_debug( fn + channel.id + " hijacked: " + params.pathname );
 				}
 				channel.audio.currentTime = 0; // reset to start
-				_loadHTML5Channel( channel, params );
+				_htmlLoadChannel( channel, params );
 				return channel.id;
 			}
 		}
 
 		if ( _MONITOR )
 		{
-			_debug( "No channel available for " + params.pathname );
+			_debug( fn + "No channel available: " + params.pathname );
 		}
 		return AQ.ERROR; // fail silently
 	}
 
-	// _playHTML5Audio()
+	// _htmlPlay()
 	// Plays using [params]
 	// Returns actual playing channel (which may be different from [id]) or AQ.ERROR
 
-	function _playHTML5Audio ( params )
+	function _htmlPlay ( params )
 	{
-		var i, channel;
+		var fn, i, channel;
+
+		fn = "[_htmlPlay] ";
 
 		// play requested channel if ready
 
@@ -1342,30 +1550,69 @@ var AQ; // Global namespace for public API
 			{
 				if ( _MONITOR )
 				{
-					_debug( "Found " + channel.id + " ready with " + params.pathname );
+					_debug( fn + channel.id + " ready: " + params.pathname );
 				}
 				channel.audio.currentTime = 0; // reset to start
-				_playHTML5Channel( channel, params );
+				_htmlStartChannel( channel, params );
 				return channel.id;
 			}
 		}
 
 		if ( _MONITOR )
 		{
-			_debug( "File " + params.pathname + " unavailable; loading" );
+			_debug( fn + params.pathname + " unavailable; loading" );
 		}
 
 		params.autoplay = true;
-		return _loadHTML5Audio( params );
+		return _htmlLoad( params );
 	}
 
-	// _pauseHTML5Audio()
+	// _htmlPlayChannel()
+	// Plays channel
+	// Returns actual playing channel (which may be different from [id]) or AQ.ERROR
+
+	function _htmlPlayChannel ( id )
+	{
+		var fn, i, channel;
+
+		fn = "[_htmlPlayChannel ] ";
+
+		// Play requested channel if ready
+
+		for ( i = 0; i < _channelCnt; i += 1 )
+		{
+			channel = _channels[i];
+			if ( channel.id === id )
+			{
+				if ( _MONITOR )
+				{
+					_debug( fn + "Found " + id );
+				}
+				if ( channel.status !== _CHANNEL_READY )
+				{
+					return _error( fn + id + " not ready" );
+				}
+
+				// reset to start
+
+				channel.audio.currentTime = 0;
+				_htmlStartChannel( channel );
+				return channel.id;
+			}
+		}
+
+		return _error( fn + id + " not found" );
+	}
+
+	// _htmlPause()
 	// Pause/unpause channel [id]
 	// Returns channel id or AQ.ERROR
 
-	function _pauseHTML5Audio ( id )
+	function _htmlPause ( id )
 	{
-		var i, channel;
+		var fn, i, channel;
+
+		fn = "[_htmlPause ] ";
 
 		for ( i = 0; i < _channelCnt; i += 1 )
 		{
@@ -1374,7 +1621,7 @@ var AQ; // Global namespace for public API
 			{
 				if ( channel.status === _CHANNEL_PAUSED )
 				{
-					_playHTML5Channel( channel );
+					_htmlStartChannel( channel );
 				}
 
 				else if ( channel.status === _CHANNEL_PLAYING )
@@ -1386,16 +1633,23 @@ var AQ; // Global namespace for public API
 			}
 		}
 
+		if ( _MONITOR )
+		{
+			_debug( fn + id + " not found" );
+		}
+
 		return AQ.ERROR; // fail silently
 	}
 
-	// _stopHTML5Audio()
+	// _htmlStop( id )
 	// Stops channel [id]
 	// Returns AQ.DONE or AQ.ERROR
 
-	function _stopHTML5Audio ( id )
+	function _htmlStop ( id )
 	{
-		var i, channel, status;
+		var fn, i, channel, status;
+
+		fn = "[_htmlStop ] ";
 
 		for ( i = 0; i < _channelCnt; i += 1 )
 		{
@@ -1415,12 +1669,17 @@ var AQ; // Global namespace for public API
 			}
 		}
 
+		if ( _MONITOR )
+		{
+			_debug( fn + id + " not found" );
+		}
+
 		return AQ.ERROR;
 	}
 
 	// HTML5 Audio init
 
-	function _initHTML5Audio ()
+	function _htmlInit ()
 	{
 		var fn, i, audio;
 
@@ -1441,12 +1700,13 @@ var AQ; // Global namespace for public API
 			audio = document.createElement( "audio" );
 			if ( !audio )
 			{
-				return _error( fn + "Audio element init failed" );
+				return _error( fn + "element init failed" );
 			}
 			audio.setAttribute( "data-channel", i.toString() ); // remember this element's channel
-			audio.addEventListener( "error", _onErrorHTML5, false ); // establish onError listener
-			audio.addEventListener( "stalled", _onStalledHTML5, false ); // establish onStalled listener
-			audio.addEventListener( "ended", _onDoneHTML5, false ); // establish onDone listener
+			audio.addEventListener( "error", _htmlOnError, false ); // establish onError listener
+			audio.addEventListener( "stalled", _htmlOnStalled, false ); // establish onStalled listener
+			audio.addEventListener( "play", _htmlOnPlay, false ); // establish play listener
+			audio.addEventListener( "ended", _htmlOnEnd, false ); // establish onEnd listener
 			document.body.appendChild( audio );
 
 			_channels[ i ] = {
@@ -1460,20 +1720,21 @@ var AQ; // Global namespace for public API
 
 		// set up executives
 
-		_loadExec = _loadHTML5Audio;
-		_playExec = _playHTML5Audio;
-		_pauseExec = _pauseHTML5Audio;
-		_stopExec = _stopHTML5Audio;
+		_loadExec = _htmlLoad;
+		_playExec = _htmlPlay;
+		_playChannelExec = _htmlPlayChannel;
+		_pauseExec = _htmlPause;
+		_stopExec = _htmlStop;
 
 		return AQ.HTML5_AUDIO;
 	}
 
 	// Return a params object with all defaults
 
-	function _defaultParams ( user_name )
+	function _defaultParams ( name )
 	{
 		return {
-			name : user_name,
+			name : name,
 			path : _defaultPath,
 			fileTypes : _defaultFileTypes,
 			lock : _DEFAULT.loop,
@@ -1483,6 +1744,7 @@ var AQ; // Global namespace for public API
 			loop : _DEFAULT.loop,
 			autoplay : _DEFAULT.autoplay,
 			onLoad : _DEFAULT.onLoad,
+			onPlay: _DEFAULT.onPlay,
 			onEnd : _DEFAULT.onEnd,
 			data : _DEFAULT.data
 		};
@@ -1514,7 +1776,7 @@ var AQ; // Global namespace for public API
 
 		init : function ( params )
 		{
-			var fn, e, item, codec, canplay, val, type, status;
+			var fn, e, item, codec, canplay, val, type, status, _contextClass;
 
 			fn = "[AQ.init] ";
 
@@ -1674,31 +1936,17 @@ var AQ; // Global namespace for public API
 
 			_context = null;
 			_usingWebAudio = false;
-
 			if ( !_forceHTML5 )
 			{
-				type = _typeOf ( AudioContext );
-				if ( type !== "undefined" ) // WC3 compliant
+				_contextClass = ( window.AudioContext || window.webkitAudioContext || window.mozAudioContext || window.oAudioContext || window.msAudioContext );
+				if ( _contextClass )
 				{
-					_context = new AudioContext();
+					_context = new _contextClass();
 					if ( !_context )
 					{
-						return _error( "AudioContext init failed" );
+						return _error( fn + "AudioContext init failed" );
 					}
 					_usingWebAudio = true;
-				}
-				else
-				{
-					type = _typeOf ( webkitAudioContext );
-					if ( type !== "undefined" ) // Webkit
-					{
-						_context = new webkitAudioContext();
-						if ( !_context )
-						{
-							return _error( "webkitAudioContext init failed" );
-						}
-						_usingWebAudio = true;
-					}
 				}
 			}
 
@@ -1712,16 +1960,21 @@ var AQ; // Global namespace for public API
 				{
 					return _error( fn + "HTML5 Audio not supported" );
 				}
-				status = _initHTML5Audio();
+				status = _htmlInit();
 			}
 			else
 			{
-				status = _initWebAudio();
+				status = _webInit();
 			}
 
 			if ( status !== AQ.ERROR )
 			{
 				_enabled = true; // ready to use!
+			}
+
+			if ( _MONITOR )
+			{
+				_debug( fn + "status = " + status );
 			}
 
 			return {
@@ -1787,7 +2040,7 @@ var AQ; // Global namespace for public API
 
 			if ( _MONITOR )
 			{
-				_debug( fn + "Loaded " + result.path + ", status = " + result.status );
+				_debug( fn + "Loaded " + params.pathname + ", result = " + result );
 			}
 
 			return result;
@@ -1795,17 +2048,18 @@ var AQ; // Global namespace for public API
 
 		// play()
 		// Play a file
-		// REQUIRED [name] is a filename
-		// OPTIONAL [params] is an object with the following optional properties:
-		// .volume (default: engine default) = initial volume for channel
-		// .start (default: 0) = time in millseconds where playback should begin
-		// .end (default: -1) = time in millseconds where playback should end
-		// .loop (default: false) = true if channel should loop when played
-		// .onDone (default: null) = function to call when audio ends, with .data as parameter
-		// .data (default: pathname) = data that will be passed as parameter to .onDone function if present
+		// (Required) name : string = name of file without extension
+		// (Optional) uparams : object = object with the following optional properties:
+		// .volume : number (default: engine default) = initial volume for channel
+		// .start : number (default: 0) = time in millseconds where playback should begin
+		// .end : number (default: -1) = time in millseconds where playback should end
+		// .loop : boolean (default: false) = true if channel should loop when played
+		// .onPlay : function (default: null) = function to call when audio plays, with .data as parameter
+		// .onDone : function (default: null) = function to call when audio ends, with .data as parameter
+		// .data : any value (default: pathname) = data that will be passed as parameter to .onPlay/.onDone functions if present
 		// Returns unique channel id string on success, else AQ.ERROR
 
-		play : function ( user_name, user_params )
+		play : function ( name, uparams )
 		{
 			var fn, params, result;
 
@@ -1816,16 +2070,16 @@ var AQ; // Global namespace for public API
 
 			fn = "[AQ.play] ";
 
-			if ( !user_name || ( typeof user_name !== "string" ) || ( user_name.length < 1 ) )
+			if ( !name || ( typeof name !== "string" ) || ( name.length < 1 ) )
 			{
 				return _error( fn + "name parameter invalid" );
 			}
 
 			// set up default channel params
 
-			params = _defaultParams( user_name );
+			params = _defaultParams( name );
 
-			if ( _checkParams( fn, params, user_params ) === AQ.ERROR )
+			if ( _checkParams( fn, params, uparams ) === AQ.ERROR )
 			{
 				return AQ.ERROR;
 			}
@@ -1840,20 +2094,53 @@ var AQ; // Global namespace for public API
 
 			if ( _MONITOR )
 			{
-				_debug( fn + "Played " + result.path + ", channel = " + result.channel );
+				_debug( fn + "Played " + params.pathname + ", result = " + result );
+			}
+
+			return result;
+		},
+
+		// playChannel()
+		// Play a channel
+		// (Required) channel : string = channel id returned by AQ.load() or AQ.play()
+		// Returns unique channel id string on success, else AQ.ERROR
+
+		playChannel : function ( channel )
+		{
+			var fn, result;
+
+			if ( !_enabled )
+			{
+				return AQ.ERROR;
+			}
+
+			fn = "[AQ.playChannel] ";
+
+			if ( !channel || ( typeof channel !== "string" ) || ( channel.length < 1 ) )
+			{
+				return _error( fn + "Invalid channel id" );
+			}
+
+			// dispatch to appropriate API
+
+			result = _playChannelExec( channel );
+
+			if ( _MONITOR )
+			{
+				_debug( fn + "Played " + channel + ", result = " + result );
 			}
 
 			return result;
 		},
 
 		// pause()
-		// Pause/unpause an audio channel
-		// REQUIRED [channel_id] is an audio channel id supplied by play()
-		// Returns channel id string, else AQ.ERROR
+		// Pause/unpause a previously loaded channel
+		// (Required) channel : string = channel id supplied by AQ.load() or AQ.play()
+		// Returns new channel id string, else AQ.ERROR
 
-		pause : function ( channel_id )
+		pause : function ( channel )
 		{
-			var fn, status;
+			var fn, result;
 
 			if ( !_enabled )
 			{
@@ -1862,31 +2149,31 @@ var AQ; // Global namespace for public API
 
 			fn = "[AQ.pause] ";
 
-			if ( !channel_id || ( typeof channel_id !== "string" ) || ( channel_id.length < 1 ) )
+			if ( !channel || ( typeof channel !== "string" ) || ( channel.length < 1 ) )
 			{
-				return _error( fn + "channel id invalid" );
+				return _error( fn + "Invalid channel id" );
 			}
 
 			// dispatch to appropriate API
 
-			status = _pauseExec( channel_id );
+			result = _pauseExec( channel );
 
 			if ( _MONITOR )
 			{
-				_debug( fn + "Paused " + channel_id + ", returned " + status );
+				_debug( fn + "Paused " + channel + ", result = " + result );
 			}
 
-			return status;
+			return result;
 		},
 
-		// stop()
-		// Stops an audio channel
-		// REQUIRED [channel_id] is an audio channel id supplied by play()
-		// Returns true on success, else AQ.ERROR
+		// stop( channel )
+		// Stops a previously loaded channel
+		// (Required) channel : string = channel id supplied by AQ.load() or AQ.play()
+		// Returns AQ.DONE or AQ.ERROR
 
-		stop : function ( channel_id )
+		stop : function ( channel )
 		{
-			var fn, status;
+			var fn, result;
 
 			if ( !_enabled )
 			{
@@ -1895,21 +2182,21 @@ var AQ; // Global namespace for public API
 
 			fn = "[AQ.stop] ";
 
-			if ( !channel_id || ( typeof channel_id !== "string" ) || ( channel_id.length < 1 ) )
+			if ( !channel || ( typeof channel !== "string" ) || ( channel.length < 1 ) )
 			{
-				return _error( fn + "channel id invalid" );
+				return _error( fn + "Invalid channel id" );
 			}
 
 			// dispatch to appropriate API
 
-			status = _stopExec( channel_id );
+			result = _stopExec( channel );
 
 			if ( _MONITOR )
 			{
-				_debug( fn + "Stopped " + channel_id + ", returned " + status );
+				_debug( fn + "Stopped " + channel + ", result = " + result );
 			}
 
-			return status;
+			return result;
 		}
 	};
 

@@ -7,7 +7,19 @@
 /*jslint nomen: true, white: true */
 /*global PS */
 
-// The variable G is used to encapsulate all game-specific variables and functions
+// The official Perlenspiel logo colors!
+// These are in RGB multiplex format (see documentation)
+// They are defined globally so that the following code can refer to them
+// There are tasteful methods for getting around this, beyond the scope of this simple example
+
+var LOGO_COLOR_ORANGE = 0xF4782B;
+var LOGO_COLOR_BLUE = 0x6A98BA;
+var LOGO_COLOR_GREEN = 0xA1C93A;
+var LOGO_COLOR_YELLOW = 0xEFEB42;
+var LOGO_COLOR_PURPLE = 0x87578E;
+
+// The global variable G is used to encapsulate most game-specific variables and functions
+// This strategy helps prevent possible clashes with other scripts
 
 var G = {
 
@@ -18,19 +30,11 @@ var G = {
 	BG_COLOR: 0x404040, // background color (dark gray)
 	TEXT_COLOR : 0xFFFFFF, // final status text color
 
-	// The official Perlenspiel logo colors!
-
-	COLOR_ORANGE: 0xF4782B,
-	COLOR_BLUE: 0x6A98BA,
-	COLOR_GREEN: 0xA1C93A,
-	COLOR_YELLOW: 0xEFEB42,
-	COLOR_PURPLE: 0x87578E,
-
-	// The "score" played by the game is stored in an array
+	// The "score" played by the game is stored in this array.
 	// Each note in the score contains the name of the note to be played,
-	// together with x/y position and color of the associated bead
-	// Note that only some entries in the array contain data
-	// The null entries indicate an empty beat in the score
+	// together with the x/y position and color of the associated bead.
+	// Note that only some entries in the array contain data!
+	// The null entries indicate an empty beat in the score.
 
 	score : [
 		null, // Beat 0
@@ -39,7 +43,7 @@ var G = {
 		{
 			note: "l_hchord_d4",
 			x: 0, y: 6,
-			color: 0x6A98BA
+			color: LOGO_COLOR_BLUE
 		},
 
 		null, // Beat 2
@@ -48,7 +52,7 @@ var G = {
 		{
 			note: "l_hchord_a4",
 			x: 1, y: 1,
-			color: 0xEFEB42
+			color: LOGO_COLOR_YELLOW
 		},
 
 		null, // Beat 4
@@ -57,7 +61,7 @@ var G = {
 		{
 			note: "l_hchord_f4",
 			x: 2, y: 3,
-			color: 0xF4782B
+			color: LOGO_COLOR_ORANGE
 		},
 
 		null, // Beat 6
@@ -66,7 +70,7 @@ var G = {
 		{
 			note: "l_hchord_d4",
 			x: 3, y: 6,
-			color: 0x6A98BA
+			color: LOGO_COLOR_BLUE
 		},
 
 		null, // Beat 8
@@ -75,7 +79,7 @@ var G = {
 		{
 			note: "l_hchord_db4",
 			x: 4, y: 7,
-			color: 0x87578E
+			color: LOGO_COLOR_PURPLE
 		},
 
 		null, // Beat 10
@@ -84,40 +88,95 @@ var G = {
 		{
 			note: "hchord_d4",
 			x: 5, y: 6,
-			color: 0x6A98BA
+			color: LOGO_COLOR_BLUE
 		},
 
 		// Beat 12
 		{
 			note: "hchord_e4",
 			x: 6, y: 4,
-			color: 0xA1C93A
+			color: LOGO_COLOR_GREEN
 		},
 
 		// Beat 13
 		{
 			note: "l_hchord_f4",
 			x: 7, y: 3,
-			color: 0xF4782B
+			color: LOGO_COLOR_ORANGE
 		}
 	],
 
 	// VARIABLES
-	// Variable names are lower case with intercaps
+	// Variable names are lower-case with camelCaps
 
-	timerID : "", // timer ID
-	tick: 0, // the metronome
+	timerID : "", // timer ID, saved so that timer can be stopped when no longer needed
+	tick: 0, // the metronome, a number to keep track of where we are in the score
 	loadCnt : 0, // counts loaded files
 	delay: 2, // startup delay
+	done : false, // true when playback is done
 
 	// FUNCTIONS
-	// Function names are lower case with intercaps
+	// Function names are lower case with camelCaps
+
+	// Timer function
+	// Not started until all audio files are loaded
+	// Called once every G.FRAME_RATE ticks (= 20, 1/3 second)
+	// Sequentially plays the notes in the G.score array
+
+	timer : function() {
+		"use strict";
+		var beat, len, i;
+
+		// A slight time delay before starting
+		// This lets the browser stabilize
+
+		if ( G.delay > 0 )
+		{
+			G.delay -= 1;
+			return;
+		}
+
+		// Get the next beat in G.score array
+
+		beat = G.score[ G.tick ];
+		if ( beat ) // ignore empty array entries
+		{
+			PS.audioPlay( beat.note ); // play the note
+			PS.color( beat.x, beat.y, beat.color ); // change the bead color
+		}
+
+		G.tick += 1; // point to next beat
+
+		// Show Perlenspiel banner when melody is done
+
+		len = G.score.length;
+		if ( G.tick >= len ) // played the last note?
+		{
+			PS.timerStop( G.timerID ); // stop this timer
+			PS.statusText( "P   E   R   L   E   N   S   P   I   E   L" ); // with stately spacing
+			PS.statusFade( 120 ); // set up 2-second fade-up
+			PS.statusColor( G.TEXT_COLOR ); // color change starts the fade-up
+
+			// Set up beads for white flash when touched
+
+			for ( i = 0; i < len; i += 1 )
+			{
+				beat = G.score[ i ];
+				if ( beat ) // ignore empty score entries
+				{
+					PS.fade( beat.x, beat.y, 60, { rgb : PS.COLOR_WHITE } ); // set 1 sec white flash
+				}
+			}
+
+			G.done = true; // finished! this flag allows beads to be touched and played
+		}
+	},
 
 	// Audio .onLoad function
-	// This gets called when a sound is done loading
+	// This gets called each time a sound is done loading
+	// Here, it's used to determine when all eight files are ready
 
-	loader : function ()
-	{
+	loader : function ( result ) {
 		"use strict";
 
 		// Count how many audio files have been loaded
@@ -127,46 +186,6 @@ var G = {
 		if ( G.loadCnt >= 8 )
 		{
 			G.timerID = PS.timerStart( G.FRAME_RATE, G.timer );
-		}
-	},
-
-	// Timer function
-	// Plays the notes in G.score array
-
-	timer : function()
-	{
-		"use strict";
-		var beat;
-		
-		// Delay before starting
-		// Lets the browser stabilize
-
-		if ( G.delay > 0 )
-		{
-			G.delay -= 1;
-			return;
-		}
-
-		// Get the next beat in G.score array
-		
-		beat = G.score[ G.tick ];
-		
-		if ( beat ) // ignore empty array entries
-		{
-			PS.audioPlay( beat.note ); // play the note
-			PS.color( beat.x, beat.y, beat.color ); // change the bead color
-		}		
-
-		G.tick += 1; // point to next beat
-
-		// Show Perlenspiel banner when melody is done
-
-		if ( G.tick >= G.score.length ) // played last note?
-		{		
-			PS.statusText( "P   E   R   L   E   N   S   P   I   E   L" );
-			PS.statusFade( 120 ); // set up 2-second fade-up
-			PS.statusColor( G.TEXT_COLOR ); // color change starts the fade-up
-			PS.timerStop( G.timerID ); // stop the timer
 		}
 	}
 };
@@ -187,17 +206,29 @@ PS.init = function( system, options ) {
 	PS.color( PS.ALL, PS.ALL, G.BG_COLOR ); // set all beads to background color
 	PS.statusColor( G.BG_COLOR ); // set status text color to background color, too
 
-	// Preload the harpsichord notes, saving the buffer ids for later playback
+	// Preload the harpsichord notes, save beats in bead data
 
 	len = G.score.length;
 	for ( i = 0; i < len; i += 1 )
 	{
 		beat = G.score[i];
 		if ( beat ) // ignore empty array entries
-		{			
-			PS.fade( beat.x, beat.y, 60 ); // set 1 sec bead fade
-			PS.data( beat.x, beat.y, beat.note ); // save note in bead's data for later playback
-			result = PS.audioLoad( beat.note, { lock : true, onLoad : G.loader } );
+		{
+			// Save the beat object in bead's private data for later playback
+
+			PS.data( beat.x, beat.y, beat );
+
+			// Set up 1 sec bead fade-in as notes appear
+
+			PS.fade( beat.x, beat.y, 60 );
+
+			// Load and lock the audio for this beat
+			// Specify an .onLoad function for file counting
+
+			result = PS.audioLoad( beat.note, {
+				lock : true,
+				onLoad : G.loader
+			} );
 			if ( result === PS.ERROR )
 			{
 				break; // abort on load error
@@ -217,11 +248,13 @@ PS.init = function( system, options ) {
 PS.touch = function( x, y, data, options ) {
 	"use strict";
 
-	// If this bead's data contains a note string, play the note
-	
-	if ( typeof data === "string" )
+	if ( typeof data === "object" ) // only note beads will have an object in their private data
 	{
-		PS.audioPlay( data );
+		if ( G.done ) // only play if melody is done
+		{
+			PS.color( x, y, data.color ); // flashes current color using white fade
+			PS.audioPlay( data.note ); // replays note
+		}
 	}
 };
 
