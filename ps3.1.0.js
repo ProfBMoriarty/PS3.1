@@ -2217,8 +2217,8 @@ var PS; // Global namespace for public API
 
 		canvas = _grid.canvas;
 
-		x += ( document.body.scrollLeft + document.documentElement.scrollLeft - canvas.offsetLeft );
-		y += ( document.body.scrollTop + document.documentElement.scrollTop - canvas.offsetTop );
+		x += ( document.body.scrollLeft + document.documentElement.scrollLeft - canvas.offsetLeft - _grid._canvasPaddingLeftPx );
+		y += ( document.body.scrollTop  + document.documentElement.scrollTop  - canvas.offsetTop  - _grid._canvasPaddingRightPx);
 
 //		PS.debug( "_getBead(): x = " + x + ", y = " + y + "\n" );
 
@@ -6703,12 +6703,18 @@ var PS; // Global namespace for public API
 			{
 				canvas : grid,
 				context : ctx,
-				fader : _newFader( _GRID_ID, _gridRGB, _gridRGBEnd )
+				fader : _newFader( _GRID_ID, _gridRGB, _gridRGBEnd ),
 			};
 
 			// copy default properties
 
 			_copy( _DEFAULTS.grid, _grid );
+
+			// calculate canvas padding for mouse offset
+
+			var canvasStyle = window.getComputedStyle(_grid.canvas, null);
+			_grid._canvasPaddingLeftPx  = parseInt(canvasStyle.getPropertyValue('padding-top').replace("px", ""));
+			_grid._canvasPaddingRightPx = parseInt(canvasStyle.getPropertyValue('padding-left').replace("px", ""));
 
 			// Set up master 32 x 32 bead array
 
