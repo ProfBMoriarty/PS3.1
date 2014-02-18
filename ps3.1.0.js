@@ -6188,6 +6188,11 @@ var PS; // Global namespace for public API
 			}
 			version = /msie \d+[.]\d+/.exec( ua )[0].split( ' ' )[ 1 ];
 		}
+		else if ( /trident/.test( ua ) )	// IE 11+ on Windows 8
+		{
+			browser = "Internet Explorer";
+			version = /rv\:\d+[.]\d+/.exec( ua )[0].split(':')[1];
+		}
 		else if ( /opera/.test( ua ) )
 		{
 			browser = "Opera";
@@ -6208,14 +6213,21 @@ var PS; // Global namespace for public API
 
 		if ( !version )
 		{
-			version = /version\/[\.\d]+/.exec( ua );
-			if ( version )
-			{
-				version = version[0].split( '/' )[ 1 ];
+			try {	
+				version = /version\/[\.\d]+/.exec( ua );
+				if ( version )
+				{
+					version = version[0].split( '/' )[ 1 ];
+				}
+				else
+				{
+					version = /opera\/[\.\d]+/.exec( ua )[0].split( '/' )[ 1 ];
+				}
 			}
-			else
+			catch( err )
 			{
-				version = /opera\/[\.\d]+/.exec( ua )[0].split( '/' )[ 1 ];
+				console.error("Problem detecting browser: " + err.message);
+				version = "???";
 			}
 		}
 
