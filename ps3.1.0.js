@@ -450,7 +450,7 @@ var PS; // Global namespace for public API
 			event.cancelBubble = true;
 		}
 
-		event.returnValue = false;
+		event.preventDefault();
 		return false;
 	}
 
@@ -2591,7 +2591,6 @@ var PS; // Global namespace for public API
 
 		if ( _debugFocus )
 		{
-			event.returnValue = true;
 			return true;
 		}
 
@@ -2721,7 +2720,6 @@ var PS; // Global namespace for public API
 
 		if ( _debugFocus )
 		{
-			event.returnValue = true;
 			return true;
 		}
 
@@ -2829,7 +2827,6 @@ var PS; // Global namespace for public API
 
 		if ( !_overGrid )
 		{
-			event.returnValue = true;
 			return true;
 		}
 
