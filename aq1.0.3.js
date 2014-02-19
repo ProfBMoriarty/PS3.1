@@ -136,7 +136,7 @@ var AQ; // Global namespace for public API
 			event.cancelBubble = true;
 		}
 
-		event.returnValue = false;
+		event.preventDefault();
 		return false;
 	}
 
