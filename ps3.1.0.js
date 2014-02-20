@@ -7072,6 +7072,11 @@ var PS; // Global namespace for public API
 				return _error( fn + "Too many arguments" );
 			}
 
+			if ( arguments.length == 2 )
+			{
+				return _error( fn + "Too many arguments" );
+			}
+
 			colors = _decodeColors( fn, p1, p2, p3 );
 			if ( colors === PS.ERROR )
 			{
