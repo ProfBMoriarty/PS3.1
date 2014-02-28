@@ -1,4 +1,4 @@
-// ps3.1.0.js for Perlenspiel 3.1
+// ps3.1.1.js for Perlenspiel 3.1
 // Remember to update version number in _system!
 
 /*
@@ -44,6 +44,14 @@ var PS; // Global namespace for public API
 	var _GRID_ID = "grid";
 	var _FOOTER_ID = "footer";
 	var _MONITOR_ID = "monitor";
+
+	var _LOGIN_ID = "login";
+	var _LOGIN_EMAIL_ID = "login_em";
+	var _LOGIN_PW1_ID = "login_pw1";
+	var _LOGIN_PW2_ID = "login_pw2";
+	var _LOGIN_BUT_ID = "login_but";
+	var _LOGIN_SIGNUP_ID = "login_su";
+	var _LOGIN_RECOVER_ID = "login_re";
 
 	// Element prefixes
 
@@ -115,6 +123,8 @@ var PS; // Global namespace for public API
 				rgb : 0xFFFFFF,
 				str : "rgba(255,255,255,1)"
 			},
+			padLeft : 0,
+			padRight : 0,
 			ready : false
 		},
 
@@ -205,7 +215,7 @@ var PS; // Global namespace for public API
 		engine : "Perlenspiel",
 		major : 3,
 		minor : 1,
-		revision : 0,
+		revision : 1,
 		host : {
 			app : "Unknown App",
 			version : "?",
@@ -217,8 +227,9 @@ var PS; // Global namespace for public API
 
 	var _RSTR, _GBSTR, _BASTR, _ASTR; // color strings
 
-	var _DEFAULTS; // working copy of _DEFAULTS
+//	var _DEFAULTS; // working copy of _DEFAULTS
 
+	var _main; // main DOM element
 	var _grid; // master grid object
 	var _beads; // master list of bead objects
 	var _status; // status line object
@@ -449,8 +460,7 @@ var PS; // Global namespace for public API
 		{
 			event.cancelBubble = true;
 		}
-
-		event.preventDefault();
+		event.preventDefault(); // prevents weirdness
 		return false;
 	}
 
@@ -491,11 +501,10 @@ var PS; // Global namespace for public API
 		top = bead.top;
 		width = size;
 		height = size;
+		border = bead.border;
 		radius = bead.radius;
 
-		// If bead is invisible, non-square or less than 100%, draw grid background
-
-		if ( !bead.visible || ( bead.size < size ) || ( radius > 0 ) )
+		if ( ( bead.size < size ) || ( radius > 0 ) || ( ( border.width > 0 ) && ( border.color.a < 255 ) ) || !bead.visible )
 		{
 			ctx.fillStyle = gridColor;
 			ctx.fillRect( left, top, width, height );
@@ -516,8 +525,6 @@ var PS; // Global namespace for public API
 		}
 
 		// Draw border if needed
-
-		border = bead.border;
 
 		if ( border.width > 0 ) // > 0 if any border is visible
 		{
@@ -2216,9 +2223,9 @@ var PS; // Global namespace for public API
 		var canvas, bead, i, j;
 
 		canvas = _grid.canvas;
-		var rect = canvas.getBoundingClientRect();
-		x -= rect.left;
-		y -= rect.top;
+
+		x += ( document.body.scrollLeft + document.documentElement.scrollLeft - canvas.offsetLeft - _grid.padLeft );
+		y += ( document.body.scrollTop + document.documentElement.scrollTop - canvas.offsetTop - _grid.padRight );
 
 //		PS.debug( "_getBead(): x = " + x + ", y = " + y + "\n" );
 
@@ -2391,14 +2398,12 @@ var PS; // Global namespace for public API
 
 //		PS.debug("_touchStart called\n");
 
-		event.preventDefault(); // prevents weirdness
-
-		// if a finger already down
+		// If a finger already down
 
 		if ( _currentFinger !== _CLEAR )
 		{
-			PS.debug( "Finger already down\n" );
-			return; // ignore
+//			PS.debug( "Finger already down\n" );
+			return _endEvent( event ); // ignore
 		}
 
 		touch = event.changedTouches[ 0 ];
@@ -2471,8 +2476,6 @@ var PS; // Global namespace for public API
 	function _touchMove ( event )
 	{
 		var len, i, touch, finger, xpos, ypos, bead, obead;
-
-		event.preventDefault(); // stops weirdness
 
 		len = event.changedTouches.length;
 
@@ -2593,8 +2596,6 @@ var PS; // Global namespace for public API
 		{
 			return true;
 		}
-
-		event.preventDefault();
 
 		// Call PS.keyDown to report event
 
@@ -2722,8 +2723,6 @@ var PS; // Global namespace for public API
 		{
 			return true;
 		}
-
-		event.preventDefault();
 
 		// Call PS.keyUp to report event
 
@@ -2871,6 +2870,38 @@ var PS; // Global namespace for public API
 	//---------------
 	// GRID FUNCTIONS
 	//---------------
+
+	function _gridActivate ()
+	{
+		var grid;
+
+		grid = _grid.canvas;
+		grid.style.display = "block";
+
+		grid.addEventListener( "mousedown", _mouseDown, false );
+		grid.addEventListener( "mouseup", _mouseUp, false );
+		grid.addEventListener( "mousemove", _mouseMove, false );
+		grid.addEventListener( "mouseout", _gridOut, false );
+
+		document.addEventListener( "keydown", _keyDown, false );
+		document.addEventListener( "keyup", _keyUp, false );
+
+		window.addEventListener( "DOMMouseScroll", _wheel, false ); // for Firefox
+		window.addEventListener( "mousewheel", _wheel, false ); // for others
+
+		if ( _touchScreen )
+		{
+			// init finger & bead to empty
+
+			_currentFinger = _CLEAR;
+			_underBead = _CLEAR;
+
+			document.addEventListener( "touchmove", _touchMove, false );
+			document.addEventListener( "touchstart", _touchStart, false );
+			document.addEventListener( "touchend", _touchEnd, false );
+			document.addEventListener( "touchcancel", _touchEnd, false );
+		}
+	}
 
 	// Set grid color
 	// Returns rgb
@@ -3447,7 +3478,7 @@ var PS; // Global namespace for public API
 			type = _typeOf( val );
 			if ( ( type === "undefined" ) || ( val === null ) )
 			{
-				options.start = PS.CURRENT;
+				options.params = PS.CURRENT; // fixed in 3.1.1
 			}
 			else if ( type !== "array" )
 			{
@@ -3891,6 +3922,7 @@ var PS; // Global namespace for public API
 
 				current.str = colors.str = _RSTR[ r ] + _GBSTR[ g ] + _GBSTR[ b ] + _ASTR[ a ];
 
+
 				if ( bead.visible )
 				{
 					if ( fader.rate > 0 ) // must use fader
@@ -3913,13 +3945,6 @@ var PS; // Global namespace for public API
 						_makeDirty( bead );
 					}
 				}
-
-				// bead is invisible
-
-//				else
-//				{
-//					_borderRGBA( colors, bead.div );
-//				}
 
 				current.r = r;
 				current.g = g;
@@ -3946,7 +3971,7 @@ var PS; // Global namespace for public API
 			b = current.b;
 
 			current.str = _RSTR[ r ] + _GBSTR[ g ] + _GBSTR[ b ] + _ASTR[ alpha ];
-
+			PS.statusText("str = " + current.str);
 			if ( bead.visible )
 			{
 				fader = bead.borderFader;
@@ -3973,13 +3998,6 @@ var PS; // Global namespace for public API
 					_makeDirty( bead );
 				}
 			}
-
-			// bead is invisible
-
-//			else
-//			{
-//				_borderRGBA( current, bead.div );
-//			}
 
 			current.a = alpha;
 		}
@@ -4228,13 +4246,6 @@ var PS; // Global namespace for public API
 					}
 				}
 
-				// bead is invisible
-
-//				else
-//				{
-//					_glyphRGBA( colors, bead.glyph_p );
-//				}
-
 				current.r = r;
 				current.g = g;
 				current.b = b;
@@ -4280,13 +4291,6 @@ var PS; // Global namespace for public API
 					_makeDirty( bead );
 				}
 			}
-
-			// bead is invisible
-
-//			else
-//			{
-//				_glyphRGBA( current, bead.glyph_p );
-//			}
 
 			current.a = alpha;
 		}
@@ -6185,7 +6189,7 @@ var PS; // Global namespace for public API
 			}
 			version = /msie \d+[.]\d+/.exec( ua )[0].split( ' ' )[ 1 ];
 		}
-		else if ( /trident/.test( ua ) )	// IE 11+ on Windows 8
+		else if ( /trident/.test( ua ) ) // IE 11+ on Windows 8
 		{
 			browser = "Internet Explorer";
 			version = /rv\:\d+[.]\d+/.exec( ua )[0].split(':')[1];
@@ -6210,7 +6214,8 @@ var PS; // Global namespace for public API
 
 		if ( !version )
 		{
-			try {	
+			try
+			{
 				version = /version\/[\.\d]+/.exec( ua );
 				if ( version )
 				{
@@ -6223,7 +6228,7 @@ var PS; // Global namespace for public API
 			}
 			catch( err )
 			{
-				console.error("Problem detecting browser: " + err.message);
+				console.error( "Problem detecting browser: " + err.message );
 				version = "???";
 			}
 		}
@@ -6308,6 +6313,7 @@ var PS; // Global namespace for public API
 
 		// Key constants
 
+		KEY_ENTER : 13,
 		KEY_TAB : 9,
 		KEY_ESCAPE : 27,
 
@@ -6379,7 +6385,7 @@ var PS; // Global namespace for public API
 
 		_sys : function ()
 		{
-			var fn, errm, i, outer, main, debug, status, grid, footer, monitor, ctx, cnt, bead, result, str;
+			var fn, errm, i, outer, debug, status, grid, footer, monitor, ctx, cnt, bead, result, str;
 
 			fn = "[PS.sys] ";
 			errm = fn + "Invalid element";
@@ -6445,19 +6451,19 @@ var PS; // Global namespace for public API
 			outer.id = _OUTER_ID;
 			document.body.appendChild( outer );
 
-			main = document.createElement( "div" );
-			if ( !main )
+			_main = document.createElement( "div" );
+			if ( !_main )
 			{
 				window.alert( errm );
 				return;
 			}
-			main.id = _MAIN_ID;
-			outer.appendChild( main );
+			_main.id = _MAIN_ID;
+			outer.appendChild( _main );
 
 			// save offset coordinates
 
-			PS._mainLeft = main.offsetLeft;
-			PS._mainTop = main.offsetTop;
+			PS._mainLeft = _main.offsetLeft;
+			PS._mainTop = _main.offsetTop;
 
 			// Status line, append to main
 
@@ -6477,9 +6483,9 @@ var PS; // Global namespace for public API
 			status.value = "Perlenspiel 3.1";
 			status.wrap = "soft";
 			status.id = _STATUS_ID;
-			main.appendChild( status );
+			_main.appendChild( status );
 
-			// create grid canvas
+			// Create grid canvas
 
 			grid = document.createElement( "canvas" );
 			if ( !grid )
@@ -6494,7 +6500,7 @@ var PS; // Global namespace for public API
 			_overGrid = false;
 			_resetCursor();
 
-			main.appendChild( grid );
+			_main.appendChild( grid );
 
 			// Footer, append to main
 
@@ -6506,7 +6512,7 @@ var PS; // Global namespace for public API
 			}
 			footer.id = _FOOTER_ID;
 			footer.innerHTML = "Loading Perlenspiel";
-			main.appendChild( footer );
+			_main.appendChild( footer );
 			_footer = footer;
 
 			// Debug div
@@ -6518,7 +6524,7 @@ var PS; // Global namespace for public API
 				return;
 			}
 			debug.id = _DEBUG_ID;
-			main.appendChild( debug );
+			_main.appendChild( debug );
 
 			// Monitor, append to debug
 
@@ -6712,12 +6718,18 @@ var PS; // Global namespace for public API
 			{
 				canvas : grid,
 				context : ctx,
-				fader : _newFader( _GRID_ID, _gridRGB, _gridRGBEnd ),
+				fader : _newFader( _GRID_ID, _gridRGB, _gridRGBEnd )
 			};
 
 			// copy default properties
 
 			_copy( _DEFAULTS.grid, _grid );
+
+			// Calculate canvas padding for mouse offset (Mark Diehr)
+
+			var canvasStyle = window.getComputedStyle( _grid.canvas, null );
+			_grid.padLeft = parseInt(canvasStyle.getPropertyValue('padding-top').replace("px", ""), 10);
+			_grid.padRight = parseInt(canvasStyle.getPropertyValue('padding-left').replace("px", ""), 10);
 
 			// Set up master 32 x 32 bead array
 
@@ -6888,29 +6900,9 @@ var PS; // Global namespace for public API
 
 			// Init all event listeners
 
-			grid.addEventListener( "mousedown", _mouseDown, false );
-			grid.addEventListener( "mouseup", _mouseUp, false );
-			grid.addEventListener( "mousemove", _mouseMove, false );
-			grid.addEventListener( "mouseout", _gridOut, false );
+			_gridActivate ();
 
-			document.addEventListener( "keydown", _keyDown, false );
-			document.addEventListener( "keyup", _keyUp, false );
 
-			window.addEventListener( "DOMMouseScroll", _wheel, false ); // for Firefox
-			window.addEventListener( "mousewheel", _wheel, false ); // for others
-
-			if ( _touchScreen )
-			{
-				// init finger & bead to empty
-
-				_currentFinger = _CLEAR;
-				_underBead = _CLEAR;
-
-				document.addEventListener( "touchmove", _touchMove, false );
-				document.addEventListener( "touchstart", _touchStart, false );
-				document.addEventListener( "touchend", _touchEnd, false );
-				document.addEventListener( "touchcancel", _touchEnd, false );
-			}
 
 			if ( PS.init )
 			{
@@ -7068,11 +7060,6 @@ var PS; // Global namespace for public API
 			fn = "[PS.gridColor] ";
 
 			if ( arguments.length > 3 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
-
-			if ( arguments.length == 2 )
 			{
 				return _error( fn + "Too many arguments" );
 			}
@@ -8888,7 +8875,7 @@ var PS; // Global namespace for public API
 			repeat = _isBoolean( repeat_p, _keyRepeat, true, true );
 			if ( repeat === PS.ERROR )
 			{
-				return _error( fn, "repeat argument invalid" );
+				return _error( fn + "repeat argument invalid" );
 			}
 
 			// Verify init argument
@@ -8913,7 +8900,7 @@ var PS; // Global namespace for public API
 			}
 			else
 			{
-				return _error( fn, "init argument invalid" );
+				return _error( fn + "init argument invalid" );
 			}
 
 			// Verify delay argument
@@ -8938,7 +8925,7 @@ var PS; // Global namespace for public API
 			}
 			else
 			{
-				return _error( fn, "delay argument invalid" );
+				return _error( fn + "delay argument invalid" );
 			}
 
 			_keyRepeat = repeat;
@@ -11530,14 +11517,7 @@ var PS; // Global namespace for public API
 					}
 					else if ( type === "number" )
 					{
-						if ( val )
-						{
-							no_diagonals = false;
-						}
-						else
-						{
-							no_diagonals = true;
-						}
+						no_diagonals = ( val !== 0 );
 					}
 					else
 					{
@@ -11561,14 +11541,7 @@ var PS; // Global namespace for public API
 					}
 					else if ( type === "number" )
 					{
-						if ( val )
-						{
-							cut_corners = false;
-						}
-						else
-						{
-							cut_corners = true;
-						}
+						cut_corners = ( val !== 0 );
 					}
 					else
 					{
@@ -11842,5 +11815,6 @@ var PS; // Global namespace for public API
 		};
 	}
 }() );
+
 
 

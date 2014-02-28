@@ -781,7 +781,7 @@ PSTest.prototype.testColorSingleArg = function(){
 };
 
 PSTest.prototype.testColorLocationOnly = function(){
-    assertEquals(6579300, PS.color(0, 0));
+    assertEquals(0xFFFFFF, PS.color(0, 0));
 };
 
 PSTest.prototype.testColorMinX = function(){
@@ -949,7 +949,7 @@ PSTest.prototype.testFadeNumberOnEnd = function(){
 };
 
 PSTest.prototype.testFadeNoArgs = function(){
-    assertEquals(5, PS.fade(0, 0).rate);
+    assertEquals(0, PS.fade(0, 0).rate);
     assertEquals(doNothing, PS.fade(0, 0).onEnd);
 };
 
