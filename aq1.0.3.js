@@ -136,7 +136,7 @@ var AQ; // Global namespace for public API
 			event.cancelBubble = true;
 		}
 
-		event.returnValue = false;
+		event.preventDefault(); // prevents weirdness
 		return false;
 	}
 
@@ -755,7 +755,7 @@ var AQ; // Global namespace for public API
 			channel.thandle = window.setTimeout(
 				function ()
 				{
-					var len, i, buffer;
+					var len, i, buf;
 
 					// find the channel
 
@@ -772,8 +772,8 @@ var AQ; // Global namespace for public API
 
 							// call user onEnd function if valid
 
-							buffer = channel.buffer;
-							params = buffer.params;
+							buf = channel.buffer;
+							params = buf.params;
 							exec = params.onEnd;
 							if ( exec && ( typeof exec === "function" ) )
 							{
@@ -784,10 +784,10 @@ var AQ; // Global namespace for public API
 								try
 								{
 									exec( {
-										channel: buffer.channel_id,
+										channel: buf.channel_id,
 										name: params.name,
 										path: params.pathname,
-										duration: buffer.duration,
+										duration: buf.duration,
 										data: params.data
 									} );
 								}
@@ -805,7 +805,7 @@ var AQ; // Global namespace for public API
 
 							if ( params.loop )
 							{
-								_web.playBuffer( buffer, 0 ); // fix offset later
+								_web.playBuffer( buf, 0 ); // fix offset later
 							}
 							return;
 						}
