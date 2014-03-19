@@ -1,4 +1,4 @@
-// ps3.1.2.js for Perlenspiel 3.1
+// ps3.1.3.js for Perlenspiel 3.1
 // Remember to update version number in _system!
 
 /*
@@ -229,7 +229,7 @@ var PS; // Global namespace for public API
 		engine : "Perlenspiel",
 		major : 3,
 		minor : 1,
-		revision : 2,
+		revision : 3,
 		host : {
 			app : "Unknown App",
 			version : "?",
@@ -12116,9 +12116,9 @@ var PS; // Global namespace for public API
 			ct = new Date().getTime();
 			ttc = Math.max( 0, 16 - ( ct - lt ) );
 			id = window.setTimeout( function ()
-			{
-				cb( ct + ttc );
-			}, ttc );
+			                        {
+				                        cb( ct + ttc );
+			                        }, ttc );
 			lt = ct + ttc;
 			return id;
 		};
@@ -12132,7 +12132,4 @@ var PS; // Global namespace for public API
 		};
 	}
 }() );
-
-
-
 

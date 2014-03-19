@@ -6289,11 +6289,8 @@ var PS; // Global namespace for public API
 		{
 			var key, val, result;
 
-			if ( event.which )
-			{
-				key = event.which; // correct
-			}
-			else
+			key = event.which; // correct
+			if ( !key )
 			{
 				key = event.keyCode; // IE
 			}
@@ -6376,11 +6373,8 @@ var PS; // Global namespace for public API
 		{
 			var key, val, result;
 
-			if ( event.which )
-			{
-				key = event.which; // correct
-			}
-			else
+			key = event.which; // correct
+			if ( !key )
 			{
 				key = event.keyCode; // IE
 			}
@@ -6448,11 +6442,8 @@ var PS; // Global namespace for public API
 		{
 			var key, val, result;
 
-			if ( event.which )
-			{
-				key = event.which; // correct
-			}
-			else
+			key = event.which; // correct
+			if ( !key )
 			{
 				key = event.keyCode; // IE
 			}

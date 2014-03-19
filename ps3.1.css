@@ -220,14 +220,48 @@ body {
 	margin: 0 auto;
 }
 
-#status {
-	width: 100%;
-	font-size: 1.25em; /* new */
+#stsp {
+	font-size: 1.25em;
+	margin: 1em 0 1em 0; /* trbl */
+	padding: 0;
+	border: 0;
 	text-align: center;
-	margin-top: 32px;
-	margin-bottom: 16px;
-	border: 0px;
+	overflow: hidden;
+}
+
+#inp {
+	font-size: 1.25em;
+	margin: 1em 0 1em 0; /* trbl */
+	padding: 0;
+	border: 0;
+	text-align: left;
+	display: none;
+}
+
+#inlabel {
+	float: left;
+	margin: 0;
+	padding: 0;
+	border: 0;
+}
+
+#inspan {
+	display: block;
+	overflow: hidden;
+	color : inherit;
+	background-color: inherit;
+	margin: 0;
+	border: 0;
+	padding: 0 0.5em 0 0.5em; /* trbl */
+}
+
+#inbox {
+	text-align: left;
+	border: 1px solid #000000;
 	box-shadow: none;
+	width: 100%;
+	color : #000000;
+	background-color: #FFFFFF;
 }
 
 .tiny {
