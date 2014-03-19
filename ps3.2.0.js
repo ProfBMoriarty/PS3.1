@@ -12498,6 +12498,16 @@ var PS = {}; // Global namespace for public API
 
 			ProvideConstants(PSEngine);
 
+			// Stubs to make it more permissive of errors
+			PSEngine.touch		= function( x, y, data, options ) {};
+			PSEngine.release	= function( x, y, data, options ) {};
+			PSEngine.enter		= function( x, y, data, options ) {};
+			PSEngine.exit		= function( x, y, data, options ) {};
+			PSEngine.exitGrid	= function( options ) {};
+			PSEngine.keyDown	= function( key, shift, ctrl, options ) {};
+			PSEngine.keyUp		= function( key, shift, ctrl, options ) {};
+			PSEngine.input		= function( sensors, options ) {};
+
 			return PSEngine;
 		}
 	};
