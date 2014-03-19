@@ -123,18 +123,22 @@ var PS = {}; // Global namespace for public API
 		obj.FINDER_BI_DIJKSTRA = "PS.FINDER_BI_DIJKSTRA";
 		obj.FINDER_BI_BREADTH_FIRST = "PS.FINDER_BI_BREADTH_FIRST";
 		obj.FINDER_JUMP_POINT = "PS.FINDER_JUMP_POINT";
+
+		// Multispiel support
+		obj.DEFAULT_NAMESPACE = "game";
 	}
 
 	// Copy perlenspiel constants into global object
 	ProvideConstants(PS);
 
-
 	Perlenspiel = {
 		//-----------
 		// PUBLIC API
 		//-----------
-		Start: function (namespace) {
+		Start : function (namespace) {
 			var PSEngine;
+
+			var _NAMESPACE = namespace;
 
 			//------------------
 			// PRIVATE CONSTANTS
@@ -150,13 +154,13 @@ var PS = {}; // Global namespace for public API
 			var _FOOTER_CLASS 	= "footer";
 			var _MONITOR_CLASS	= "monitor";
 
-			var _OUTER_ID	= namespace + "-" + _OUTER_CLASS;
-			var _MAIN_ID	= namespace + "-" + _MAIN_CLASS;
-			var _DEBUG_ID	= namespace + "-" + _DEBUG_CLASS;
-			var _STATUS_ID	= namespace + "-" + _STATUS_CLASS;
-			var _GRID_ID	= namespace + "-" + _GRID_CLASS;
-			var _FOOTER_ID	= namespace + "-" + _FOOTER_CLASS;
-			var _MONITOR_ID	= namespace + "-" + _MONITOR_CLASS;
+			var _OUTER_ID	= _NAMESPACE + "-" + _OUTER_CLASS;
+			var _MAIN_ID	= _NAMESPACE + "-" + _MAIN_CLASS;
+			var _DEBUG_ID	= _NAMESPACE + "-" + _DEBUG_CLASS;
+			var _STATUS_ID	= _NAMESPACE + "-" + _STATUS_CLASS;
+			var _GRID_ID	= _NAMESPACE + "-" + _GRID_CLASS;
+			var _FOOTER_ID	= _NAMESPACE + "-" + _FOOTER_CLASS;
+			var _MONITOR_ID	= _NAMESPACE + "-" + _MONITOR_CLASS;
 
 			var _LOGIN_ID = "login";
 			var _LOGIN_EMAIL_ID = "login_em";
@@ -340,7 +344,7 @@ var PS = {}; // Global namespace for public API
 
 			var _RSTR, _GBSTR, _BASTR, _ASTR; // color strings
 
-		//	var _DEFAULTS; // working copy of _DEFAULTS
+			//	var _DEFAULTS; // working copy of _DEFAULTS
 
 			var _main; // main DOM element
 			var _grid; // master grid object
@@ -824,8 +828,9 @@ var PS = {}; // Global namespace for public API
 					context.clearRect( 0, _grid.bottom, canvas.width, canvas.height - _grid.bottom );
 				}
 
-				// set browser background
-				document.body.style.backgroundColor = str;
+				// set browser background (if not in multispiel mode)
+				if(_NAMESPACE === PS.DEFAULT_NAMESPACE)
+					document.body.style.backgroundColor = str;
 
 				// Set outer div background
 				var outer = document.getElementById(_OUTER_ID);
@@ -1413,7 +1418,7 @@ var PS = {}; // Global namespace for public API
 			{
 				var fn, len, i, fader, frame, key, timer, result, exec, id, params;
 
-		//		_reportTime();
+			//		_reportTime();
 
 				fn = "[_tick] ";
 
@@ -1526,7 +1531,7 @@ var PS = {}; // Global namespace for public API
 							key = _holding[ i ];
 							if ( key )
 							{
-		//						key = _keyFilter( key, _holdShift );
+			//						key = _keyFilter( key, _holdShift );
 								try
 								{
 									PSEngine.keyDown( key, _holdShift, _holdCtrl );
@@ -2186,6 +2191,9 @@ var PS = {}; // Global namespace for public API
 			{
 				var data, any;
 
+				// Set grid to focused
+				_gridFocus();
+
 				if ( bead.active )
 				{
 					any = false;
@@ -2354,7 +2362,7 @@ var PS = {}; // Global namespace for public API
 				x += ( document.body.scrollLeft + document.documentElement.scrollLeft - canvas.offsetLeft - _grid.padLeft );
 				y += ( document.body.scrollTop + document.documentElement.scrollTop - canvas.offsetTop - _grid.padRight );
 
-		//		PSEngine.debug( "_getBead(): x = " + x + ", y = " + y + "\n" );
+			//		PSEngine.debug( "_getBead(): x = " + x + ", y = " + y + "\n" );
 
 				// Over the grid?
 
@@ -2414,8 +2422,16 @@ var PS = {}; // Global namespace for public API
 				{
 					_touchBead( bead );
 				}
+				else
+				{
+					_gridUnfocus();
+				}
 
-				return _endEvent( event );
+				// Only stop event propogation if not in Multispiel mode
+				if (_NAMESPACE === PS.DEFAULT_NAMESPACE)
+					event.preventDefault();
+				else
+					return _endEvent( event );
 			}
 
 			// _mouseUp ()
@@ -2712,6 +2728,9 @@ var PS = {}; // Global namespace for public API
 
 			function _keyDown ( event )
 			{
+				if(!_grid.focused)
+					return;
+
 				var fn, any, hardkey, key, len, i;
 
 				fn = "[_keyDown] ";
@@ -2839,6 +2858,9 @@ var PS = {}; // Global namespace for public API
 
 			function _keyUp ( event )
 			{
+				if(!_grid.focused)
+					return;
+
 				var fn, any, shift, ctrl, hardkey, key, i, len;
 
 				fn = "[_keyUp] ";
@@ -2947,6 +2969,9 @@ var PS = {}; // Global namespace for public API
 
 			function _wheel ( event )
 			{
+				if(!_grid.focused)
+					return;
+
 				var delta;
 
 				// Only respond when mouse is actually over the grid!
@@ -2998,17 +3023,58 @@ var PS = {}; // Global namespace for public API
 			// GRID FUNCTIONS
 			//---------------
 
+			// Focus manager - instance received mouse focus
+			function _gridFocus(e) {
+				if (!_grid.focused) {
+					_grid.focused = true;
+					// console.info("Perlenspiel " + _NAMESPACE + " focused.");
+				}
+				if(e)
+					e.preventDefault();
+			}
+
+			// Focus manager - instance lost mouse focus
+			function _gridUnfocus(e) {
+				if (_grid.focused) {
+					var target = e.target;
+					var grid	= _grid.canvas;
+					var main	= document.getElementById(_MAIN_ID);
+					var outer	= document.getElementById(_OUTER_ID);
+					var footer	= document.getElementById(_FOOTER_ID);
+					if(target === grid || target === _status.div || target === footer || target === main || target === outer)
+						return;
+					_grid.focused = false;
+					// console.warn("Perlenspiel " + _NAMESPACE + " lost focus.");
+					if(e)
+						e.preventDefault();
+				}
+			}
+
 			function _gridActivate ()
 			{
 				var grid;
 
 				grid = _grid.canvas;
 				grid.style.display = "block";
+				
+				// If not in multispiel mode, the grid is always considered focused
+				if (_NAMESPACE === PS.DEFAULT_NAMESPACE)
+					grid.focused = true;
+				else
+					grid.focused = false;
 
 				grid.addEventListener( "mousedown", _mouseDown, false );
 				grid.addEventListener( "mouseup", _mouseUp, false );
 				grid.addEventListener( "mousemove", _mouseMove, false );
 				grid.addEventListener( "mouseout", _gridOut, false );
+
+				// Add the focus manager events if in multispiel mode
+				if (_NAMESPACE !== PS.DEFAULT_NAMESPACE)
+				{
+					var outer = document.getElementById(_OUTER_ID);
+					outer.addEventListener   ( "mousedown", _gridFocus,   true  );
+					document.addEventListener( "mousedown", _gridUnfocus, false );
+				}
 
 				document.addEventListener( "keydown", _keyDown, false );
 				document.addEventListener( "keyup", _keyUp, false );
@@ -3041,6 +3107,15 @@ var PS = {}; // Global namespace for public API
 				grid.removeEventListener( "mouseup", _mouseUp, false );
 				grid.removeEventListener( "mousemove", _mouseMove, false );
 				grid.removeEventListener( "mouseout", _gridOut, false );
+
+				// Remove the focus manager if in multispiel mode
+				if (_NAMESPACE !== PS.DEFAULT_NAMESPACE)
+				{
+					var outer = document.getElementById(_OUTER_ID);
+					if(outer)
+						outer.removeEventListener   ( "mousedown", _gridFocus,   true  );
+					document.removeEventListener( "mousedown", _gridUnfocus, false );
+				}
 
 				document.removeEventListener( "keydown", _keyDown, false );
 				document.removeEventListener( "keyup", _keyUp, false );
@@ -6980,7 +7055,7 @@ var PS = {}; // Global namespace for public API
 			//-----------
 
 			PSEngine = {
-				// This must be in PSEngine.namespace
+				// This must be in PSEngine namespace
 
 				_lastTick : 0,
 
@@ -7052,7 +7127,9 @@ var PS = {}; // Global namespace for public API
 					// Main div
 
 					document.body.id = "body";
-					document.body.style.backgroundColor = _DEFAULTS.grid.color.str;
+					// set browser background (if not in multispiel mode)
+					if (_NAMESPACE === PS.DEFAULT_NAMESPACE)
+						document.body.style.backgroundColor = _DEFAULTS.grid.color.str;
 
 					outer = document.getElementById(namespace);
 					if ( !outer )
@@ -7066,6 +7143,7 @@ var PS = {}; // Global namespace for public API
 						}
 					}
 					outer.id = _OUTER_ID;
+					outer.tabindex = 12;
 					outer.className = _OUTER_CLASS;
 					outer.style.backgroundColor = _DEFAULTS.grid.color.str;
 
@@ -7102,6 +7180,7 @@ var PS = {}; // Global namespace for public API
 					status.value = "Perlenspiel 3.2";
 					status.wrap = "soft";
 					status.id = _STATUS_ID;
+					status.tabindex = 13;
 					status.className = _STATUS_CLASS;
 					_main.appendChild( status );
 
@@ -7118,6 +7197,7 @@ var PS = {}; // Global namespace for public API
 						return;
 					}
 					grid.id = _GRID_ID;
+					grid.tabindex = 14;
 					grid.className = _GRID_CLASS;
 					grid.width = _CLIENT_SIZE;
 					grid.backgroundColor = _DEFAULTS.grid.color.str;
@@ -7546,6 +7626,14 @@ var PS = {}; // Global namespace for public API
 							_errorCatch( "PSEngine.init() failed [" + err.message + "]", err );
 						}
 					}
+				},
+
+				// Shuts down the engine
+				shutdown : function ()
+				{
+					console.info("Deactivating " + _grid.canvas.id);
+					_clockActive = false;
+					_gridDeactivate();
 				},
 
 				//---------------
@@ -9050,7 +9138,7 @@ var PS = {}; // Global namespace for public API
 
 					fn = "[PSEngine.timerStop] ";
 
-		//			PSEngine.debug(fn + "id = " + id + "\n");
+					// PSEngine.debug(fn + "id = " + id + "\n");
 
 					args = arguments.length;
 					if ( args < 1 )
@@ -10995,7 +11083,7 @@ var PS = {}; // Global namespace for public API
 
 					_imageCnt += 1;
 
-		//			PSEngine.imageDump( s.image );
+					// PSEngine.imageDump( s.image );
 
 					return s.id;
 				},
@@ -12414,7 +12502,7 @@ var PS = {}; // Global namespace for public API
 		}
 	};
 
-	PS = Perlenspiel.Start("game");
+	PS = Perlenspiel.Start(PS.DEFAULT_NAMESPACE);
 }() );
 
 // requestAnimationFrame polyfill by Erik Möller
