@@ -77,7 +77,7 @@ PS.keyDown = function (key, shift, ctrl, options) {
 	"use strict";
 
 	// Uncomment the following line to inspect parameters
-	// PS.debug( "PS.keyDown(): key = " + key + ", shift = " + shift + ", ctrl = " + ctrl + "\n" );
+	PS.debug( "PS.keyDown(): key = " + key + ", shift = " + shift + ", ctrl = " + ctrl + "\n" );
 
 	// Add code here for when a key is pressed
 };
@@ -99,14 +99,14 @@ PS.input = function (sensors, options) {
 	"use strict";
 
 	// Uncomment the following block to inspect parameters
-	/*
+	
 	PS.debug( "PS.input() called\n" );
 	var device = sensors.wheel; // check for scroll wheel
 	if ( device )
 	{
 	    PS.debug( "sensors.wheel = " + device + "\n" );
 	}
-	*/
+	
 
 	// Add code here for when an input event is detected
 };

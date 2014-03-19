@@ -45,8 +45,8 @@ var PS = Perlenspiel.Start("snow");
 /////////////////////////////////////////////////////////////////
 
 var GAME = { w: 22
-		   , h: 10
-		   , clock: 16
+		   , h: 16
+		   , clock: 14
 		   , hitTop: false
 		   , snowGlyphs: "❄❅❆*☆☸✻❉✶✼" 
 		   , objects: null	// List of active objects
@@ -71,7 +71,7 @@ GAME.Init = function() {
 // Reset board to beginning state and start the update loop
 GAME.Start = function() {
 	PS.border(PS.ALL, PS.ALL, 0)
-	TweenBoard(3.0, PS.color.bind(PS), PS.COLOR_BLACK, colorLerp)
+	TweenBoard(1.0, PS.color.bind(PS), PS.COLOR_BLACK, colorLerp)
 	PS.glyph(PS.ALL, PS.ALL, 0)
 	PS.data(PS.ALL, PS.ALL, this.empty)
 	this.objects = new Array()
