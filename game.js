@@ -43,7 +43,18 @@ PS.init = function( system, options ) {
 	// Do this FIRST to avoid problems!
 	// Otherwise you will get the default 8x8 grid
 
-	PS.gridSize( 8, 8 );
+	PS.gridSize( 7, 9 );
+	PS.gridColor( 0 );
+	PS.statusText( "Input Test" );
+	PS.statusColor(0xFFFFFF);
+
+	PS.color( 0, 0, PS.COLOR_RED );
+	PS.fade( 0, 0, 120, { onEnd : function ()
+	{
+		PS.fade( 0, 0, 0);
+		PS.color( 0, 0, PS.COLOR_GREEN );
+	} } );
+	PS.color(0, 0, PS.COLOR_BLUE );
 
 	// Add any other initialization code you need here
 };

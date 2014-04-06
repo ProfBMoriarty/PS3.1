@@ -38,11 +38,12 @@
 				<li><a href="#text">PS.statusText ( text )</a></li>
 				<li><a href="#color">PS.statusColor ( color )</a></li>
 				<li><a href="#fade">PS.statusFade ( rate, options )</a></li>
+				<li><a href="#input">PS.statusInput ( text, exec )</a></li>
 			</ul>
 
 			<div class="section">
 				<div id="text" class="dot">&nbsp;</div>
-				<p class="subhead">PS.statusText ( str )</p>
+				<p class="subhead">PS.statusText ( text )</p>
 
 				<p>PS.statusText() changes and inspects the text in the status box above the grid.</p>
 
@@ -228,6 +229,54 @@
 				<p><b>PS.ERROR</b> is returned if an error occurs.</p>
 
 			</div>
+
+		<div class="section">
+			<div id="input" class="dot">&nbsp;</div>
+			<p class="subhead">PS.statusInput ( text, exec )</p>
+
+			<p>PS.statusInput() temporarily converts the status line to a labeled text input box.</p>
+
+			<div class="specs">
+				<p>Parameters:</p>
+				<ol>
+					<li>text : <em>string</em></li>
+					<li>exec : <em>function</em></li>
+				</ol>
+				<p>Returns: <b>PS.OK</b> or <b>PS.ERROR</b></p>
+			</div>
+
+			<p>The <b>text</b> parameter specifies the label text that will be displayed to the left
+				of the input box. Up to 16 characters of the string are displayed; any characters
+				beyond the 16th are discarded. If an empty string ("") is supplied, a caret character (>) is displayed.</p>
+
+			<p>If <b>text</b> is not a string, the supplied parameter is converted to a string.</p>
+
+			<p>The <b>exec</b> parameter must be a function expecting one argument. This function will be
+				called when the player presses the return key, with its argument set to the text
+				inside the input box.</p>
+
+			<p>The status line automatically reverts to its normal appearance when input is complete,
+			showing the text it was displaying before the call to PS.statusInput().</p>
+
+			<p><strong>Usage notes</strong></p>
+
+			<p>1. Event calls to <a href="events.html#keydown">PS.keyDown</a>() and
+				<a href="events.html#keyup">PS.keyUp</a>() are suspended while the status line
+				is being used for text input.</p>
+
+			<p class="subitem">Return value</p>
+
+			<p>PS.statusInput() returns PS.DONE, or <b>PS.ERROR</b> if an error occurs.</p>
+
+			<div class="example">
+				<p>// EXAMPLE:<br/>
+					// Echo a name input by a player<br/><br/>
+					PS.statusInput( "Enter name:", function ( text ) {<br/>
+					<span>&nbsp;&nbsp;&nbsp;</span>PS.statusText( "Name = " + text );<br/>
+					} );</p>
+			</div>
+		</div>
+
 		</div>
 
 		<div id="footer">

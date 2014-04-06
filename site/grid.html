@@ -33,13 +33,14 @@
 		<div id="main">
 			<p class="subhead">API | Grid</p>
 
-			<p>These commands determine the dimensions and background color of the grid,
+			<p>These commands determine the dimensions, background and shadow color of the grid,
 				and the selection of grid planes.</p>
 
 			<ul class="select">
 				<li><a href="#size">PS.gridSize</a> ( width, height )</li>
 				<li><a href="#color">PS.gridColor</a> ( color )</li>
 				<li><a href="#fade">PS.gridFade</a> ( rate, options )</li>
+				<li><a href="#shadow">PS.gridShadow</a> ( show, color )</li>
 				<li><a href="#plane">PS.gridPlane</a> ( plane )</li>
 			</ul>
 
@@ -276,6 +277,70 @@
 						<span>&nbsp;&nbsp;&nbsp;&nbsp;</span>PS.statusText( "" );<br/><br/>
 						<span>&nbsp;&nbsp;&nbsp;&nbsp;</span>// Change grid to random color<br/><br/>
 						<span>&nbsp;&nbsp;&nbsp;&nbsp;</span>PS.gridColor( PS._random( 0xFFFFFF ) );<br/>
+						};</p>
+				</div>
+			</div>
+
+			<div class="section">
+				<div id="shadow" class="dot">&nbsp;</div>
+				<p class="subhead">PS.gridShadow ( show, color )</p>
+
+				<p>PS.gridShadow() changes or inspects the shadow color of the grid.</p>
+
+				<div class="specs">
+					<p>Parameters:</p>
+					<ol>
+						<li>show : <em>boolean</em>, <b>PS.CURRENT</b> or <b>PS.DEFAULT</b></li>
+						<li>(optional) <b>color</b> : <a href="colors.html#express">color expression</a>, <b>PS.CURRENT</b> or
+							<b>PS.DEFAULT</b></li>
+					</ol>
+					<p>Returns : <em>object</em> or <b>PS.ERROR</b></p>
+
+					<p>Default : { show : false, rgb : <b>PS.COLOR_GRAY_LIGHT</b> }</p>
+				</div>
+
+				<p>If the required <b>show</b> parameter is <em>true</em> or any non-zero number,
+					the grid shadow is enabled.</p>
+
+				<p>If <b>show</b> is <em>false</em>, <em>null</em>, zero (0) or <b>PS.DEFAULT</b>,
+					the grid shadow is disabled.</p>
+
+				<p>If <b>show</b> is <b>PS.CURRENT</b>, the grid shadow status is not changed.</p>
+
+				<p>The optional <b>color</b> parameter can be supplied in any of the four Perlenspiel
+					<a href="colors.html#express">color expression</a> formats.</p>
+
+				<p>If <b>color</b> is <b>PS.DEFAULT</b>, the default color (<b>PS.COLOR_GRAY_LIGHT</b>) is applied.
+					If <b>color</b> is <b>PS.CURRENT</b> or not supplied, the shadow color is not changed.</p>
+
+				<p class="subitem">Return value</p>
+
+				<p>PS.gridShadow() returns an <em>object</em> with the following properties:</p>
+
+				<ul>
+					<li><b>.show</b> : <em>boolean</em></li>
+					<li><b>.rgb</b> : <em>integer</em></li>
+				</ul>
+
+				<p>The <b>.show</b> property is <em>true</em> if the grid shadow is enabled,
+					else <em>false</em>.</p>
+
+				<p>The <b>.rgb</b> property is an <a href="colors.html#plex">RGB multiplex</a> <em>integer</em>
+					indicating the color currently assigned to the grid shadow.</p>
+
+				<p><b>PS.ERROR</b> is returned if an error occurs.</p>
+
+				<div class="example">
+					<p>// EXAMPLE:<br/>
+						// Using PS.gridSize(), PS.gridColor()<br/>
+						// and PS.shadowColor()<br/><br/>
+						PS.init = function ( system, options ) {<br/>
+						<span>&nbsp;&nbsp;&nbsp;&nbsp;</span>// set up a 10 x 10 grid<br/><br/>
+						<span>&nbsp;&nbsp;&nbsp;&nbsp;</span>PS.gridSize( 10, 10 );<br/><br/>
+						<span>&nbsp;&nbsp;&nbsp;&nbsp;</span>// set background color to red<br/>
+						<span>&nbsp;&nbsp;&nbsp;&nbsp;</span>// set shadow color to yellow<br/><br/>
+						<span>&nbsp;&nbsp;&nbsp;&nbsp;</span>PS.gridColor( PS.COLOR_RED );<br/>
+						<span>&nbsp;&nbsp;&nbsp;&nbsp;</span>PS.gridShadow( true, PS.COLOR_YELLOW );<br/>
 						};</p>
 				</div>
 			</div>
