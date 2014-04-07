@@ -211,16 +211,16 @@ body {
 	font-size: 125%; /* new */
 }
 
-.outer {
+#outer, .outer {
 
 }
 
-.main {
+#main, .main {
 	width: 512px;
 	margin: 0 auto;
 }
 
-.status {
+#stsp, #status, .status {
 	width: 100%;
 	font-size: 1.25em; /* new */
 	margin: 1em 0 1em 0; /* trbl */
@@ -269,11 +269,11 @@ body {
 	font-size: 0.75em;
 }
 
-.debug {
+#debug, .debug {
 	display: none;
 }
 
-.monitor {
+#monitor, .monitor {
 	width: 100%;
 	text-align: left;
 	font-family: monospace;
@@ -284,7 +284,7 @@ body {
 	box-shadow: none;
 }
 
-.footer {
+#footer, .footer {
 	width: 100%;
 	font-size: 0.67em;
 	text-align: center;
