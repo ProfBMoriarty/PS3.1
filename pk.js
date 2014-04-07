@@ -1,4 +1,4 @@
-// test.js for Perlenspiel 3.1
+// pk.js for Perlenspiel 3.1
 
 // The following comment lines are for JSLint. Don't remove them!
 

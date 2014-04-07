@@ -1,4 +1,4 @@
-// ps3.1.3.js for Perlenspiel 3.1
+// ps3.1.5.js for Perlenspiel 3.1
 // Remember to update version number in _system!
 
 /*
@@ -235,12 +235,12 @@ var PS; // Global namespace for public API
 		engine : "Perlenspiel",
 		major : 3,
 		minor : 1,
-		revision : 3,
+		revision : 5,
 		audio : null, // populated by PS._sys()
 		host : {
-			app : "?",
-			version : "?",
-			os : "?" },
+			app : "",
+			version : "",
+			os : "" },
 		inputs : {
 			touch : false
 		}
@@ -313,6 +313,31 @@ var PS; // Global namespace for public API
 
 	var _pathmaps; // array of pathmaps
 	var _pathmapCnt; // counter for pathmap ids
+
+	// Footer fader
+
+	var _footerTimer = null;
+	var _footerDelay = 50; // wait 5 seconds before fade
+	var _footerOpacity = 1.0;
+
+	function _footerFade ()
+	{
+		if ( _footerDelay >= 0 )
+		{
+			_footerDelay -= 1;
+		}
+		else
+		{
+			_footerOpacity -= 0.05;
+			if ( _footerOpacity <= 0 )
+			{
+				PS.timerStop( _footerTimer );
+				_footerTimer = null;
+				_footerOpacity = 0;
+			}
+			_footer.style.opacity = _footerOpacity;
+		}
+	}
 
 	//----------------
 	// GENERAL SUPPORT
@@ -988,6 +1013,10 @@ var PS; // Global namespace for public API
 		// Stop the clock
 
 		_clockActive = false;
+		if ( _footerTimer )
+		{
+			PS.timerStop( _footerTimer );
+		}
 
 		if ( ( typeof message !== "string" ) || ( message.length < 1 ) )
 		{
@@ -998,6 +1027,7 @@ var PS; // Global namespace for public API
 
 		// set footer
 
+		_footer.style.opacity = 1.0;
 		_footer.innerHTML = str;
 
 		// Only debugger gets call stack
@@ -4212,7 +4242,6 @@ var PS; // Global namespace for public API
 			b = current.b;
 
 			current.str = _RSTR[ r ] + _GBSTR[ g ] + _GBSTR[ b ] + _ASTR[ alpha ];
-			PS.statusText("str = " + current.str);
 			if ( bead.visible )
 			{
 				fader = bead.borderFader;
@@ -6603,7 +6632,7 @@ var PS; // Global namespace for public API
 			catch( err )
 			{
 				console.error( "Problem detecting browser: " + err.message );
-				version = "???";
+				version = "";
 			}
 		}
 
@@ -6935,6 +6964,7 @@ var PS; // Global namespace for public API
 				return;
 			}
 			footer.id = _FOOTER_ID;
+			footer.style.opacity = "1.0";
 			footer.innerHTML = "Loading Perlenspiel";
 			_main.appendChild( footer );
 			_footer = footer;
@@ -7176,35 +7206,38 @@ var PS; // Global namespace for public API
 			_pathmaps = [ ];
 			_pathmapCnt = 0;
 
-			// init audio system
+			// init audio system if not running iOS
 
-			aq = AQ.init(
+			aq = null;
+			if ( _system.host.os !== "iOS" )
 			{
-				defaultPath : _DEFAULTS.audio.path,
-				defaultFileTypes : [ "ogg", "mp3", "wav" ],
-				onAlert : PS.debug,
-				stack : true,
-				forceHTML5 : true // never use Web Audio; sigh
-			} );
+				aq = AQ.init(
+					{
+						defaultPath : _DEFAULTS.audio.path,
+						defaultFileTypes : [ "ogg", "mp3", "wav" ],
+						onAlert : PS.debug,
+						stack : true,
+						forceHTML5 : true // never use Web Audio; sigh
+					} );
+				if ( ( aq === PS.ERROR ) || ( aq.status === AQ.ERROR ) )
+				{
+					return;
+				}
 
-			if ( ( aq === PS.ERROR ) || ( aq.status === AQ.ERROR ) )
-			{
-				return;
-			}
+				_system.audio = aq; // copy audio specs into system
 
-			_system.audio = aq; // copy audio specs into system
+				// load and lock error sound
 
-			// load and lock error sound
-
-			_errorSound = null;
-			result = PS.audioLoad( _DEFAULTS.audio.error_sound, { path : _DEFAULTS.audio.path, lock : true } );
-			if ( result === PS.ERROR )
-			{
-				_warning( "Error sound '" + _DEFAULTS.audio.error_sound + "' not loaded" );
-			}
-			else
-			{
-				_errorSound = _DEFAULTS.audio.error_sound;
+				_errorSound = null;
+				result = PS.audioLoad( _DEFAULTS.audio.error_sound, { path : _DEFAULTS.audio.path, lock : true } );
+				if ( result === PS.ERROR )
+				{
+					_warning( "Error sound '" + _DEFAULTS.audio.error_sound + "' not loaded" );
+				}
+				else
+				{
+					_errorSound = _DEFAULTS.audio.error_sound;
+				}
 			}
 
 			// Create offscreen canvas for image manipulation
@@ -7280,9 +7313,12 @@ var PS; // Global namespace for public API
 
 			// set up footer
 
-			str = "PS " + _system.major + "." + _system.minor + "." + _system.revision + " | " +
-				aq.engine + " " + aq.major + "." + aq.minor + "." + aq.revision + " | " +
-				_system.host.os + " " + _system.host.app + " " + _system.host.version;
+			str = "PS " + _system.major + "." + _system.minor + "." + _system.revision + " | ";
+			if ( aq ) // not set for iOS
+			{
+				str += ( aq.engine + " " + aq.major + "." + aq.minor + "." + aq.revision + " | " );
+			}
+			str += _system.host.os + " " + _system.host.app + " " + _system.host.version;
 			if ( _touchScreen )
 			{
 				str += ( " | Touch " );
@@ -7305,6 +7341,8 @@ var PS; // Global namespace for public API
 			// Init all event listeners
 
 			_gridActivate ();
+
+			_footerTimer = PS.timerStart( 6, _footerFade );
 
 			if ( PS.init )
 			{
@@ -12348,4 +12386,5 @@ var PS; // Global namespace for public API
 		};
 	}
 }() );
+
 

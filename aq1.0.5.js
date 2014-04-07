@@ -1,4 +1,4 @@
-// aq1.0.4.js
+// aq1.0.5.js
 // Remember to change version constants below!
 
 // The following comments are for JSLint
@@ -19,7 +19,7 @@ var AQ; // Global namespace for public API
 	var _VERSION_NAME = "AQ";
 	var _VERSION_MAJOR = 1;
 	var _VERSION_MINOR = 0;
-	var _VERSION_REVISION = 4;
+	var _VERSION_REVISION = 5;
 
 	var _MONITOR = false; // true to display status messages
 
@@ -62,6 +62,7 @@ var AQ; // Global namespace for public API
 	// These shared globals are set up by init()
 
 	var _enabled = false; // true if engine enabled
+	var _errorDetected = false; // true if asynchronous error was detected
 	var _defaultPath = ""; // default audio path (case sensitive)
 	var _onAlert = null; // user function to call for alerts
 	var _stack = false; // true for stack trace
@@ -73,7 +74,7 @@ var AQ; // Global namespace for public API
 
 	var _codecs = {
 		ogg : { ok : false, type : 'audio/ogg; codecs="vorbis"' },
-		mp3 : { ok : false, type : 'audio/mpeg;' },
+		mp3 : { ok : false, type : 'audio/mpeg; codecs="mp3"' },
 		wav : { ok : false, type : 'audio/wav; codecs="1"' },
 		aac : { ok : false, type : 'audio/mp4; codecs="mp4a.40.2"' },
 		webm : { ok : false, type : 'audio/webm; codecs="vorbis"' },
@@ -226,6 +227,7 @@ var AQ; // Global namespace for public API
 	{
 		var exec;
 
+		_errorDetected = true;
 		if ( ( typeof str !== "string" ) || ( str.length < 1 ) )
 		{
 			str = "???";
@@ -274,12 +276,12 @@ var AQ; // Global namespace for public API
 
 	function _checkFileTypes ( fn, ft )
 	{
-		var type, len, i, playable, str, codec;
+		var type, len, i, playable, str;
 
 		type = _typeOf( ft );
 		if ( ( type === "undefined" ) || ( ft === null ) || ( ft === AQ.DEFAULT ) )
 		{
-			return _DEFAULT.filetypes;
+			return _defaultFileTypes;
 		}
 
 		if ( type !== "array" )
@@ -307,8 +309,7 @@ var AQ; // Global namespace for public API
 
 			// Is this file type playable?
 
-			codec = _codecs [ str ];
-			if ( codec && codec.ok ) // this codec available?
+			if ( _defaultFileTypes.indexOf( str ) >= 0 ) // this codec available?
 			{
 				if ( playable.indexOf( str ) < 0 ) // not found already?
 				{
@@ -643,6 +644,11 @@ var AQ; // Global namespace for public API
 
 			fn = "[AQ._web.stopChannel] ";
 
+			if ( _errorDetected )
+			{
+				return AQ.ERROR;
+			}
+
 			if ( _MONITOR )
 			{
 				_debug( fn + channel.id );
@@ -691,6 +697,11 @@ var AQ; // Global namespace for public API
 			var fn, ctx, source, gainNode, duration, timeout, id, channel, params, exec;
 
 			fn = "[AQ._web.playBuffer] ";
+
+			if ( _errorDetected )
+			{
+				return AQ.ERROR;
+			}
 
 			ctx = _web.context;
 
@@ -784,17 +795,16 @@ var AQ; // Global namespace for public API
 								try
 								{
 									exec( {
-										channel: buf.channel_id,
-										name: params.name,
-										path: params.pathname,
-										duration: buf.duration,
-										data: params.data
+										channel : buf.channel_id,
+										name : params.name,
+										path : params.pathname,
+										duration : buf.duration,
+										data : params.data
 									} );
 								}
 								catch ( err )
 								{
-									_errorCatch( fn + "User .onEnd failed on " + id + ": " +
-										params.pathname + " [" + err.message + "]", err );
+									_errorCatch( fn + "User .onEnd failed on " + id + ": " + params.pathname + " [" + err.message + "]", err );
 								}
 							}
 
@@ -852,8 +862,7 @@ var AQ; // Global namespace for public API
 				}
 				catch ( err )
 				{
-					_errorCatch( fn + "User .onPlay failed on " + buffer.channel_id + ": " +
-						params.pathname + " [" + err.message + "]", err );
+					_errorCatch( fn + "User .onPlay failed on " + buffer.channel_id + ": " + params.pathname + " [" + err.message + "]", err );
 				}
 			}
 
@@ -869,6 +878,11 @@ var AQ; // Global namespace for public API
 			var fn, len, i, buffer, id, request;
 
 			fn = "[AQ._web.load] ";
+
+			if ( _errorDetected )
+			{
+				return AQ.ERROR;
+			}
 
 			// see if this file is already loaded
 
@@ -918,64 +932,64 @@ var AQ; // Global namespace for public API
 					_debug( fn + "Loaded " + params.pathname + " into " + buffer.id );
 				}
 				_web.context.decodeAudioData( request.response,
-					function ( audio ) // on successful load
+				function ( audio ) // on successful load
+				{
+					var exec;
+
+					buffer.audio = audio; // save decoded audio in buffer
+					buffer.duration = Math.floor( audio.duration * 1000 ); // convert to milliseconds
+					_web.buffers.push( buffer ); // save buffer object
+
+					if ( _MONITOR )
 					{
-						var exec;
+						 _debug( fn + "Decoded " + params.pathname + " in " + buffer.id +
+							" (" + buffer.duration + " ms)" );
+					}
 
-						buffer.audio = audio; // save decoded audio in buffer
-						buffer.duration = Math.floor( audio.duration * 1000 ); // convert to milliseconds
-						_web.buffers.push( buffer ); // save buffer object
+					// Call .onLoad function if present
 
+					exec = params.onLoad;
+					if ( exec && ( typeof exec === "function" ) )
+					{
+						params.onLoad = null; // make sure it doesn't get called again!
 						if ( _MONITOR )
 						{
-							_debug( fn + "Decoded " + params.pathname + " in " + buffer.id +
-								" (" + buffer.duration + " ms)" );
+							_debug( fn + "Calling user .onLoad for " + buffer.channel_id + ": " + params.pathname );
 						}
-
-						// Call .onLoad function if present
-
-						exec = params.onLoad;
-						if ( exec && ( typeof exec === "function" ) )
+						try
 						{
-							params.onLoad = null; // make sure it doesn't get called again!
-							if ( _MONITOR )
-							{
-								_debug( fn + "Calling user .onLoad for " + buffer.channel_id + ": " + params.pathname );
-							}
-							try
-							{
-								exec( {
-									channel: buffer.channel_id,
-									name: params.name,
-									path: params.pathname,
-									duration: buffer.duration,
-									data: params.data
-								} );
-							}
-							catch ( err )
-							{
-								_errorCatch( fn + "User .onLoad failed on " + buffer.channel_id + ": " +
-									params.pathname + " [" + err.message + "]", err );
-							}
+							exec( {
+								channel : buffer.channel_id,
+								name : params.name,
+								path : params.pathname,
+								duration : buffer.duration,
+								data : params.data
+							} );
 						}
-
-						// Play immediately?
-
-						if ( buffer.params.autoplay )
+						catch ( err )
 						{
-							if ( _MONITOR )
-							{
-								_debug( fn + "Autoplaying " + buffer.id + " :" + params.pathname );
-							}
-							_web.playBuffer( buffer );
+							_errorCatch( fn + "User .onLoad failed on " + buffer.channel_id + ": " +
+								params.pathname + " [" + err.message + "]", err );
 						}
+					}
 
-					},
+					// Play immediately?
 
-					function () // on error
+					if ( buffer.params.autoplay )
 					{
-						_error( fn + "Error loading " + params.pathname );
-					} );
+						if ( _MONITOR )
+						{
+							_debug( fn + "Autoplaying " + buffer.id + " :" + params.pathname );
+						}
+						_web.playBuffer( buffer );
+					}
+
+				},
+
+				function () // on error
+				{
+					_error( fn + "Error loading " + params.pathname );
+				} );
 			};
 
 			try
@@ -998,6 +1012,11 @@ var AQ; // Global namespace for public API
 			var fn, len, i, buffer;
 
 			fn = "[AQ._web.play] ";
+
+			if ( _errorDetected )
+			{
+				return AQ.ERROR;
+			}
 
 			len = _web.buffers.length;
 			for ( i = 0; i < len; i += 1 )
@@ -1031,6 +1050,11 @@ var AQ; // Global namespace for public API
 
 			fn = "[AQ._web.playChannel] ";
 
+			if ( _errorDetected )
+			{
+				return AQ.ERROR;
+			}
+
 			len = _web.buffers.length;
 			for ( i = 0; i < len; i += 1 )
 			{
@@ -1053,6 +1077,11 @@ var AQ; // Global namespace for public API
 			var fn, len, i, channel, buffer, source, ptime;
 
 			fn = "[AQ._web.pause] ";
+
+			if ( _errorDetected )
+			{
+				return AQ.ERROR;
+			}
 
 			len = _channels.length;
 			for ( i = 0; i < len; i += 1 )
@@ -1116,6 +1145,11 @@ var AQ; // Global namespace for public API
 
 			fn = "[AQ._web.stop] ";
 
+			if ( _errorDetected )
+			{
+				return AQ.ERROR;
+			}
+
 			len = _channels.length;
 			for ( i = 0; i < len; i += 1 )
 			{
@@ -1138,6 +1172,11 @@ var AQ; // Global namespace for public API
 
 		init : function ()
 		{
+			if ( _errorDetected )
+			{
+				return AQ.ERROR;
+			}
+
 			_web.buffers = [];
 			_web.bufferID = 0;
 			return AQ.WEB_AUDIO;
@@ -1223,6 +1262,11 @@ var AQ; // Global namespace for public API
 
 			fn = "[AQ._html.startChannel] ";
 
+			if ( _errorDetected )
+			{
+				return AQ.ERROR;
+			}
+
 			if ( _MONITOR )
 			{
 				_debug( fn + "Playing " + channel.id );
@@ -1273,6 +1317,7 @@ var AQ; // Global namespace for public API
 			}
 
 			audio.play();
+			return AQ.DONE;
 		},
 
 		// _html.onLoad ( event )
@@ -1362,8 +1407,7 @@ var AQ; // Global namespace for public API
 
 			if ( _MONITOR )
 			{
-				_debug( fn + channel.id + ": " + params.pathname + " (" +
-					channel.duration + "ms)" );
+				_debug( fn + channel.id + ": " + params.pathname + " (" + channel.duration + "ms)" );
 			}
 
 			// if channel has an .onPlay function, call it
@@ -1387,8 +1431,7 @@ var AQ; // Global namespace for public API
 				}
 				catch ( err )
 				{
-					_errorCatch( fn + "User .onPlay failed on " + channel.id + ": " +
-						params.pathname + " [" + err.message + "]", err );
+					_errorCatch( fn + "User .onPlay failed on " + channel.id + ": " + params.pathname + " [" + err.message + "]", err );
 				}
 			}
 			return _endEvent( event );
@@ -1438,8 +1481,7 @@ var AQ; // Global namespace for public API
 				}
 				catch ( err )
 				{
-					_errorCatch( fn + "User .onEnd failed on " + channel.id + ": " +
-						params.pathname + " [" + err.message + "]", err );
+					_errorCatch( fn + "User .onEnd failed on " + channel.id + ": " + params.pathname + " [" + err.message + "]", err );
 				}
 			}
 			return _endEvent( event );
@@ -1453,6 +1495,11 @@ var AQ; // Global namespace for public API
 			var fn, audio;
 
 			fn = "[AQ._html.loadChannel] ";
+
+			if ( _errorDetected )
+			{
+				return AQ.ERROR;
+			}
 
 			channel.params = params;
 			channel.status = _CHANNEL_LOADING;
@@ -1469,11 +1516,11 @@ var AQ; // Global namespace for public API
 
 			if ( _MONITOR )
 			{
-				_debug( fn + channel.id + ": " + params.filepath + " (" +
-					channel.duration + "ms)" );
+				_debug( fn + channel.id + ": " + params.filepath + " (" + channel.duration + "ms)" );
 			}
 
 			audio.setAttribute( "src", params.pathname ); // actually starts the load
+			return AQ.DONE;
 		},
 
 		// _html.load ( params )
@@ -1485,6 +1532,11 @@ var AQ; // Global namespace for public API
 			var fn, i, channel, cnt;
 
 			fn = "[AQ._html.load] ";
+
+			if ( _errorDetected )
+			{
+				return AQ.ERROR;
+			}
 
 			// is this sound already available in an ended, unpaused channel?
 
@@ -1561,6 +1613,11 @@ var AQ; // Global namespace for public API
 
 			fn = "[AQ._html.play] ";
 
+			if ( _errorDetected )
+			{
+				return AQ.ERROR;
+			}
+
 			// play requested channel if ready
 
 			// is this sound already available in an ended, unpaused channel?
@@ -1599,6 +1656,11 @@ var AQ; // Global namespace for public API
 
 			fn = "[AQ._html.playChannel] ";
 
+			if ( _errorDetected )
+			{
+				return AQ.ERROR;
+			}
+
 			// Play requested channel if ready
 
 			for ( i = 0; i < _channelCnt; i += 1 )
@@ -1635,6 +1697,11 @@ var AQ; // Global namespace for public API
 			var fn, i, channel;
 
 			fn = "[AQ._html.pause] ";
+
+			if ( _errorDetected )
+			{
+				return AQ.ERROR;
+			}
 
 			for ( i = 0; i < _channelCnt; i += 1 )
 			{
@@ -1673,6 +1740,11 @@ var AQ; // Global namespace for public API
 
 			fn = "[AQ._html.stop] ";
 
+			if ( _errorDetected )
+			{
+				return AQ.ERROR;
+			}
+
 			for ( i = 0; i < _channelCnt; i += 1 )
 			{
 				channel = _channels[ i ];
@@ -1705,6 +1777,11 @@ var AQ; // Global namespace for public API
 			var fn, i, audio;
 
 			fn = "[AQ._html.init] ";
+
+			if ( _errorDetected )
+			{
+				return AQ.ERROR;
+			}
 
 			// set up _MAX_CHANNELS Audio elements
 
@@ -1765,20 +1842,28 @@ var AQ; // Global namespace for public API
 		// .onAlert (default: null, no display) = user function to display debug/error strings
 		// .stack (default: false) = true to display Javascript stack on error messages
 		// .forceHTML5 (default: false) = true to force HTML5 audio engine
-		// Returns AQ.HTML5_AUDIO, AQ.WEB_AUDIO or AQ.ERROR
+		// Returns init info object or AQ.ERROR
 
 		init : function ( params )
 		{
-			var fn, e, item, codec, canplay, val, type, status, contextClass;
+			var fn, result, e, html, item, codec, canplay, val, type, status, contextClass;
 
 			fn = "[AQ.init] ";
+
+			result = {
+				engine : _VERSION_NAME,
+				major : _VERSION_MAJOR,
+				minor : _VERSION_MINOR,
+				revision : _VERSION_REVISION,
+				status : AQ.ERROR, // assume error return
+				fileTypes : [] // with no file types
+			};
 
 			// set engine defaults
 
 			_enabled = false; // start disabled
-
+			_errorDetected = false; // no async errors yet
 			_defaultPath = _DEFAULT.path; // local directory
-			_defaultFileTypes = _DEFAULT.filetypes; // assume ogg, mp3, wav files available
 			_onAlert = null; // no alert reporter
 			_stack = false; // no stack debugging
 			_forceHTML5 = false; // HTML5 Audio not forced
@@ -1786,27 +1871,34 @@ var AQ; // Global namespace for public API
 			// determine which codecs are available
 
 			e = document.createElement( 'audio' );
-
-			if ( !e.canPlayType )
+			html = e.canPlayType;
+			if ( !html )
 			{
 				window.alert( fn + "Audio codec testing not available\n" );
-				return AQ.ERROR;
+				return result;
 			}
 
+			_defaultFileTypes = [];
 			for ( item in _codecs )
 			{
 				if ( _codecs.hasOwnProperty( item ) )
 				{
 					codec = _codecs[ item ]; // get codec table
 					canplay = e.canPlayType( codec.type );
-					if ( canplay !== "" ) // instead of "probably"
+					if ( canplay === "probably" ) // instead of "probably"
 					{
 						codec.ok = true; // mark as available
+						_defaultFileTypes.push( item ); // add to list of defaults
 					}
 				}
 			}
+			e = null; // discard
 
-			e = null;
+			if ( _defaultFileTypes.length < 1 )
+			{
+				window.alert( fn + "No common audio filetypes supported\n" );
+				return result;
+			}
 
 			// check params if present
 
@@ -1815,7 +1907,7 @@ var AQ; // Global namespace for public API
 				if ( typeof params !== "object" )
 				{
 					window.alert( fn + "Invalid parameter\n" );
-					return AQ.ERROR;
+					return result;
 				}
 
 				// check .onAlert property if present
@@ -1831,7 +1923,7 @@ var AQ; // Global namespace for public API
 					else if ( type !== "function" )
 					{
 						window.alert( fn + ".onAlert property not a function" ); // must use alert or it won't be seen!
-						return AQ.ERROR;
+						return result;
 					}
 					_onAlert = val;
 				}
@@ -1853,7 +1945,7 @@ var AQ; // Global namespace for public API
 					else
 					{
 						window.alert( fn + ".stack property not a boolean" );
-						return AQ.ERROR;
+						return result;
 					}
 					_stack = val;
 				}
@@ -1876,7 +1968,8 @@ var AQ; // Global namespace for public API
 						}
 						else
 						{
-							return _error( fn + ".forceHTML5 property invalid" );
+							window.alert( fn + ".forceHTML5 property invalid" );
+							return result;
 						}
 					}
 					if ( _MONITOR )
@@ -1898,7 +1991,8 @@ var AQ; // Global namespace for public API
 					}
 					else if ( type !== "string" )
 					{
-						return _error( fn + ".defaultPath property not a valid string" );
+						window.alert( fn + ".defaultPath property not a valid string" );
+						return result;
 					}
 					_defaultPath = val;
 				}
@@ -1908,7 +2002,7 @@ var AQ; // Global namespace for public API
 				val = _checkFileTypes( fn, params.defaultFileTypes );
 				if ( val === AQ.ERROR )
 				{
-					return AQ.ERROR;
+					return result;
 				}
 				if ( val )
 				{
@@ -1934,7 +2028,8 @@ var AQ; // Global namespace for public API
 					_web.context = new contextClass();
 					if ( !_web.context )
 					{
-						return _error( fn + "AudioContext init failed" );
+						window.alert( fn + "AudioContext init failed" );
+						return result;
 					}
 					_usingWebAudio = true;
 				}
@@ -1946,9 +2041,10 @@ var AQ; // Global namespace for public API
 			{
 				// make sure HTML5 Audio is actually available
 
-				if ( !document.createElement( "audio" ).canPlayType )
+				if ( !html )
 				{
-					return _error( fn + "HTML5 Audio not supported" );
+					window.alert( fn + "HTML5 Audio not supported" );
+					return result;
 				}
 				_exec = _html;
 			}
@@ -1968,13 +2064,9 @@ var AQ; // Global namespace for public API
 				_debug( fn + "status = " + status );
 			}
 
-			return {
-				name : _VERSION_NAME,
-				major : _VERSION_MAJOR,
-				minor : _VERSION_MINOR,
-				revision : _VERSION_REVISION,
-				status : status
-			};
+			result.status = AQ.DONE;
+			result.fileTypes = _defaultFileTypes;
+			return result;
 		},
 
 		// load()
@@ -2192,5 +2284,6 @@ var AQ; // Global namespace for public API
 	};
 
 }() );
+
 
 

@@ -47,12 +47,43 @@
 
 				<p>Email suspected bugs, ideas and comments to bmoriarty [at] wpi [dot] edu.</p>
 
-				<ul>
+				<ul><li><strong>Version 3.1.4</strong> (04.03.14)</li>
+					<ul>
+						<li>A debugging message inadvertently left in <a href="beads.html#borderalpha">PS.borderAlpha</a>()</a>
+							has been removed.</li>
+						<li>Audio on Safari OS X has been fixed, again.</li>
+						<li>Audio is now disabled on iOS devices due to Apple's deliberately crippled support for HTML5 audio.
+							Most games will simply play without sound. However, games that rely on audio .onLoad or .onEnd functions (such as the
+							<a href="examples/splash/splash.html">Perlenspiel splash screen</a> example) will not work.
+							You can detect if your game is running under iOS by checking the <b>.host.os</b> property of the
+							<a href="events.html#init">PS.init</a>() <b>system</b> parameter. If this property is "iOS",
+							avoid using audio .onLoad or .onEnd functions.</li>
+						<li>The version/platform data in the message line now fades away five seconds after the engine initializes.</li>
+					</ul>
+					<li><strong>Version 3.1.3</strong> (04.02.14)</li>
+					<ul>
+						<li>The engine now appears to work on Internet Explorer 10 (and maybe 9). More thorough testing is needed.</li>
+						<li><a href="beads.html#fade">PS.fade</a>(),
+							<a href="beads.html#borderfade">PS.borderFade</a>(),
+							<a href="beads.html#glyphfade">PS.glyphFade</a>(),
+							<a href="grid.html#fade">PS.gridFade</a>() and
+							<a href="status.html#fade">PS.statusFade</a>() now support a new <b>.onStep</b> property
+							in their <b>options</b> parameter that allows for detailed monitoring and
+							control of fader effects. See the API documentation for details.</li>
+						<li>All of the above fader functions now change the rate of any in-progress fades
+							as well as subsequent fades.</li>
+						<li>The requirement that square beads containing a glyph must have equal-width borders has been removed.</li>
+						<li>The grid now updates correctly on all key repeats.</li>
+						<li><a href="events.html#init">PS.init</a>() now passes information about the audio engine through its
+							<b>system</b> parameter.</li>
+						<li>The PS.gridShadow() function introduced in the last build has been meekly rolled back,
+							pending the resolution of cosmetic issues. It will be restored in a future build.</li>
+					</ul>
 					<li><strong>Version 3.1.2</strong> (03.19.14)</li>
 					<ul>
 						<li>A new function, <a href="status.html#input">PS.statusInput</a>(),
 							temporarily turns the status line into a labeled text input box.</li>
-						<li>Another new function, <a href="grid.html#shadow">PS.gridShadow</a>(),
+						<li>Another new function, PS.gridShadow(),
 							lets you display a colored shadow around the perimeter of the grid.
 							Thanks to Mark Diehr for coming up with this idea.</li>
 						<li>The grid now updates correctly when a fader .onEnd function is called.</li>

@@ -71,7 +71,7 @@
 
 		<p>If PS.gridSize() is not called, a default 8x8 grid is created.</p>
 
-		<p>The <b>system</b> parameter provides information about the Perlenspiel engine, host platform and available I/O affordances.
+		<p>The <b>system</b> parameter provides information about the Perlenspiel engine, audio engine, host platform and available I/O affordances.
 			It is an object with the following properties:</p>
 
 		<ul>
@@ -79,6 +79,7 @@
 			<li><b>.major</b> : <em>integer</em></li>
 			<li><b>.minor</b> : <em>integer</em></li>
 			<li><b>.revision</b> : <em>integer</em></li>
+			<li><b>.audio</b> : <em>object</em></li>
 			<li><b>.host</b> : <em>object</em></li>
 			<li><b>.inputs</b> : <em>object</em></li>
 		</ul>
@@ -90,6 +91,31 @@
 		<p class="subitem">.major / .minor / .revision</p>
 
 		<p>Three integers indicating the current version of the game engine.</p>
+
+		<p class="subitem">.audio</p>
+
+		<p>An <em>object</em> identifying the audio engine and its capabilities. It contains the following properties:</p>
+
+		<ul>
+			<li><b>.engine</b> : <em>string</em></li>
+			<li><b>.major</b> : <em>integer</em></li>
+			<li><b>.minor</b> : <em>integer</em></li>
+			<li><b>.revision</b> : <em>integer</em></li>
+			<li><b>.fileTypes</b> : <em>array</em></li>
+		</ul>
+
+		<p class="subitem">audio.engine</p>
+
+		<p>The name of the audio engine, usually “AQ.”</p>
+
+		<p class="subitem">audio.major / audio.minor / audio.revision</p>
+
+		<p>Three integers indicating the version of the audio engine.</p>
+
+		<p class="subitem">audio.fileTypes</p>
+
+		<p>An <em>array</em> of <em>strings</em> indicating the file types that can be played by the audio engine in the context
+		of the current browser. These will be a combination of "ogg", "mp3" and/or "wav".</p>
 
 		<p class="subitem">.host</p>
 

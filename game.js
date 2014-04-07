@@ -35,6 +35,8 @@ along with Perlenspiel. If not, see <http://www.gnu.org/licenses/>.
 // [system] = an object containing engine and platform information; see documentation for details
 // [options] = an object with optional parameters; see documentation for details
 
+var channel;
+
 PS.init = function( system, options ) {
 	"use strict";
 
@@ -48,13 +50,6 @@ PS.init = function( system, options ) {
 	PS.statusText( "Input Test" );
 	PS.statusColor(0xFFFFFF);
 
-	PS.color( 0, 0, PS.COLOR_RED );
-	PS.fade( 0, 0, 120, { onEnd : function ()
-	{
-		PS.fade( 0, 0, 0);
-		PS.color( 0, 0, PS.COLOR_GREEN );
-	} } );
-	PS.color(0, 0, PS.COLOR_BLUE );
 
 	// Add any other initialization code you need here
 };
@@ -72,7 +67,7 @@ PS.touch = function( x, y, data, options ) {
 
 	// Uncomment the following line to inspect parameters
 	// PS.debug( "PS.touch() @ " + x + ", " + y + "\n" );
-
+	channel = PS.audioPlay ( "157", { path: "http://88.198.78.90/ct/files/mp3/trumpet/", fileTypes: [ "mp3", "wav" ] } );
 	// Add code here for mouse clicks/touches over a bead
 };
 
