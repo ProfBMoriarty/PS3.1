@@ -40,7 +40,9 @@
 				<li><a href="#size">PS.gridSize</a> ( width, height )</li>
 				<li><a href="#color">PS.gridColor</a> ( color )</li>
 				<li><a href="#fade">PS.gridFade</a> ( rate, options )</li>
+				<!--
 				<li><a href="#shadow">PS.gridShadow</a> ( show, color )</li>
+				-->
 				<li><a href="#plane">PS.gridPlane</a> ( plane )</li>
 			</ul>
 
@@ -79,15 +81,15 @@
 					<li>Radius: 0% (square)</li>
 					<li>Color: <b>PS.COLOR_WHITE</b></li>
 					<li>Alpha: 255 (fully opaque)</li>
-					<li>Fader: { rate: 0, rgb : <em>null</em>, onEnd: <em>null</em>, params : <em>null</em> }</li>
+					<li>Fader: { rate: 0, rgb : <em>null</em>, onStep: <em>null</em>, onEnd: <em>null</em>, params : <em>null</em> }</li>
 					<li>Border width: 1 (all edges)</li>
 					<li>Border color: <b>PS.COLOR_GRAY</b></li>
 					<li>Border alpha: 255 (fully opaque)</li>
-					<li>Border fader: { rate: 0, rgb : <em>null</em>, onEnd: <em>null</em>, params : <em>null</em> }</li>
+					<li>Border fader: { rate: 0, rgb : <em>null</em>, onStep: <em>null</em>, onEnd: <em>null</em>, params : <em>null</em> }</li>
 					<li>Glyph: 0 (none)</li>
 					<li>Glyph color: <b>PS.COLOR_BLACK</b></li>
 					<li>Glyph alpha: 255 (fully opaque)</li>
-					<li>Glyph fader: { rate: 0, rgb : <em>null</em>, onEnd: <em>null</em>, params : <em>null</em> }</li>
+					<li>Glyph fader: { rate: 0, rgb : <em>null</em>, onStep: <em>null</em>, onEnd: <em>null</em>, params : <em>null</em> }</li>
 					<li>Data: 0</li>
 					<li>Exec: <em>null</em> (none)</li>
 				</ul>
@@ -198,33 +200,64 @@
 
 				<ul>
 					<li><b>.rgb</b> : <a href="colors.html#plex">RGB multiplex</a>, <b>PS.CURRENT</b> or <b>PS.DEFAULT</b></li>
+					<li><b>.onStep</b> : <em>function</em>, <b>PS.CURRENT</b> or <b>PS.DEFAULT</b></li>
 					<li><b>.onEnd</b> : <em>function</em>, <b>PS.CURRENT</b> or <b>PS.DEFAULT</b></li>
 					<li><b>.params</b> : <em>array</em>, <b>PS.CURRENT</b> or <b>PS.DEFAULT</b></li>
 				</ul>
 
 				<p class="subitem">.rgb</p>
 
-				<p>The optional <b>.rgb</b> property specifies the initial color of the fade effect.
-					It should be an <a href="colors.html#plex">RGB multiplex</a> <em>integer</em> in the range 0-0xFFFFFF inclusive.
-					Values outside this range are clamped. Non-integral values are floored.
-					If <b>.rgb</b> is <b>PS.DEFAULT</b>,
-					<em>null</em> or not supplied, the current grid color is used as the starting color.
-					If <b>.rgb</b> is <b>PS.CURRENT</b>, the currently assigned start color is not changed.</p>
+				</b></p><p>The optional <b>.rgb</b> property specifies the initial color of the fade effect.
+				It should be an <a href="colors.html#plex">RGB multiplex</a> <em>integer</em> in the range 0-0xFFFFFF inclusive.
+				Values outside this range are clamped. Non-integral values are floored.</p>
+
+				<p>If <b>.rgb</b> is <b>PS.DEFAULT</b>, <em>null</em> or not supplied, the current grid color is used as the starting color.
+				If <b>.rgb</b> is <b>PS.CURRENT</b>, the currently assigned start color is not changed.</p>
+
+				<p class="subitem">.onStep</p>
+
+				<p>The optional <b>.onStep</b> property specifies a function that will be called
+					<em>immediately before</em> each step of the color fade is executed.
+					Three arguments are passed to this function in the following order:</p>
+
+				<ol>
+					<li>An <em>integer</em> indicating the total number of steps in the fade</li>
+					<li>A zero-based <em>integer</em> indicating the current fade step</li>
+					<li>An <a href="colors.html#plex">RGB multiplex</a> <em>integer</em>
+						indicating the current step color</li>
+				</ol>
+
+				<p>Any values specified by the <b>.params</b> property (see below) are passed to the function
+					as additional arguments, following the three noted above.</p>
+
+				<p>The value returned by the <b>.onStep</b> function determines how the fade effect will proceed.</p>
+
+				<ul>
+					<li>A return value of <em>false</em> or <em>null</em> immediately
+						terminates the fade, and changes the grid to its assigned color.</li>
+					<li>Any other return value allows the fade to continue normally.</li>
+				</ul>
+
+				<p>If <b>.onStep</b> is <b>PS.DEFAULT</b>, <em>null,</em> or not supplied,
+					the default behavior (no function call) is used.
+					If <b>.onStep</b> is <b>PS.CURRENT</b>, the currently assigned function is not changed.</p>
 
 				<p class="subitem">.onEnd</p>
 
 				<p>The optional <b>.onEnd</b> property specifies a function that will be called when the fade effect is completed.
-					If <b>.onEnd</b> is <b>PS.DEFAULT</b>,
-					<em>null,</em> or not supplied, the default behavior (no function call) is used.
-					If <b>.onEnd</b> is <b>PS.CURRENT</b>, the onEnd behavior of the fader is not changed.</p>
+					Any values specified by the <b>.params</b> property (see below) are passed to this function as arguments.</p>
+
+				<p>If <b>.onEnd</b> is <b>PS.DEFAULT</b>, <em>null,</em> or not supplied, the default behavior (no function call) is used.
+					If <b>.onEnd</b> is <b>PS.CURRENT</b>, the currently assigned function is not changed.</p>
 
 				<p class="subitem">.params</p>
 
-				<p>The optional <b>.params</b> property specifies the parameters that will be passed to the function
-					specified by the <b>.onEnd</b> property. It should be an <em>array</em> containing at least one element.
-					If <b>.params</b> is <b>PS.DEFAULT</b>,
-					<em>null,</em> or not supplied, no parameters are passed to the onEnd function.
-					If <b>.onEnd</b> is <b>PS.CURRENT</b>, the onEnd parameters of the fader are not changed.</p>
+				<p>The optional <b>.params</b> property specifies the additional parameters that will be passed to the functions
+					specified by the <b>.onStep</b> and/or <b>.onEnd</b> properties.
+					It should be an <em>array</em> containing any number of elements.</p>
+				<p>If <b>.params</b> is <b>PS.DEFAULT</b>, <em>null,</em> or not supplied, no additional parameters are passed
+					to the <b>.onStep</b> and/or <b>.onEnd</b> functions.
+					If <b>.params</b> is <b>PS.CURRENT</b>, the currently assigned parameters are not changed.</p>
 
 				<p>If <b>options</b> is <b>PS.CURRENT</b> or not supplied,
 					the currently assigned fade settings are not changed.</p>
@@ -239,6 +272,7 @@
 				<ul>
 					<li><b>.rate</b> : <em>integer</em></li>
 					<li><b>.rgb</b> : <em>integer</em> or <em>null</em></li>
+					<li><b>.onStep</b> : <em>function</em> or <em>null</em></li>
 					<li><b>.onEnd</b> : <em>function</em> or <em>null</em></li>
 					<li><b>.params</b> : <em>array</em> or <em>null</em></li>
 				</ul>
@@ -248,10 +282,14 @@
 				<p>The <b>.rgb</b> property is an <a href="colors.html#plex">RGB multiplex</a> <em>integer</em>
 					indicating the start color currently assigned to the fade, <em>null</em> if none.</p>
 
-				<p>The <b>.onEnd</b> property indicates the onEnd function currently assigned to the fade, <em>null</em> if none.</p>
+				<p>The <b>.onStep</b> property indicates the <b>.onStep</b> function currently assigned to the fade,
+					<em>null</em> if none.</p>
 
-				<p>The <b>.params</b> property is an <em>array</em> containing the parameters currently assigned to the
-					<b>.onEnd</b> function, <em>null</em> if none.</p>
+				<p>The <b>.onEnd</b> property indicates the <b>.onEnd</b> function currently assigned to the fade,
+					<em>null</em> if none.</p>
+
+				<p>The <b>.params</b> property is an <em>array</em> containing the additional parameters currently assigned to the
+					<b>.onStep</b> and <b>.onEnd</b> functions, <em>null</em> if none.</p>
 
 				<p><b>PS.ERROR</b> is returned if an error occurs.</p>
 
@@ -281,6 +319,7 @@
 				</div>
 			</div>
 
+			<!--
 			<div class="section">
 				<div id="shadow" class="dot">&nbsp;</div>
 				<p class="subhead">PS.gridShadow ( show, color )</p>
@@ -344,6 +383,7 @@
 						};</p>
 				</div>
 			</div>
+			-->
 
 			<div class="section">
 				<div id="plane" class="dot">&nbsp;</div>

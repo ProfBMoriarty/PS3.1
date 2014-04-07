@@ -29,6 +29,7 @@ var G = {
 	FRAME_RATE: 20, // seems about right
 	BG_COLOR: 0x404040, // background color (dark gray)
 	TEXT_COLOR : 0xFFFFFF, // final status text color
+	TEXT : "P E R L E N S P I E L",
 
 	// The "score" played by the game is stored in this array.
 	// Each note in the score contains the name of the note to be played,
@@ -118,6 +119,30 @@ var G = {
 	// FUNCTIONS
 	// Function names are lower case with camelCaps
 
+	// Show engine text
+
+	showText : function ()
+	{
+		"use strict";
+		var i, len, beat;
+
+		PS.statusText( G.TEXT );
+		PS.statusFade( 120 ); // set up 2-second fade-up
+		PS.statusColor( G.TEXT_COLOR ); // color change starts the fade-up
+
+		// Set up beads for white flash when touched
+
+		len = G.score.length;
+		for ( i = 0; i < len; i += 1 )
+		{
+			beat = G.score[ i ];
+			if ( beat ) // ignore empty score entries
+			{
+				PS.fade( beat.x, beat.y, 60, { rgb : PS.COLOR_WHITE } ); // set 1 sec white flash
+			}
+		}
+	},
+
 	// Timer function
 	// Not started until all audio files are loaded
 	// Called once every G.FRAME_RATE ticks (= 20, 1/3 second)
@@ -125,7 +150,7 @@ var G = {
 
 	timer : function() {
 		"use strict";
-		var beat, len, i;
+		var beat, len;
 
 		// A slight time delay before starting
 		// This lets the browser stabilize
@@ -153,21 +178,7 @@ var G = {
 		if ( G.tick >= len ) // played the last note?
 		{
 			PS.timerStop( G.timerID ); // stop this timer
-			PS.statusText( "P   E   R   L   E   N   S   P   I   E   L" ); // with stately spacing
-			PS.statusFade( 120 ); // set up 2-second fade-up
-			PS.statusColor( G.TEXT_COLOR ); // color change starts the fade-up
-
-			// Set up beads for white flash when touched
-
-			for ( i = 0; i < len; i += 1 )
-			{
-				beat = G.score[ i ];
-				if ( beat ) // ignore empty score entries
-				{
-					PS.fade( beat.x, beat.y, 60, { rgb : PS.COLOR_WHITE } ); // set 1 sec white flash
-				}
-			}
-
+			G.showText(); // show the text, set bead flashing
 			G.done = true; // finished! this flag allows beads to be touched and played
 		}
 	},
@@ -206,12 +217,29 @@ PS.init = function( system, options ) {
 	PS.color( PS.ALL, PS.ALL, G.BG_COLOR ); // set all beads to background color
 	PS.statusColor( G.BG_COLOR ); // set status text color to background color, too
 
+	len = G.score.length;
+
+	// If running on iOS, can't play sound, so just show the logo
+
+	if ( system.host.os === "iOS" )
+	{
+		for ( i = 0; i < len; i += 1 )
+		{
+			beat = G.score[ i ];
+			if ( beat )
+			{
+				PS.color( beat.x, beat.y, beat.color );
+			}
+		}
+		G.showText();
+		return;
+	}
+
 	// Preload the harpsichord notes, save beats in bead data
 
-	len = G.score.length;
 	for ( i = 0; i < len; i += 1 )
 	{
-		beat = G.score[i];
+		beat = G.score[ i ];
 		if ( beat ) // ignore empty array entries
 		{
 			// Save the beat object in bead's private data for later playback
