@@ -220,17 +220,19 @@ body {
 	margin: 0 auto;
 }
 
-<<<<<<< HEAD
-#status {
-	width: 100%;
-	font-size: 1.25em; /* new */
-=======
+#grid {
+	padding: 0;
+	border: 0;
+	margin-left: auto;
+	margin-right: auto;
+	display: block;
+}
+
 #stsp {
 	font-size: 1.25em;
 	margin: 1em 0 1em 0; /* trbl */
 	padding: 0;
 	border: 0;
->>>>>>> 7490021fcb708c88b9ec2da64f0a3b23e56dc7b7
 	text-align: center;
 	overflow: hidden;
 }
@@ -324,7 +326,6 @@ body {
 	font-size: 0.67em;
 	color: #008000;
 }
-<<<<<<< HEAD
 
 .label {
 	text-align: right;
@@ -336,19 +337,6 @@ body {
 	text-align: left;
 }
 
-=======
-
-.label {
-	text-align: right;
-	width: 8em;
-	float: left;
-}
-
-.email {
-	text-align: left;
-}
-
->>>>>>> 7490021fcb708c88b9ec2da64f0a3b23e56dc7b7
 .pw {
 	text-align: left;
 }

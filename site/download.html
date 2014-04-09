@@ -47,10 +47,15 @@
 
 				<p>Email suspected bugs, ideas and comments to bmoriarty [at] wpi [dot] edu.</p>
 
-<<<<<<< HEAD
-				<ul>
-=======
-				<ul><li><strong>Version 3.1.4</strong> (04.03.14)</li>
+				<ul><li><strong>Version 3.1.5</strong> (04.09.14)</li>
+					<ul>
+						<li>The <a href="grid.html#shadow">PS.gridShadow</a>() function has been repaired and is available again.</li>
+						<li>Two new functions, <a href="beads.html#bgcolor">PS.bgColor</a>() and
+							<a href="beads.html#bgalpha">PS.bgAlpha</a>(), let you change and inspect the background
+							color and transparency of scaled and/or non-square beads. Note: For backwards compatibility,
+							the background opacity is <b>PS.ALPHA_TRANSPARENT</b> by default.</li>
+					</ul>
+					<li><strong>Version 3.1.4</strong> (04.03.14)</li>
 					<ul>
 						<li>A debugging message inadvertently left in <a href="beads.html#borderalpha">PS.borderAlpha</a>()</a>
 							has been removed.</li>
@@ -79,19 +84,18 @@
 						<li>The grid now updates correctly on all key repeats.</li>
 						<li><a href="events.html#init">PS.init</a>() now passes information about the audio engine through its
 							<b>system</b> parameter.</li>
-						<li>The PS.gridShadow() function introduced in the last build has been meekly rolled back,
+						<li>The <a href="grid.html#shadow">PS.gridShadow</a>() function introduced in the last build has been meekly rolled back,
 							pending the resolution of cosmetic issues. It will be restored in a future build.</li>
 					</ul>
 					<li><strong>Version 3.1.2</strong> (03.19.14)</li>
 					<ul>
 						<li>A new function, <a href="status.html#input">PS.statusInput</a>(),
 							temporarily turns the status line into a labeled text input box.</li>
-						<li>Another new function, PS.gridShadow(),
+						<li>Another new function, <a href="grid.html#shadow">PS.gridShadow</a>(),
 							lets you display a colored shadow around the perimeter of the grid.
 							Thanks to Mark Diehr for coming up with this idea.</li>
 						<li>The grid now updates correctly when a fader .onEnd function is called.</li>
 					</ul>
->>>>>>> 7490021fcb708c88b9ec2da64f0a3b23e56dc7b7
 					<li><strong>Version 3.1.1</strong> (02.27.14)</li>
 					<ul>
 						<li><a href="beads.html#borderalpha">PS.borderAlpha</a>() was being mischievous. Fixed.</li>
