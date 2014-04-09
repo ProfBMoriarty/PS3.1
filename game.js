@@ -35,6 +35,8 @@ along with Perlenspiel. If not, see <http://www.gnu.org/licenses/>.
 // [system] = an object containing engine and platform information; see documentation for details
 // [options] = an object with optional parameters; see documentation for details
 
+var channel;
+
 PS.init = function( system, options ) {
 	"use strict";
 
@@ -44,6 +46,10 @@ PS.init = function( system, options ) {
 	// Otherwise you will get the default 8x8 grid
 
 	PS.gridSize( 8, 8 );
+<<<<<<< HEAD
+=======
+
+>>>>>>> 7490021fcb708c88b9ec2da64f0a3b23e56dc7b7
 
 	// Add any other initialization code you need here
 };
@@ -61,7 +67,7 @@ PS.touch = function( x, y, data, options ) {
 
 	// Uncomment the following line to inspect parameters
 	// PS.debug( "PS.touch() @ " + x + ", " + y + "\n" );
-
+	channel = PS.audioPlay ( "157", { path: "http://88.198.78.90/ct/files/mp3/trumpet/", fileTypes: [ "mp3", "wav" ] } );
 	// Add code here for mouse clicks/touches over a bead
 };
 

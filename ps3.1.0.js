@@ -450,7 +450,7 @@ var PS; // Global namespace for public API
 			event.cancelBubble = true;
 		}
 
-		event.returnValue = false;
+		event.preventDefault();
 		return false;
 	}
 
@@ -2216,9 +2216,9 @@ var PS; // Global namespace for public API
 		var canvas, bead, i, j;
 
 		canvas = _grid.canvas;
-
-		x += ( document.body.scrollLeft + document.documentElement.scrollLeft - canvas.offsetLeft );
-		y += ( document.body.scrollTop + document.documentElement.scrollTop - canvas.offsetTop );
+		var rect = canvas.getBoundingClientRect();
+		x -= rect.left;
+		y -= rect.top;
 
 //		PS.debug( "_getBead(): x = " + x + ", y = " + y + "\n" );
 
@@ -2591,7 +2591,6 @@ var PS; // Global namespace for public API
 
 		if ( _debugFocus )
 		{
-			event.returnValue = true;
 			return true;
 		}
 
@@ -2721,7 +2720,6 @@ var PS; // Global namespace for public API
 
 		if ( _debugFocus )
 		{
-			event.returnValue = true;
 			return true;
 		}
 
@@ -2829,7 +2827,6 @@ var PS; // Global namespace for public API
 
 		if ( !_overGrid )
 		{
-			event.returnValue = true;
 			return true;
 		}
 
@@ -6188,6 +6185,11 @@ var PS; // Global namespace for public API
 			}
 			version = /msie \d+[.]\d+/.exec( ua )[0].split( ' ' )[ 1 ];
 		}
+		else if ( /trident/.test( ua ) )	// IE 11+ on Windows 8
+		{
+			browser = "Internet Explorer";
+			version = /rv\:\d+[.]\d+/.exec( ua )[0].split(':')[1];
+		}
 		else if ( /opera/.test( ua ) )
 		{
 			browser = "Opera";
@@ -6208,14 +6210,21 @@ var PS; // Global namespace for public API
 
 		if ( !version )
 		{
-			version = /version\/[\.\d]+/.exec( ua );
-			if ( version )
-			{
-				version = version[0].split( '/' )[ 1 ];
+			try {	
+				version = /version\/[\.\d]+/.exec( ua );
+				if ( version )
+				{
+					version = version[0].split( '/' )[ 1 ];
+				}
+				else
+				{
+					version = /opera\/[\.\d]+/.exec( ua )[0].split( '/' )[ 1 ];
+				}
 			}
-			else
+			catch( err )
 			{
-				version = /opera\/[\.\d]+/.exec( ua )[0].split( '/' )[ 1 ];
+				console.error("Problem detecting browser: " + err.message);
+				version = "???";
 			}
 		}
 
@@ -6703,7 +6712,7 @@ var PS; // Global namespace for public API
 			{
 				canvas : grid,
 				context : ctx,
-				fader : _newFader( _GRID_ID, _gridRGB, _gridRGBEnd )
+				fader : _newFader( _GRID_ID, _gridRGB, _gridRGBEnd ),
 			};
 
 			// copy default properties
@@ -7059,6 +7068,11 @@ var PS; // Global namespace for public API
 			fn = "[PS.gridColor] ";
 
 			if ( arguments.length > 3 )
+			{
+				return _error( fn + "Too many arguments" );
+			}
+
+			if ( arguments.length == 2 )
 			{
 				return _error( fn + "Too many arguments" );
 			}

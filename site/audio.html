@@ -79,7 +79,7 @@
 				<li><b>.onEnd</b> : <em>function</em> or <b>PS.DEFAULT</b></li>
 				<li><b>.data</b> : <em>any Javascript value</em> or <b>PS.DEFAULT</b></li>
 				<li><b>.path</b> : <em>string</em>, or <b>PS.DEFAULT</b></li>
-				<li><b>.types</b> : <em>string array</em> or <b>PS.DEFAULT</b></li>
+				<li><b>.fileTypes</b> : <em>string array</em> or <b>PS.DEFAULT</b></li>
 			</ul>
 
 			<p class="subitem">.autoplay</p>
@@ -184,10 +184,10 @@
 					This may change when Firefox switches to Web Audio in the near future.</p>
 			</div>
 
-			<p class="subitem">filetypes</p>
+			<p class="subitem">.fileTypes</p>
 
 			<p>The
-				<b>types</b> property should be an array of strings indicating the audio filetypes available for the file specified by
+				<b>.fileTypes</b> property should be an array of strings indicating the audio filetypes available for the file specified by
 				<b>filepath</b>. The strings should be provided in priority order. Legal strings are:</p>
 
 			<ul>
@@ -214,7 +214,7 @@
 				<p>You may also want to provide an .opus file, as this will soon become the standard for all browsers.</p>
 			</div>
 
-			<p>If <b>types</b> is <b>PS.DEFAULT</b> or not supplied, the default filetypes array is used:</p>
+			<p>If <b>.fileTypes</b> is <b>PS.DEFAULT</b> or not supplied, the default filetypes array is used:</p>
 
 			<ul>
 				<li>["ogg", "mp3", "wav"]</li>
@@ -271,7 +271,7 @@
 				<li><b>.onEnd</b> : <em>function</em> or <b>PS.DEFAULT</b></li>
 				<li><b>.data</b> : <em>any Javascript value</em> or <b>PS.DEFAULT</b></li>
 				<li><b>.path</b> : <em>string</em>, or <b>PS.DEFAULT</b></li>
-				<li><b>.types</b> : <em>string array</em> or <b>PS.DEFAULT</b></li>
+				<li><b>.fileTypes</b> : <em>string array</em> or <b>PS.DEFAULT</b></li>
 			</ul>
 
 			<p>See the documentation for <a href="#load">PS.audioLoad</a>() above for a detailed description of these properties.</p>

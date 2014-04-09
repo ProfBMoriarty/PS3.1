@@ -220,14 +220,54 @@ body {
 	margin: 0 auto;
 }
 
+<<<<<<< HEAD
 #status {
 	width: 100%;
 	font-size: 1.25em; /* new */
+=======
+#stsp {
+	font-size: 1.25em;
+	margin: 1em 0 1em 0; /* trbl */
+	padding: 0;
+	border: 0;
+>>>>>>> 7490021fcb708c88b9ec2da64f0a3b23e56dc7b7
 	text-align: center;
-	margin-top: 32px;
-	margin-bottom: 16px;
-	border: 0px;
+	overflow: hidden;
+}
+
+#inp {
+	font-size: 1.25em;
+	margin: 1em 0 1em 0; /* trbl */
+	padding: 0;
+	border: 0;
+	text-align: left;
+	display: none;
+}
+
+#inlabel {
+	float: left;
+	margin: 0;
+	padding: 0;
+	border: 0;
+}
+
+#inspan {
+	display: block;
+	overflow: hidden;
+	color : inherit;
+	background-color: inherit;
+	margin: 0;
+	border: 0;
+	padding: 0 0.5em 0 0.5em; /* trbl */
+}
+
+#inbox {
+	text-align: left;
+	border: 1px solid #000000;
 	box-shadow: none;
+	width: 100%;
+	color : #000000;
+	background-color: #FFFFFF;
 }
 
 .tiny {
@@ -284,6 +324,7 @@ body {
 	font-size: 0.67em;
 	color: #008000;
 }
+<<<<<<< HEAD
 
 .label {
 	text-align: right;
@@ -295,6 +336,19 @@ body {
 	text-align: left;
 }
 
+=======
+
+.label {
+	text-align: right;
+	width: 8em;
+	float: left;
+}
+
+.email {
+	text-align: left;
+}
+
+>>>>>>> 7490021fcb708c88b9ec2da64f0a3b23e56dc7b7
 .pw {
 	text-align: left;
 }

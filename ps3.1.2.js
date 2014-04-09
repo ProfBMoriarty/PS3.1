@@ -1,5 +1,4 @@
-
-// ps3.2.0.js for Perlenspiel 3.2
+// ps3.1.2.js for Perlenspiel 3.1
 // Remember to update version number in _system!
 
 /*
@@ -41,7 +40,11 @@ var PS; // Global namespace for public API
 	var _OUTER_ID = "outer";
 	var _MAIN_ID = "main";
 	var _DEBUG_ID = "debug";
-	var _STATUS_ID = "status";
+	var _STATUS_P_ID = "stsp";
+	var _INPUT_P_ID = "inp";
+	var _INPUT_LABEL_ID = "inlabel";
+	var _INPUT_SPAN_ID = "inspan";
+	var _INPUT_BOX_ID = "inbox";
 	var _GRID_ID = "grid";
 	var _FOOTER_ID = "footer";
 	var _MONITOR_ID = "monitor";
@@ -75,6 +78,7 @@ var PS; // Global namespace for public API
 	var _CLEAR = -1; // flag for not touching or not over a bead
 	var _FADER_FPS = 4; // do fader queue every 1/15 of a second
 	var _DIAGONAL_COST = 1.4142; // square root of 2; for pathfinder
+	var _LABEL_MAX = 16; // maximum input label length
 
 	// Names of instrument files
 
@@ -124,6 +128,13 @@ var PS; // Global namespace for public API
 				rgb : 0xFFFFFF,
 				str : "rgba(255,255,255,1)"
 			},
+			shadow : {
+				show : false,
+				r : 0xC0, g : 0xC0, b : 0xC0, a : 255,
+				rgb : 0xC0C0C0,
+				str : "rgba(192,192,192,1)",
+				params : "0px 0px 64px 8px "
+			},
 			padLeft : 0,
 			padRight : 0,
 			ready : false
@@ -133,6 +144,8 @@ var PS; // Global namespace for public API
 
 		status : {
 			text : "",
+			label : "",
+			exec : null,
 			color : {
 				r : 0, g : 0, b : 0, a : 255,
 				rgb : 0x000000,
@@ -215,8 +228,8 @@ var PS; // Global namespace for public API
 	var _system = {
 		engine : "Perlenspiel",
 		major : 3,
-		minor : 2,
-		revision : 0,
+		minor : 1,
+		revision : 2,
 		host : {
 			app : "Unknown App",
 			version : "?",
@@ -257,6 +270,7 @@ var PS; // Global namespace for public API
 
 	// Keyboard support
 
+	var _keysActive; // true if keyboard events are active
 	var _transKeys; // regular key translation array
 	var _shiftedKeys; // shifted key translation array
 	var _unshiftedKeys; // unshifted key translation array
@@ -327,17 +341,6 @@ var PS; // Global namespace for public API
 		}
 
 		return type;
-	}
-
-	// _appendText ( text, element )
-	// Append [text] to DOM [element]
-
-	function _appendText ( text, element )
-	{
-		var e;
-
-		e = document.createTextNode( text );
-		element.appendChild( e );
 	}
 
 	// _isBoolean ( val )
@@ -516,7 +519,7 @@ var PS; // Global namespace for public API
 		border = bead.border;
 		radius = bead.radius;
 
-		if ( ( bead.size < size ) || ( radius > 0 ) || ( ( border.width > 0 ) && ( border.color.a < 255 ) ) || !bead.visible )
+		if ( ( bead.size < size ) || ( radius > 0 ) || ( ( border.color.a < 255 ) && ( border.width > 0 ) ) || !bead.visible )
 		{
 			ctx.fillStyle = gridColor;
 			ctx.fillRect( left, top, width, height );
@@ -697,7 +700,7 @@ var PS; // Global namespace for public API
 
 		// Clear parts of canvas not under the grid
 
-		canvas.backgroundColor = str;
+		canvas.style.backgroundColor = str;
 
 		if ( _grid.left > 0 )
 		{
@@ -718,7 +721,8 @@ var PS; // Global namespace for public API
 
 		// set status line background
 
-		_status.div.style.backgroundColor = str;
+		_status.statusP.style.backgroundColor = str;
+		_status.inputP.style.backgroundColor = str;
 
 		// set footer background
 
@@ -792,11 +796,19 @@ var PS; // Global namespace for public API
 		_footer.style.color = _RSTR[ r ] + _GBSTR[ g ] + _BASTR[ b ];
 	}
 
+	// Set color of grid shadow
+
+	function _gridShadowRGB ( data )
+	{
+		_grid.canvas.style.boxShadow = _grid.shadow.params + data.str;
+	}
+
 	// Change status line text color
 
 	function _statusRGB ( data )
 	{
-		_status.div.style.color = data.str;
+		_status.statusP.style.color = data.str;
+		_status.inputP.style.color = data.str;
 	}
 
 	// Change bead color
@@ -1296,11 +1308,13 @@ var PS; // Global namespace for public API
 
 	function _tick ()
 	{
-		var fn, len, i, fader, frame, key, timer, result, exec, id, params;
+		var fn, refresh, len, i, fader, frame, key, timer, result, exec, id, params;
 
 //		_reportTime();
 
 		fn = "[_tick] ";
+
+		refresh = false;
 
 		// Fader support
 
@@ -1369,6 +1383,7 @@ var PS; // Global namespace for public API
 							try
 							{
 								exec.apply( _EMPTY, params );
+								refresh = true;
 							}
 							catch ( e5 )
 							{
@@ -1411,10 +1426,10 @@ var PS; // Global namespace for public API
 					key = _holding[ i ];
 					if ( key )
 					{
-//						key = _keyFilter( key, _holdShift );
 						try
 						{
 							PS.keyDown( key, _holdShift, _holdCtrl );
+							refresh = true;
 						}
 						catch ( e6 )
 						{
@@ -1454,6 +1469,7 @@ var PS; // Global namespace for public API
 					try
 					{
 						result = timer.exec.apply( _EMPTY, timer.arglist );
+						refresh = true;
 					}
 					catch ( e7 )
 					{
@@ -1478,9 +1494,10 @@ var PS; // Global namespace for public API
 					i += 1;
 				}
 			}
+		}
 
-			// render all changes
-
+		if ( refresh )
+		{
 			_gridDraw();
 		}
 	}
@@ -2553,7 +2570,23 @@ var PS; // Global namespace for public API
 		return _endEvent( event );
 	}
 
-	// _keyFilter ( key, shift )
+	// _keyReset ()
+	// Reset all key params when focus is taken off grid
+
+	function _keyReset ()
+	{
+		var i;
+
+		_holding.length = 0;
+		_holdShift = false;
+		_holdCtrl = false;
+		for ( i = 0; i < 256; i += 1 )
+		{
+			_pressed[ i ] = 0;
+		}
+	}
+
+	//_keyFilter ( key, shift )
 	// Translates weird or shifted keycodes to useful values
 
 	function _keyFilter ( key, shift )
@@ -2883,6 +2916,28 @@ var PS; // Global namespace for public API
 	// GRID FUNCTIONS
 	//---------------
 
+	function _keysActivate ()
+	{
+		if ( !_keysActive )
+		{
+			document.addEventListener( "keydown", _keyDown, false );
+			document.addEventListener( "keyup", _keyUp, false );
+			_keysActive = true;
+		}
+	}
+
+	function _keysDeactivate ()
+	{
+		_keyReset(); // reset key status
+
+		if ( _keysActive )
+		{
+			document.removeEventListener( "keydown", _keyDown, false );
+			document.removeEventListener( "keyup", _keyUp, false );
+			_keysActive = false;
+		}
+	}
+
 	function _gridActivate ()
 	{
 		var grid;
@@ -2895,8 +2950,7 @@ var PS; // Global namespace for public API
 		grid.addEventListener( "mousemove", _mouseMove, false );
 		grid.addEventListener( "mouseout", _gridOut, false );
 
-		document.addEventListener( "keydown", _keyDown, false );
-		document.addEventListener( "keyup", _keyUp, false );
+		_keysActivate();
 
 		window.addEventListener( "DOMMouseScroll", _wheel, false ); // for Firefox
 		window.addEventListener( "mousewheel", _wheel, false ); // for others
@@ -2912,33 +2966,6 @@ var PS; // Global namespace for public API
 			document.addEventListener( "touchstart", _touchStart, false );
 			document.addEventListener( "touchend", _touchEnd, false );
 			document.addEventListener( "touchcancel", _touchEnd, false );
-		}
-	}
-
-	function _gridDeactivate ()
-	{
-		var grid;
-
-		grid = _grid.canvas;
-		grid.style.display = "none";
-
-		grid.removeEventListener( "mousedown", _mouseDown, false );
-		grid.removeEventListener( "mouseup", _mouseUp, false );
-		grid.removeEventListener( "mousemove", _mouseMove, false );
-		grid.removeEventListener( "mouseout", _gridOut, false );
-
-		document.removeEventListener( "keydown", _keyDown, false );
-		document.removeEventListener( "keyup", _keyUp, false );
-
-		window.removeEventListener( "DOMMouseScroll", _wheel, false ); // for Firefox
-		window.removeEventListener( "mousewheel", _wheel, false ); // for others
-
-		if ( _touchScreen )
-		{
-			document.removeEventListener( "touchmove", _touchMove, false );
-			document.removeEventListener( "touchstart", _touchStart, false );
-			document.removeEventListener( "touchend", _touchEnd, false );
-			document.removeEventListener( "touchcancel", _touchEnd, false );
 		}
 	}
 
@@ -3036,6 +3063,91 @@ var PS; // Global namespace for public API
 		}
 
 		return current.rgb;
+	}
+
+	// Set grid shadow color
+	// Returns rgb
+
+	function _gridShadow( show, colors )
+	{
+		var current, rgb, r, g, b;
+
+		current = _grid.shadow;
+		rgb = colors.rgb;
+		if ( rgb !== PS.CURRENT )
+		{
+			if ( rgb === null ) // must inspect r/g/b values
+			{
+				r = colors.r;
+				if ( r === PS.CURRENT )
+				{
+					colors.r = r = current.r;
+				}
+				else if ( r === PS.DEFAULT )
+				{
+					colors.r = r = _DEFAULTS.grid.shadow.r;
+				}
+
+				g = colors.g;
+				if ( g === PS.CURRENT )
+				{
+					colors.g = g = current.g;
+				}
+				else if ( g === PS.DEFAULT )
+				{
+					colors.g = g = _DEFAULTS.grid.shadow.g;
+				}
+
+				b = colors.b;
+				if ( b === PS.CURRENT )
+				{
+					colors.b = b = current.b;
+				}
+				else if ( b === PS.DEFAULT )
+				{
+					colors.b = b = _DEFAULTS.grid.shadow.b;
+				}
+
+				colors.rgb = (r * _RSHIFT) + (g * _GSHIFT) + b;
+			}
+			else if ( rgb === PS.DEFAULT )
+			{
+				_copy( _DEFAULTS.grid.shadow, colors );
+			}
+
+			// Only change color if different
+
+			if ( current.rgb !== colors.rgb )
+			{
+				current.rgb = colors.rgb;
+
+				r = colors.r;
+				g = colors.g;
+				b = colors.b;
+
+				current.str = colors.str = _RSTR[r] + _GBSTR[g] + _BASTR[b];
+
+				current.r = r;
+				current.g = g;
+				current.b = b;
+			}
+		}
+
+		if ( show !== PS.CURRENT )
+		{
+			_grid.shadow.show = show;
+		}
+
+		if ( _grid.shadow.show )
+		{
+			_gridShadowRGB ( current );
+		}
+		else
+		{
+			_grid.canvas.style.boxShadow = "none";
+		}
+
+		return { show : _grid.shadow.show, rgb : current.rgb };
 	}
 
 	// Resize grid to dimensions x/y
@@ -6167,573 +6279,70 @@ var PS; // Global namespace for public API
 		return [x1, y1];
 	}
 
-	// NETWORKING
+	// Status line
 
-	var _net = {
+	function _statusOut ( str )
+	{
+		_status.inputP.style.display = "none"; // hide input paragraph
+		_keysActivate(); // turn on key events
+		_status.statusNode.nodeValue = _status.text = str; // set status text
+		_status.statusP.style.display = "block"; // show status paragraph
+	}
 
-		signup : false, // true if in signup mode
-		recover : false, // true if in recovery mode
+	// _inputKeyDown ( event )
+	// Input keydown handler
 
-		div : null, // login screen div
-		emPrompt : null, //email prompt line
-		emailLine : null, // email label line
-		email : null, // email input element
-		pwPrompt1 : null, // pw1 prompt line
-		pwLine1 : null, // pw1 label line
-		pw1 : null, // pw1 input element
-		pwPrompt2 : null, // pw2 prompt line
-		pwLine2 : null, // pw2 label line
-		pw2 : null, // pw2 input element
-		accountLine : null, // new account link
-		recoverLine : null, // recover link
+	function _inputKeyDown ( event )
+	{
+		var key, val, exec;
 
-		emailText : null, // email text, null if none
-		pwText1 : null, // password 1 text, null if none
-		pwText2 : null, // password 2 text, null if none
-
-		// _net.reset()
-		// Resets all fields and values
-
-		reset : function ()
+		key = event.which; // correct
+		if ( !key )
 		{
-			_net.email.value = "";
-			_net.pw1.value = "";
-			_net.pw2.value = "";
-			_net.emailText = null;
-			_net.pwText1 = null;
-			_net.pwText2 = null;
-			_net.email.focus();
-		},
-
-		// _net.validMail ( str )
-		// Returns false if email string is obviously invalid, else true
-		// This can be refined later
-
-		validMail : function ( str )
-		{
-			var len, i, j;
-
-			len = str.length;
-			if ( len > 5 ) // minimum reasonable length
-			{
-				i = str.indexOf( '@' );
-				if ( i > 0 ) // must have @ at or beyond 1
-				{
-					j = str.indexOf( '.' );
-					if ( j > i ) // . must come after @
-					{
-						return true;
-					}
-				}
-			}
-
-			return false;
-		},
-
-		// _net.validPW( str )
-		// Returns true if password string is valid, else false
-		// Must be at least 8 characters, a-z, A-Z, 0-9 or underscore
-
-		validPW : function ( str )
-		{
-			var len, i, c;
-
-			len = str.length;
-			if ( len < 8 )
-			{
-				return false;
-			}
-
-			for ( i = 0; i < len; i += 1 )
-			{
-				c = str.charAt( i );
-				if( ( c !== '_' ) && /[^a-zA-Z0-9]/.test( c ) )
-				{
-					return false;
-				}
-			}
-			return true;
-		},
-
-		// _net.done()
-		// Called when login is complete
-
-		done : function ()
-		{
-			PS.statusColor( PS.COLOR_BLACK );
-			PS.statusText( "Logged in!" );
-		},
-
-		// _net.createAccount( email, pw )
-		// Create a new account using email & pw1
-		// Returns PS.DONE on success, else PS.ERROR
-
-		createAccount : function ( email, pw )
-		{
-			return PS.DONE;
-		},
-
-		// _net.recoverAccount( email )
-		// Recover an account using email
-		// Returns PS.DONE on success, else PS.ERROR
-
-		recoverAccount : function ( email )
-		{
-			return PS.DONE;
-		},
-
-		// _net.mailKeyDown ( event )
-		// Email input keydown handler
-
-		mailKeyDown : function ( event )
-		{
-			var key, val, result;
-
-<<<<<<< HEAD
-			if ( event.which )
-			{
-				key = event.which; // correct
-			}
-			else
-=======
-			key = event.which; // correct
-			if ( !key )
->>>>>>> 7490021fcb708c88b9ec2da64f0a3b23e56dc7b7
-			{
-				key = event.keyCode; // IE
-			}
-			if ( ( key === PS.KEY_ENTER ) || ( key === PS.KEY_TAB ) )
-			{
-				val = _net.email.value;
-				if ( _net.validMail ( val ) )
-				{
-					_net.emailText = val;
-					if ( _net.recover ) // recovery mode
-					{
-						result = _net.recoverAccount( _net.emailText );
-						if ( result === PS.DONE )
-						{
-							_net.doLogin();
-						}
-						else
-						{
-							_net.reset();
-						}
-					}
-					else
-					{
-						if ( _net.pwText1 )
-						{
-							if ( _net.signup )
-							{
-								if ( _net.pwText2 )
-								{
-									result = _net.createAccount( _net.emailText, _net.pwText1 );
-									if ( result === PS.DONE )
-									{
-										_net.doLogin();
-									}
-									else
-									{
-										_net.reset();
-									}
-								}
-								else
-								{
-									_net.pw2.value = "";
-									_net.pw2.focus();
-									PS.statusColor( PS.COLOR_BLACK );
-									PS.statusText( "Re-enter password" );
-								}
-							}
-							else
-							{
-								_net.done();
-							}
-						}
-						else
-						{
-							_net.pw1.value = "";
-							_net.pw1.focus();
-							PS.statusColor( PS.COLOR_BLACK );
-							PS.statusText( "Enter password" );
-						}
-					}
-				}
-				else
-				{
-					_net.emailText = null;
-					_net.email.value = "";
-					_net.email.focus();
-					PS.statusColor( PS.COLOR_RED );
-					PS.statusText( "Invalid email address" );
-					PS.audioPlay( "fx_uhoh" );
-				}
-				return _endEvent( event );
-			}
-			return true; // must return true
-		},
-
-		// _net.pwKeyDown1 ( event )
-		// Password 1 input keydown handler
-
-		pwKeyDown1 : function ( event )
-		{
-			var key, val, result;
-
-<<<<<<< HEAD
-			if ( event.which )
-			{
-				key = event.which; // correct
-			}
-			else
-=======
-			key = event.which; // correct
-			if ( !key )
->>>>>>> 7490021fcb708c88b9ec2da64f0a3b23e56dc7b7
-			{
-				key = event.keyCode; // IE
-			}
-			if ( ( key === PS.KEY_ENTER ) || ( key === PS.KEY_TAB ) )
-			{
-				val = _net.pw1.value;
-				if ( _net.validPW ( val ) )
-				{
-					_net.pwText1 = val;
-					if ( _net.emailText )
-					{
-						if ( _net.signup )
-						{
-							if ( val === _net.pwText2 )
-							{
-								result = _net.createAccount( _net.emailText, _net.pwText1 );
-								if ( result === PS.DONE )
-								{
-									_net.doLogin();
-								}
-								else
-								{
-									_net.reset();
-								}
-							}
-							else
-							{
-								_net.pw2.value = "";
-								_net.pw2.focus();
-								PS.statusColor( PS.COLOR_BLACK );
-								PS.statusText( "Re-enter password" );
-							}
-						}
-						else
-						{
-							_net.done();
-						}
-					}
-					else
-					{
-						_net.email.value = "";
-						_net.email.focus();
-						PS.statusColor( PS.COLOR_BLACK );
-						PS.statusText( "Enter email address" );
-					}
-				}
-				else
-				{
-					_net.pwText1 = null;
-					_net.pw1.value = "";
-					_net.pw1.focus();
-					PS.statusColor( PS.COLOR_RED );
-					PS.statusText( "Invalid password" );
-					PS.audioPlay( "fx_uhoh" );
-				}
-				return _endEvent( event );
-			}
-			return true; // must return true
-		},
-
-		// _net.pwKeyDown2 ( event )
-		// Password 2 input keydown handler
-
-		pwKeyDown2 : function ( event )
-		{
-			var key, val, result;
-
-<<<<<<< HEAD
-			if ( event.which )
-			{
-				key = event.which; // correct
-			}
-			else
-=======
-			key = event.which; // correct
-			if ( !key )
->>>>>>> 7490021fcb708c88b9ec2da64f0a3b23e56dc7b7
-			{
-				key = event.keyCode; // IE
-			}
-			if ( ( key === PS.KEY_ENTER ) || ( key === PS.KEY_TAB ) )
-			{
-				val = _net.pw2.value;
-				if ( _net.validPW ( val ) && ( val === _net.pwText1 ) )
-				{
-					_net.pwText2 = val;
-					if ( _net.emailText )
-					{
-						result = _net.createAccount( _net.emailText, _net.pwText1 );
-						if ( result === PS.DONE )
-						{
-							_net.doLogin();
-						}
-						else
-						{
-							_net.reset();
-						}
-					}
-					else
-					{
-						_net.email.value = "";
-						_net.email.focus();
-						PS.statusColor( PS.COLOR_BLACK );
-						PS.statusText( "Enter email address" );
-					}
-				}
-				else
-				{
-					_net.pwText2 = null;
-					_net.pw2.value = "";
-					_net.pw2.focus();
-					PS.statusColor( PS.COLOR_RED );
-					PS.statusText( "Passwords do not match" );
-					PS.audioPlay( "fx_uhoh" );
-				}
-				return _endEvent( event );
-			}
-			return true; // must return true
-		},
-
-		//Mousedown event for signup link
-
-		accountDown : function ( event )
-		{
-			_net.doSignup();
-			return _endEvent( event );
-		},
-
-		// Mousedown event for recover link
-
-		recoverDown : function ( event )
-		{
-			_net.doRecover();
-			return _endEvent( event );
-		},
-
-		doLogin : function ()
-		{
-			// Hide/disable elements
-
-			_net.emailLine.style.marginTop = "0.5em";
-			_net.emailLine.style.marginBottom = "0.5em";
-
-			_net.emPrompt.style.display = "none";
-			_net.pwPrompt1.style.display = "none";
-			_net.pwPrompt2.style.display = "none";
-			_net.pwLine2.style.display = "none";
-
-			// Show/enable login elements
-
-			_net.pwLine1.style.display = "block";
-			_net.accountLine.style.display = "block";
-			_net.recoverLine.style.display = "block";
-
-			PS.statusColor( PS.COLOR_BLACK );
-			PS.statusText( "User account login" );
-			_net.div.style.display = "block";
-
-			_net.signup = false; // disable signup mode
-			_net.recover = false; // disable recovery mode
-			_net.reset();
-		},
-
-		doSignup : function ()
-		{
-			_net.emailLine.style.marginTop = "0";
-			_net.emailLine.style.marginBottom = "0";
-
-			// Hide/disable login elements
-
-			_net.accountLine.style.display = "none";
-			_net.recoverLine.style.display = "none";
-
-			// Show/enable signup elements
-
-			_net.emPrompt.style.display = "block";
-			_net.pwPrompt1.style.display = "block";
-			_net.pwLine1.style.display = "block";
-			_net.pwPrompt2.style.display = "block";
-			_net.pwLine2.style.display = "block";
-
-			PS.statusColor( PS.COLOR_BLACK );
-			PS.statusText( "Create new user account" );
-			_net.div.style.display = "block";
-
-			_net.signup = true; // enable signup mode
-			_net.recover = false; // disable recovery mode
-			_net.reset();
-		},
-
-		doRecover : function ()
-		{
-			_net.emailLine.style.marginTop = "0.5em";
-			_net.emailLine.style.marginBottom = "0.5em";
-
-			// Hide/disable elements
-
-			_net.emPrompt.style.display = "none";
-			_net.pwPrompt1.style.display = "none";
-			_net.pwLine1.style.display = "none";
-			_net.pwPrompt2.style.display = "none";
-			_net.pwLine2.style.display = "none";
-			_net.accountLine.style.display = "none";
-			_net.recoverLine.style.display = "none";
-
-			PS.statusColor( PS.COLOR_BLACK );
-			PS.statusText( "Recover user password" );
-			_net.div.style.display = "block";
-
-			_net.signup = false; // disable signup mode
-			_net.recover = true; // enable recovery mode
-			_net.reset();
-		},
-
-		init : function ()
-		{
-			var newline, div, line, e;
-
-			newline = function ( str )
-			{
-				var p, span;
-
-				p = document.createElement( "p" );
-				span = document.createElement( "span" );
-				span.className = "label";
-				span.innerHTML = str + "&nbsp;";
-				p.appendChild( span );
-				return p;
-			};
-
-			// ****************
-			// CREATE LOGIN DIV
-			// ****************
-
-			div = document.createElement( "div" );
-			div.id = _LOGIN_ID;
-			div.style.display = "none";
-			_net.div = div;
-
-			// Create server ID line
-
-			line = newline( "" );
-			_appendText( "Server: PS1", line );
-			div.appendChild( line );
-
-			// Create email prompt line
-
-			_net.emPrompt = line = newline( "" );
-			e = document.createElement( "span" );
-			e.className = "prompt";
-			e.innerHTML = "Enter valid email address";
-			line.appendChild( e );
-			div.appendChild( line );
-
-			// Create email entry line
-
-			_net.emailLine = line = newline( "Email:" );
-			_net.email = e = document.createElement( "input" );
-			e.id = _LOGIN_EMAIL_ID;
-			e.type = "text";
-			e.className = "email";
-			e.tabindex = 0;
-			e.addEventListener( "keydown", _net.mailKeyDown, false );
-			line.appendChild( e );
-			div.appendChild( line );
-
-			// Create password 1 prompt line
-
-			_net.pwPrompt1 = line = newline( "" );
-			e = document.createElement( "span" );
-			e.className = "prompt";
-			e.innerHTML = "Minimum 8 chars, a-z, A-Z, 0-9 or _";
-			line.appendChild( e );
-			div.appendChild( line );
-
-			// Create password 1 entry line
-
-			_net.pwLine1 = line = newline( "Password:" );
-			_net.pw1 = e = document.createElement( "input" );
-			e.id = _LOGIN_PW1_ID;
-			e.type = "password";
-			e.className = "pw";
-			e.tabindex = 1;
-			e.addEventListener( "keydown", _net.pwKeyDown1, false );
-			line.appendChild( e );
-			div.appendChild( line );
-
-			// Create password 2 prompt line
-
-			_net.pwPrompt2 = line = newline( "" );
-			e = document.createElement( "span" );
-			e.className = "prompt";
-			e.innerHTML = "Re-enter password to verify";
-			line.appendChild( e );
-			div.appendChild( line );
-
-			// Create password 2 entry line
-
-			_net.pwLine2 = line = newline( "Password:" );
-			_net.pw2 = e = document.createElement( "input" );
-			e.id = _LOGIN_PW2_ID;
-			e.type = "password";
-			e.className = "pw";
-			e.tabindex = 2;
-			e.addEventListener( "keydown", _net.pwKeyDown2, false );
-			line.appendChild( e );
-			div.appendChild( line );
-
-			// Create new account line
-
-			_net.accountLine = line = newline( "" );
-			e = document.createElement( "a" );
-			e.href = "#";
-			e.innerHTML = "Create new account";
-			e.tabindex = -1;
-			e.addEventListener( "mousedown", _net.accountDown, false );
-			line.appendChild( e );
-			div.appendChild( line );
-
-			// Create recover password line
-
-			_net.recoverLine = line = newline( "" );
-			e = document.createElement( "a" );
-			e.href = "#";
-			e.innerHTML = "Recover password";
-			e.tabindex = -1;
-			e.addEventListener( "mousedown", _net.recoverDown, false );
-			line.appendChild( e );
-			div.appendChild( line );
-
-			// Add login div to _main
-
-			_main.appendChild( div );
-		},
-
-		// _net.login()
-
-		login : function ()
-		{
-			_gridDeactivate();
-			_net.doLogin();
+			key = event.keyCode; // IE
 		}
-	};
+		if ( key === PS.KEY_ENTER )
+		{
+			val = _status.input.value;
+			exec = _status.exec;
+			if ( typeof exec === "function" )
+			{
+				try
+				{
+					exec( val );
+				}
+				catch ( err )
+				{
+					_errorCatch( "PS.statusInput() function failed [" + err.message + "]", err );
+				}
+			}
+
+			_status.input.removeEventListener( "keydown", _inputKeyDown, false ); // stop input handler
+			_statusOut ( _status.text );
+			return _endEvent( event );
+		}
+		return true; // must return true
+	}
+
+	function _statusIn ( strP, exec )
+	{
+		var str;
+
+		_status.statusP.style.display = "none"; // hide status line
+
+		_status.label = str = strP; // prevent arg mutation
+		if ( str.length < 1 )
+		{
+			str = ">"; // at least show a caret
+		}
+		_status.inputNode.nodeValue = str; // set input label text
+		_status.exec = exec; // save exec
+		_status.input.value = ""; // empty input box
+		_keysDeactivate(); // turn off key events
+		_status.input.addEventListener( "keydown", _inputKeyDown, false ); // start input handler
+		_status.inputP.style.display = "block"; // show input line
+		_status.input.focus();
+	}
 
 	//----------------------
 	// ENGINE INITIALIZATION
@@ -6992,7 +6601,7 @@ var PS; // Global namespace for public API
 
 		_sys : function ()
 		{
-			var fn, errm, i, outer, debug, status, grid, footer, monitor, ctx, cnt, bead, result, str;
+			var fn, errm, i, outer, debug, sp, snode, ip, inode, span, input, grid, footer, monitor, ctx, cnt, bead, result, str;
 
 			fn = "[PS.sys] ";
 			errm = fn + "Invalid element";
@@ -7072,8 +6681,56 @@ var PS; // Global namespace for public API
 			PS._mainLeft = _main.offsetLeft;
 			PS._mainTop = _main.offsetTop;
 
-			// Status line, append to main
+			// Create status line paragraph
 
+			sp = document.createElement( "p" );
+			sp.id = _STATUS_P_ID; // use id for styling
+			sp.style.whiteSpace = "nowrap"; // limits to one line
+			sp.style.display = "block"; // initially visible
+			snode = document.createTextNode( "" );
+			sp.appendChild( snode );
+			_main.appendChild( sp );
+
+			// Create input box paragraph, label and input box
+
+			ip = document.createElement( "p" ); // paragraph for input box
+			ip.id = _INPUT_P_ID; // use id for styling
+			ip.style.display = "none"; // initially hidden
+
+			span = document.createElement( "span" ); // span for label
+			span.id = _INPUT_LABEL_ID; // use id for styling
+			inode = document.createTextNode( "" ); // textNode for label
+			span.appendChild( inode ); // add node to span
+			ip.appendChild( span ); // add span to paragraph
+
+			span = document.createElement( "span" ); // span for input box
+			span.id = _INPUT_SPAN_ID; // use id for styling
+			input = document.createElement( "input" ); // actual input box
+			input.id = _INPUT_BOX_ID; // use id for styling
+			input.type = "text";
+			input.tabindex = 0;
+			input.wrap = "soft";
+			span.appendChild( input ); // add box to span
+			ip.appendChild( span ); // add span to paragraph
+			_main.appendChild( ip ); // add paragraph to main
+
+			// init status line
+
+			_status =
+			{
+				statusP : sp,
+				statusNode : snode,
+				inputP : ip,
+				inputNode : inode,
+				input : input,
+				fader : _newFader( _STATUS_P_ID, _statusRGB, null )
+			};
+
+			_copy( _DEFAULTS.status, _status ); // copy default properties
+			_statusOut( "Perlenspiel 3.1" );
+
+			/*
+			// Status line, append to main
 			status = document.createElement( "input" );
 			if ( !status )
 			{
@@ -7091,10 +6748,7 @@ var PS; // Global namespace for public API
 			status.wrap = "soft";
 			status.id = _STATUS_ID;
 			_main.appendChild( status );
-
-			// Init network, appends UI divisions to _main
-
-			_net.init();
+			*/
 
 			// Create grid canvas
 
@@ -7106,7 +6760,8 @@ var PS; // Global namespace for public API
 			}
 			grid.id = _GRID_ID;
 			grid.width = _CLIENT_SIZE;
-			grid.backgroundColor = _DEFAULTS.grid.color.str;
+			grid.style.backgroundColor = _DEFAULTS.grid.color.str;
+			grid.style.boxShadow = "none";
 
 			_overGrid = false;
 			_resetCursor();
@@ -7164,6 +6819,7 @@ var PS; // Global namespace for public API
 
 			// Init keypress variables and arrays
 
+			_keysActive = false;
 			_pressed = [];
 			_transKeys = [];
 			_shiftedKeys = [];
@@ -7261,18 +6917,7 @@ var PS; // Global namespace for public API
 
 			// clear keypress record if window loses focus
 
-			window.onblur = function ()
-			{
-				var x;
-
-				_holding.length = 0;
-				_holdShift = false;
-				_holdCtrl = false;
-				for ( x = 0; x < 256; x += 1 )
-				{
-					_pressed[ x ] = 0;
-				}
-			};
+			window.onblur = _keyReset();
 
 			ctx = grid.getContext( "2d" );
 
@@ -7339,8 +6984,8 @@ var PS; // Global namespace for public API
 			// Calculate canvas padding for mouse offset (Mark Diehr)
 
 			var canvasStyle = window.getComputedStyle( _grid.canvas, null );
-			_grid.padLeft = parseInt( canvasStyle.getPropertyValue('padding-top').replace("px", ""), 10 );
-			_grid.padRight = parseInt( canvasStyle.getPropertyValue('padding-left').replace("px", ""), 10 );
+			_grid.padLeft = parseInt(canvasStyle.getPropertyValue('padding-top').replace("px", ""), 10);
+			_grid.padRight = parseInt(canvasStyle.getPropertyValue('padding-left').replace("px", ""), 10);
 
 			// Set up master 32 x 32 bead array
 
@@ -7362,18 +7007,6 @@ var PS; // Global namespace for public API
 
 				_beads[ i ] = bead;
 			}
-
-			// init status line
-
-			_status =
-			{
-				div : status,
-				fader : _newFader( _STATUS_ID, _statusRGB, null )
-			};
-
-			// copy default properties
-
-			_copy( _DEFAULTS.status, _status );
 
 			// Init sprite engine
 
@@ -7512,8 +7145,6 @@ var PS; // Global namespace for public API
 			// Init all event listeners
 
 			_gridActivate ();
-
-
 
 			if ( PS.init )
 			{
@@ -7781,6 +7412,49 @@ var PS; // Global namespace for public API
 				onEnd : fader.onEnd,
 				params : fader.params
 			};
+		},
+
+		// PS.gridShadow
+		// Activates/deactivates grid shadow and sets its color
+		// show = boolean, PS.CURRENT or PS.DEFAULT
+		// [p1/p2/p3] = PS3 color paramater
+		// Returns rgb or PS.ERROR
+
+		gridShadow : function ( showP, p1, p2, p3 )
+		{
+			var fn, show, colors;
+
+			fn = "[PS.gridShadow] ";
+
+			if ( arguments.length > 4 )
+			{
+				return _error( fn + "Too many arguments" );
+			}
+
+			show = showP; // prevent arg mutation
+			if ( ( show !== true ) && ( show !== false ) && ( show !== PS.CURRENT ) )
+			{
+				if ( ( show === null ) || ( show === PS.DEFAULT ) )
+				{
+					show = false;
+				}
+				else if ( _typeOf( show ) === "number" )
+				{
+					show = ( show !== 0 );
+				}
+				else
+				{
+					return _error( fn + "First argument invalid" );
+				}
+			}
+
+			colors = _decodeColors( fn, p1, p2, p3 );
+			if ( colors === PS.ERROR )
+			{
+				return PS.ERROR;
+			}
+
+			return _gridShadow( show, colors );
 		},
 
 		//---------------
@@ -8730,10 +8404,42 @@ var PS; // Global namespace for public API
 					str = str.toString();
 				}
 
-				_status.div.value = _status.text = str;
+				_statusOut( str );
 			}
 
 			return _status.text;
+		},
+
+		statusInput : function ( strP, exec )
+		{
+			var fn, type, str, len;
+
+			fn = "[PS.statusInput] ";
+
+			if ( arguments.length !== 2 )
+			{
+				return _error( fn + "Expected 2 arguments" );
+			}
+
+			if ( typeof exec !== "function" )
+			{
+				return _error( fn + "2nd argument is not a function" );
+			}
+
+			str = strP; // prevent arg mutation
+			type = _typeOf( str );
+			if ( type !== "string" )
+			{
+				str = str.toString();
+			}
+			len = str.length;
+			if ( len > _LABEL_MAX ) // truncate if too long
+			{
+				str = str.substring( 0, _LABEL_MAX );
+			}
+			_statusIn( str, exec );
+
+			return _status.label;
 		},
 
 		statusColor : function ( p1, p2, p3 )
@@ -12379,15 +12085,6 @@ var PS; // Global namespace for public API
 
 			result = _pathNear( pm, x1, y1, x2, y2 );
 			return result;
-		},
-
-		//------------
-		// NETWORK API
-		//------------
-
-		netLogin : function ()
-		{
-			_net.login();
 		}
 	};
 }() );
@@ -12435,6 +12132,7 @@ var PS; // Global namespace for public API
 		};
 	}
 }() );
+
 
 
 
