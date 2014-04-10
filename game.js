@@ -46,10 +46,6 @@ PS.init = function( system, options ) {
 	// Otherwise you will get the default 8x8 grid
 
 	PS.gridSize( 8, 8 );
-<<<<<<< HEAD
-=======
-
->>>>>>> 7490021fcb708c88b9ec2da64f0a3b23e56dc7b7
 
 	// Add any other initialization code you need here
 };

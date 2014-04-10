@@ -6289,16 +6289,8 @@ var PS; // Global namespace for public API
 		{
 			var key, val, result;
 
-<<<<<<< HEAD
-			if ( event.which )
-			{
-				key = event.which; // correct
-			}
-			else
-=======
 			key = event.which; // correct
 			if ( !key )
->>>>>>> 7490021fcb708c88b9ec2da64f0a3b23e56dc7b7
 			{
 				key = event.keyCode; // IE
 			}
@@ -6381,16 +6373,8 @@ var PS; // Global namespace for public API
 		{
 			var key, val, result;
 
-<<<<<<< HEAD
-			if ( event.which )
-			{
-				key = event.which; // correct
-			}
-			else
-=======
 			key = event.which; // correct
 			if ( !key )
->>>>>>> 7490021fcb708c88b9ec2da64f0a3b23e56dc7b7
 			{
 				key = event.keyCode; // IE
 			}
@@ -6458,16 +6442,8 @@ var PS; // Global namespace for public API
 		{
 			var key, val, result;
 
-<<<<<<< HEAD
-			if ( event.which )
-			{
-				key = event.which; // correct
-			}
-			else
-=======
 			key = event.which; // correct
 			if ( !key )
->>>>>>> 7490021fcb708c88b9ec2da64f0a3b23e56dc7b7
 			{
 				key = event.keyCode; // IE
 			}
