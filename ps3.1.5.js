@@ -179,6 +179,11 @@ var PS; // Global namespace for public API
 				rgb : 0xFFFFFF,
 				str : "rgba(255,255,255,1)"
 			},
+			bgColor : {
+				r : 255, g : 255, b : 255, a : 0,
+				rgb : 0xFFFFFF,
+				str : "rgba(255,255,255,0)"
+			},
 			radius : 0,
 			scale : 100,
 			data : 0,
@@ -535,9 +540,9 @@ var PS; // Global namespace for public API
 
 	// Draw bead with specified colors
 
-	function _drawBead ( bead, borderColor, beadColor, glyphColor, gridColor )
+	function _drawBead ( bead, borderColor, beadColor, glyphColor, bgColor, gridColor )
 	{
-		var ctx, size, left, top, width, height, border, radius, curve;
+		var ctx, size, left, top, width, height, border, scaled, radius, curve;
 
 		ctx = _grid.context;
 		size = _grid.bead_size;
@@ -548,45 +553,76 @@ var PS; // Global namespace for public API
 		top = bead.top;
 		width = size;
 		height = size;
-		border = bead.border;
-		radius = bead.radius;
 
-		if ( ( bead.size < size ) || ( radius > 0 ) || ( ( border.color.a < 255 ) && ( border.width > 0 ) ) || !bead.visible )
+		if ( !bead.visible )
 		{
 			ctx.fillStyle = gridColor;
 			ctx.fillRect( left, top, width, height );
+			return;
+		}
 
-			// Done if bead is invisible
+		// Paint bgColor if scaled or non-zero radius
 
-			if ( !bead.visible )
+		scaled = ( bead.size < size );
+		radius = bead.radius;
+		if ( scaled || ( radius > 0 ) )
+		{
+			// If bgColor has transparency, must draw grid color first
+			// This is horribly inefficient
+
+			if ( bead.bgColor.a < 255 )
 			{
-				return;
+				ctx.fillStyle = gridColor;
+				ctx.fillRect( left, top, width, height );
 			}
 
-			// Size is < 100%, so adjust working rect
+			// Only draw bgColor if not transparent
 
-			left += bead.margin;
-			top += bead.margin;
-			width = bead.size;
-			height = bead.size;
+			if ( bead.bgColor.a > 0 )
+			{
+				ctx.fillStyle = bgColor;
+				ctx.fillRect( left, top, width, height );
+			}
+
+			// If scaled, adjust working rect
+
+			if ( scaled )
+			{
+				left += bead.margin;
+				top += bead.margin;
+				width = bead.size;
+				height = bead.size;
+			}
 		}
 
 		// Draw border if needed
 
+		border = bead.border;
 		if ( border.width > 0 ) // > 0 if any border is visible
 		{
-			// fill entire rect with border color
-			// Is this faster than a separate fill for each border?
+			// Draw grid color first if border has transparency
+			// This is horribly inefficient
 
-			ctx.fillStyle = borderColor;
-			if ( !radius )
+			if ( border.color.a < 255 )
 			{
+				ctx.fillStyle = gridColor;
 				ctx.fillRect( left, top, width, height );
 			}
-			else
+
+			// Only draw border if not transparent
+
+			if ( border.color.a > 0 )
 			{
-				curve = Math.floor( ( width * radius ) / 100 );
-				curve = ctx.fillRoundedRect( left, top, width, height, curve );
+				ctx.fillStyle = borderColor;
+				if ( radius === 0 )
+				{
+					ctx.fillRect( left, top, width, height );
+				}
+				else
+				{
+					curve = Math.floor( ( width * radius ) / 100 );
+					curve = ctx.fillRoundedRect( left, top, width, height, curve );
+				}
 			}
 
 			// adjust position and size of color rect
@@ -600,7 +636,7 @@ var PS; // Global namespace for public API
 		// Draw color rect
 
 		ctx.fillStyle = beadColor;
-		if ( !radius )
+		if ( radius === 0 )
 		{
 			ctx.fillRect( left, top, width, height );
 		}
@@ -610,9 +646,9 @@ var PS; // Global namespace for public API
 			ctx.fillRoundedRect( left, top, width, height, curve );
 		}
 
-		// draw glyph
+		// draw glyph if present and not transparent
 
-		if ( bead.glyph.code > 0 )
+		if ( ( bead.glyph.code > 0 ) && ( bead.glyph.color.a > 0 ) )
 		{
 			_grid.context.font = bead.glyph.font;
 			ctx.fillStyle = glyphColor;
@@ -723,17 +759,18 @@ var PS; // Global namespace for public API
 
 	function _gridRGB ( data )
 	{
-		var str, canvas, context, i, bead, level, color, beadColor, borderColor;
+		var str, canvas, i, bead, level, color, beadColor, borderColor;
 
 		str = data.str;
 
 		canvas = _grid.canvas;
-		context = _grid.context;
 
 		// Clear parts of canvas not under the grid
 
 		canvas.style.backgroundColor = str;
 
+		/*
+		context = _grid.context;
 		if ( _grid.left > 0 )
 		{
 			context.clearRect( 0, _grid.top, _grid.left, canvas.height );
@@ -746,6 +783,7 @@ var PS; // Global namespace for public API
 		{
 			context.clearRect( 0, _grid.bottom, canvas.width, canvas.height - _grid.bottom );
 		}
+		*/
 
 		// set browser background
 
@@ -784,7 +822,7 @@ var PS; // Global namespace for public API
 
 			if ( !bead.visible || ( bead.size < _grid.bead_size ) || ( bead.radius > 0 ) || ( color.a < 255 ) || ( borderColor.a < 255 ) )
 			{
-				_drawBead( bead, borderColor.str, beadColor, bead.glyph.color.str, str );
+				_drawBead( bead, borderColor.str, beadColor, bead.glyph.color.str, bead.bgColor.str, str );
 			}
 		}
 	}
@@ -850,7 +888,7 @@ var PS; // Global namespace for public API
 		var bead;
 
 		bead = _beads[ element ];
-		_drawBead( bead, bead.border.color.str, data.str, bead.glyph.color.str, _grid.color.str );
+		_drawBead( bead, bead.border.color.str, data.str, bead.glyph.color.str, bead.bgColor.str, _grid.color.str );
 	}
 
 	// Change border color
@@ -860,7 +898,7 @@ var PS; // Global namespace for public API
 		var bead;
 
 		bead = _beads[ element ];
-		_drawBead( bead, data.str, bead.color.str, bead.glyph.color.str, _grid.color.str );
+		_drawBead( bead, data.str, bead.color.str, bead.glyph.color.str, bead.bgColor.str, _grid.color.str );
 	}
 
 	// Change glyph color
@@ -870,7 +908,7 @@ var PS; // Global namespace for public API
 		var bead;
 
 		bead = _beads[ element ];
-		_drawBead( bead, bead.border.color.str, bead.color.str, data.str, _grid.color.str );
+		_drawBead( bead, bead.border.color.str, bead.color.str, data.str, bead.bgColor.str, _grid.color.str );
 	}
 
 	// Mark a bead as dirty
@@ -896,7 +934,7 @@ var PS; // Global namespace for public API
 				if ( bead.dirty )
 				{
 					bead.dirty = false;
-					_drawBead( bead, bead.border.color.str, bead.color.str, bead.glyph.color.str, _grid.color.str );
+					_drawBead( bead, bead.border.color.str, bead.color.str, bead.glyph.color.str, bead.bgColor.str, _grid.color.str );
 				}
 			}
 			_anyDirty = false;
@@ -3239,35 +3277,29 @@ var PS; // Global namespace for public API
 
 			// calc size of beads, position/dimensions of centered grid
 
+			_grid.left = 0;
+			_grid.top = 0;
+
 			if ( x >= y )
 			{
 				size = Math.floor( _CLIENT_SIZE / x );
-				_grid.left = 0;
 			}
 			else
 			{
 				size = Math.floor( _CLIENT_SIZE / y );
-				_grid.left = Math.floor( ( _CLIENT_SIZE - (size * x ) ) / 2 );
 			}
 
 			_grid.bead_size = size;
 			_grid.width = size * x;
 			_grid.height = size * y;
-			_grid.right = _grid.left + _grid.width;
-			_grid.top = 0;
+			_grid.right = _grid.width;
 			_grid.bottom = _grid.height;
 
-			// Reset height of grid canvas
-			// Changing the height also clears the canvas
+			// Reset width/height of grid canvas
+			// Changing either of these also clears the canvas
 
-			if ( y >= x )
-			{
-				_grid.canvas.height = _CLIENT_SIZE;
-			}
-			else
-			{
-				_grid.canvas.height = _grid.height;
-			}
+			_grid.canvas.width = _grid.width;
+			_grid.canvas.height = _grid.height;
 
 			_grid.context.textAlign = "center";
 			_grid.context.textBaseline = "middle";
@@ -3871,6 +3903,103 @@ var PS; // Global namespace for public API
 		}
 
 		return bead.radius;
+	}
+
+	function _bgColor ( x, y, colors )
+	{
+		var id, bead, def, current, rgb, r, g, b;
+
+		id = ( y * _grid.x ) + x;
+		bead = _beads[ id ];
+
+		def = _DEFAULTS.bead.bgColor;
+		current = bead.bgColor;
+
+		rgb = colors.rgb;
+		if ( !bead.active || ( rgb === PS.CURRENT ) )
+		{
+			return current.rgb;
+		}
+
+		if ( rgb === null ) // must inspect r/g/b values
+		{
+			r = colors.r;
+			if ( r === PS.CURRENT )
+			{
+				colors.r = r = current.r;
+			}
+			else if ( r === PS.DEFAULT )
+			{
+				colors.r = r = def.r;
+			}
+
+			g = colors.g;
+			if ( g === PS.CURRENT )
+			{
+				colors.g = g = current.g;
+			}
+			else if ( g === PS.DEFAULT )
+			{
+				colors.g = g = def.g;
+			}
+
+			b = colors.b;
+			if ( b === PS.CURRENT )
+			{
+				colors.b = b = current.b;
+			}
+			else if ( b === PS.DEFAULT )
+			{
+				colors.b = b = def.b;
+			}
+
+			colors.rgb = ( r * _RSHIFT ) + ( g * _GSHIFT ) + b;
+		}
+
+		else if ( rgb === PS.DEFAULT )
+		{
+			_copy( def, colors );
+		}
+
+		// Only change color if different
+
+		if ( current.rgb !== colors.rgb )
+		{
+			current.rgb = colors.rgb;
+			current.r = r = colors.r;
+			current.g = g = colors.g;
+			current.b = b = colors.b;
+			current.str = _RSTR[ r ] + _GBSTR[ g ] + _GBSTR[ b ] + _ASTR[ current.a ];
+
+			if ( bead.active && ( ( bead.scale < 100 ) || ( bead.radius > 0 ) ) )
+			{
+				_makeDirty( bead );
+			}
+		}
+
+		return current.rgb;
+	}
+
+	function _bgAlpha ( x, y, alpha )
+	{
+		var id, bead, current;
+
+		id = ( y * _grid.x ) + x;
+		bead = _beads[ id ];
+		current = bead.bgColor;
+
+		if ( ( alpha !== PS.CURRENT ) && ( alpha !== current.a ) )
+		{
+			current.a = alpha;
+			current.str = _RSTR[ current.r ] + _GBSTR[ current.g ] + _GBSTR[ current.b ] + _ASTR[ alpha ];
+
+			if ( bead.active && ( ( bead.scale < 100 ) || ( bead.radius > 0 ) ) )
+			{
+				_makeDirty( bead );
+			}
+		}
+
+		return current.a;
 	}
 
 	function _data ( x, y, data )
@@ -6916,26 +7045,6 @@ var PS; // Global namespace for public API
 			_copy( _DEFAULTS.status, _status ); // copy default properties
 			_statusOut( "Perlenspiel 3.1" );
 
-			/*
-			// Status line, append to main
-			status = document.createElement( "input" );
-			if ( !status )
-			{
-				window.alert( errm );
-				return;
-			}
-			status.type = "text";
-			status.readonly = "readonly";
-			status.onfocus = function ()
-			{
-				this.blur();
-			};
-			status.tabindex = -1;
-			status.value = "Perlenspiel 3.1";
-			status.wrap = "soft";
-			status.id = _STATUS_ID;
-			_main.appendChild( status );
-			*/
 
 			// Create grid canvas
 
@@ -7643,7 +7752,7 @@ var PS; // Global namespace for public API
 		// PS.gridShadow
 		// Activates/deactivates grid shadow and sets its color
 		// show = boolean, PS.CURRENT or PS.DEFAULT
-		// [p1/p2/p3] = PS3 color paramater
+		// [p1/p2/p3] = PS3 color parameter
 		// Returns rgb or PS.ERROR
 
 		gridShadow : function ( showP, p1, p2, p3 )
@@ -7926,6 +8035,85 @@ var PS; // Global namespace for public API
 			}
 
 			return _beadExec( fn, _radius, x, y, radius );
+		},
+
+		// PS.bgColor ( x, y, color )
+		// Change/inspect bead background color
+
+		bgColor : function ( x, y, p1, p2, p3 )
+		{
+			var fn, args, colors;
+
+			fn = "[PS.bgColor] ";
+
+			args = arguments.length;
+			if ( args < 2 )
+			{
+				return _error( fn + "Missing argument(s)" );
+			}
+			if ( args > 5 )
+			{
+				return _error( fn + "Too many arguments" );
+			}
+
+			colors = _decodeColors( fn, p1, p2, p3 );
+			if ( colors === PS.ERROR )
+			{
+				return PS.ERROR;
+			}
+
+			return _beadExec( fn, _bgColor, x, y, colors );
+		},
+
+		// PS.bgAlpha( x, y, a )
+
+		bgAlpha : function ( x, y, alpha_p )
+		{
+			var fn, args, alpha, type;
+
+			fn = "[PS.bgAlpha] ";
+
+			args = arguments.length;
+			if ( args < 2 )
+			{
+				return _error( fn + "Missing argument(s)" );
+			}
+			if ( args > 3 )
+			{
+				return _error( fn + "Too many arguments" );
+			}
+
+			alpha = alpha_p; // prevent direct mutation of args
+			if ( alpha !== PS.CURRENT )
+			{
+				type = _typeOf( alpha );
+				if ( type === "undefined" )
+				{
+					alpha = PS.CURRENT;
+				}
+				else if ( type === "number" )
+				{
+					alpha = Math.floor( alpha );
+					if ( alpha < 0 )
+					{
+						alpha = 0;
+					}
+					else if ( alpha > 255 )
+					{
+						alpha = 255;
+					}
+				}
+				else if ( alpha === PS.DEFAULT )
+				{
+					alpha = _DEFAULTS.bead.bgColor.a;
+				}
+				else
+				{
+					return _error( fn + "alpha argument invalid" );
+				}
+			}
+
+			return _beadExec( fn, _bgAlpha, x, y, alpha );
 		},
 
 		// PS.data( x, y, data )

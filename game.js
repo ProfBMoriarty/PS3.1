@@ -50,7 +50,6 @@ PS.init = function( system, options ) {
 	PS.statusText( "Input Test" );
 	PS.statusColor(0xFFFFFF);
 
-
 	// Add any other initialization code you need here
 };
 

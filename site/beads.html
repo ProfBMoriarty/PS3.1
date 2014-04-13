@@ -42,6 +42,8 @@
 				<li><a href="#fade">PS.fade</a> ( x, y, rate, options )</li>
 				<li><a href="#scale">PS.scale</a> ( x, y, scale )</li>
 				<li><a href="#radius">PS.radius</a> ( x, y, radius )</li>
+				<li><a href="#bgcolor">PS.bgColor</a> ( x, y, color )</li>
+				<li><a href="#bgalpha">PS.bgAlpha</a> ( x, y, alpha )</li>
 				<li><a href="#data">PS.data</a> ( x, y, data )</li>
 				<li><a href="#exec">PS.exec</a> ( x, y, exec )</li>
 				<li><a href="#visible">PS.visible</a> ( x, y, show )</li>
@@ -417,6 +419,103 @@
 				<p class="subitem">Return value</p>
 
 				<p>PS.radius() returns an <em>integer</em> indicating the current radius of the bead.</p>
+
+				<p><b>PS.ERROR</b> is returned if an error occurs.</p>
+			</div>
+
+			<div class="section">
+				<div id="bgcolor" class="dot">&nbsp;</div>
+				<p class="subhead">PS.bgColor ( x, y, color )</p>
+				<p>PS.bgColor() changes and inspects the background color of scaled and/or non-square beads.</p>
+				<div class="specs">
+					<p>Parameters:</p>
+					<ol>
+						<li><b>x</b> : <em>integer</em> or <b>PS.ALL</b></li>
+						<li><b>y</b> : <em>integer</em> or <b>PS.ALL</b></li>
+						<li>(optional) <b>color</b> : <a href="colors.html#express">color expression</a>, <b>PS.CURRENT</b> or
+							<b>PS.DEFAULT</b></li>
+					</ol>
+					<p>Returns : <em>integer</em> or <b>PS.ERROR</b></p>
+					<p>Default : <b>PS.COLOR_WHITE</b></p>
+				</div>
+
+				<p>The required <b>x</b> and
+					<b>y</b> parameters indicate the zero-based column and row position of the bead, respectively.
+					An error occurs if either parameter is negative, or exceeds the dimensions of the grid.
+					<a href="#multibead">Multiple bead assignment</a> is supported using <b>PS.ALL</b>.</p>
+
+				<p>The optional <b>color</b> parameter can be supplied in any of the four Perlenspiel
+					<a href="colors.html#express">color expression</a> formats.</p>
+
+				<p>If <b>color</b> is <b>PS.DEFAULT</b>, the default color (<b>PS.COLOR_WHITE</b>) is applied.
+					If <b>color</b> is <b>PS.CURRENT</b> or not supplied, the color is not changed.</p>
+
+				<p class="subitem">Usage notes</p>
+
+				<p>1. The background color of a bead is only visible if the bead is scaled to less than 100%,
+				or if the bead is non-square (that is, its radius is greater than 0).</p>
+
+				<p>2. By default, the background color of beads is transparent, allowing the grid color to show through.
+				To see the results of a call to PS.bgColor(), you must also call <a href="#bgalpha">PS.bgAlpha</a>() to increase the opacity.</p>
+
+				<p class="subitem">Return value</p>
+
+				<p>PS.bgColor() returns a <a href="colors.html#plex">RGB multiplex</a> <em>integer</em>
+					indicating the current background color of the bead.</p>
+
+				<p><b>PS.ERROR</b> is returned if an error occurs.</p>
+
+				<div class="example">
+					<p>// EXAMPLE:<br>
+						// Set the background color of a scaled, circular bead<br>
+						// to a opaque color different from the grid color<br><br>
+						PS.gridColor( PS.COLOR_BLUE ); // blue grid<br>
+						PS.scale( 0, 0, 75 ); // 75% scaling<br>
+						PS.radius( 0, 0, 50 ); // circular<br>
+						PS.bgAlpha( 0, 0, PS.ALPHA_OPAQUE ); // opaque<br>
+						PS.bgColor( 0, 0, PS.COLOR_RED ); // red background</p>
+				</div>
+			</div>
+
+			<div class="section">
+				<div id="bgalpha" class="dot">&nbsp;</div>
+				<p class="subhead">PS.bgAlpha ( x, y, alpha )</p>
+				<p>PS.bgAlpha() changes and inspects the background alpha transparency of scaled and/or non-square beads.</p>
+				<div class="specs">
+					<p>Parameters:</p>
+					<ol>
+						<li><b>x</b> : <em>integer</em> or <b>PS.ALL</b></li>
+						<li><b>y</b> : <em>integer</em> or <b>PS.ALL</b></li>
+						<li>(optional) <b>alpha</b> : <em>integer</em>, <b>PS.CURRENT</b> or <b>PS.DEFAULT</b></li>
+					</ol>
+					<p>Returns : <em>integer</em> or <b>PS.ERROR</b></p>
+					<p>Default : <b>PS.ALPHA_TRANSPARENT</b></p>
+				</div>
+
+				<p>The required <b>x</b> and
+					<b>y</b> parameters indicate the zero-based column and row position of the bead, respectively.
+					An error occurs if either parameter is negative, or exceeds the dimensions of the grid.
+					<a href="#multibead">Multiple bead assignment</a> is supported using <b>PS.ALL</b>.</p>
+
+				<p>The optional <b>alpha</b> parameter specifies the alpha transparency of the bead.
+					It should be an <em>integer</em> between 0 (completely transparent) and 255 (fully opaque) inclusive.
+					Values outside this range are clamped.</p>
+
+				<p>If <b>alpha</b> is <b>PS.DEFAULT</b>, the default alpha (<b>PS.ALPHA_TRANSPARENT</b>) is applied.
+					If <b>alpha</b> is <b>PS.CURRENT</b> or not supplied, the alpha is not changed.</p>
+
+				<p class="subitem">Usage notes</p>
+
+				<p>1. By default, the background color of beads is transparent, allowing the grid color to show through.
+					To see the results of a call to <a href="#bgcolor">PS.bgColor</a>(), you must use PS.bgAlpha() to increase the opacity.</p>
+
+				<p>2. The background color of a bead is only visible if the bead is scaled to less than 100%,
+					or if the bead is non-square (that is, its radius is greater than 0).</p>
+
+				<p class="subitem">Return value</p>
+
+				<p>PS.bgAlpha() returns an <em>integer</em> in the range 0-255 inclusive indicating the current
+					alpha transparency of the bead background.</p>
 
 				<p><b>PS.ERROR</b> is returned if an error occurs.</p>
 			</div>
