@@ -45,8 +45,7 @@ PS.init = function( system, options ) {
 	// Do this FIRST to avoid problems!
 	// Otherwise you will get the default 8x8 grid
 
-	PS.gridSize( 6, 8 );
-	PS.glyph( 0, 0, "M" );
+	PS.gridSize( 8, 8 );
 
 	// Add any other initialization code you need here
 };
@@ -64,11 +63,7 @@ PS.touch = function( x, y, data, options ) {
 
 	// Uncomment the following line to inspect parameters
 	// PS.debug( "PS.touch() @ " + x + ", " + y + "\n" );
-	PS.gridSize( PS.random( 8 ) + 1, PS.random( 8 ) );
-	PS.glyphScale(0, 0, 50);
-	PS.glyphScale(1, 0, 50);
-	PS.glyph( 0, 0, "P" );
-	PS.glyph( 1, 0, "g" );
+
 	// Add code here for mouse clicks/touches over a bead
 };
 

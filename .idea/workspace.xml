@@ -2,43 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b12e5ae2-2cfa-458c-9c7e-94910f0a0f24" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/three/3test.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/dictionaries/bmoriarty.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/mgame.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/pixi/pixitest.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/pixi/pixitest.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/ps3.1.6.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/js/sys.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/js/template.js" />
-      <change type="DELETED" beforePath="C:\Users\bmoriarty\Dropbox\git\PS3.1\js\audio.js" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\bmoriarty\Dropbox\git\PS3.1\js\bead.js" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\bmoriarty\Dropbox\git\PS3.1\js\clock.js" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\bmoriarty\Dropbox\git\PS3.1\js\color.js" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\bmoriarty\Dropbox\git\PS3.1\js\fader.js" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\bmoriarty\Dropbox\git\PS3.1\js\grid.js" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\bmoriarty\Dropbox\git\PS3.1\js\image.js" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\bmoriarty\Dropbox\git\PS3.1\js\main.js" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\bmoriarty\Dropbox\git\PS3.1\js\path.js" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\bmoriarty\Dropbox\git\PS3.1\js\sprite.js" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\bmoriarty\Dropbox\git\PS3.1\js\status.js" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\bmoriarty\Dropbox\git\PS3.1\js\util.js" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/devkit/PS3.1.zip" afterPath="$PROJECT_DIR$/devkit/PS3.1.zip" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/site/examples/paint/paint.zip" afterPath="$PROJECT_DIR$/site/examples/paint/paint.zip" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/site/examples/rain/rain.zip" afterPath="$PROJECT_DIR$/site/examples/rain/rain.zip" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/site/examples/splash/splash.zip" afterPath="$PROJECT_DIR$/site/examples/splash/splash.zip" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/site/beads.html" afterPath="$PROJECT_DIR$/site/beads.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js/debug.js" afterPath="$PROJECT_DIR$/js/debug.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/site/download.html" afterPath="$PROJECT_DIR$/site/download.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/game.html" afterPath="$PROJECT_DIR$/game.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/devkit/game.html" afterPath="$PROJECT_DIR$/devkit/game.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/aq1.0.js" afterPath="$PROJECT_DIR$/aq1.0.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/game.js" afterPath="$PROJECT_DIR$/game.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js/init.js" afterPath="$PROJECT_DIR$/js/init.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/site/examples/paint/paint.html" afterPath="$PROJECT_DIR$/site/examples/paint/paint.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ps3.1.css" afterPath="$PROJECT_DIR$/ps3.1.css" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ps3.1.js" afterPath="$PROJECT_DIR$/ps3.1.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/site/examples/rain/rain.html" afterPath="$PROJECT_DIR$/site/examples/rain/rain.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/site/examples/splash/splash.html" afterPath="$PROJECT_DIR$/site/examples/splash/splash.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/todo.txt" afterPath="$PROJECT_DIR$/todo.txt" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/move.html" afterPath="$PROJECT_DIR$/move.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ps3.2.0.js" afterPath="$PROJECT_DIR$/ps3.2.0.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="PS3.1.iws" />
@@ -65,7 +32,7 @@
       <file leaf-file-name="ps3.1.6.js" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/ps3.1.6.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-9.0" vertical-offset="151905" max-vertical-offset="276694">
+            <state vertical-scroll-proportion="0.0" vertical-offset="152152" max-vertical-offset="276716">
               <caret line="6916" column="0" selection-start-line="6916" selection-start-column="0" selection-end-line="6916" selection-end-column="0" />
               <folding />
             </state>
@@ -75,7 +42,7 @@
       <file leaf-file-name="download.html" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/site/download.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-17.032259" vertical-offset="660" max-vertical-offset="3696">
+            <state vertical-scroll-proportion="0.0" vertical-offset="660" max-vertical-offset="3696">
               <caret line="54" column="65" selection-start-line="54" selection-start-column="65" selection-end-line="54" selection-end-column="65" />
               <folding />
             </state>
@@ -92,20 +59,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="game.html" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/game.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-25.548388" vertical-offset="198" max-vertical-offset="1298">
-              <caret line="45" column="30" selection-start-line="45" selection-start-column="30" selection-end-line="45" selection-end-column="30" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="splash.html" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/site/examples/splash/splash.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-14.903226" vertical-offset="0" max-vertical-offset="682">
+            <state vertical-scroll-proportion="0.0" vertical-offset="462" max-vertical-offset="682">
               <caret line="21" column="30" selection-start-line="21" selection-start-column="30" selection-end-line="22" selection-end-column="30" />
               <folding />
             </state>
@@ -115,7 +72,7 @@
       <file leaf-file-name="rain.html" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/site/examples/rain/rain.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-15.612904" vertical-offset="0" max-vertical-offset="682">
+            <state vertical-scroll-proportion="0.0" vertical-offset="484" max-vertical-offset="682">
               <caret line="22" column="8" selection-start-line="22" selection-start-column="8" selection-end-line="22" selection-end-column="8" />
               <folding />
             </state>
@@ -125,38 +82,18 @@
       <file leaf-file-name="paint.html" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/site/examples/paint/paint.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-15.612904" vertical-offset="0" max-vertical-offset="682">
+            <state vertical-scroll-proportion="0.0" vertical-offset="484" max-vertical-offset="682">
               <caret line="22" column="8" selection-start-line="22" selection-start-column="8" selection-end-line="22" selection-end-column="8" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="cover.html" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="cover.html" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/devkit/cover.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-7.096774" vertical-offset="0" max-vertical-offset="1232">
+            <state vertical-scroll-proportion="0.0" vertical-offset="220" max-vertical-offset="1232">
               <caret line="10" column="35" selection-start-line="10" selection-start-column="35" selection-end-line="10" selection-end-column="35" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="game.js" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/game.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="625" max-vertical-offset="4510">
-              <caret line="68" column="19" selection-start-line="68" selection-start-column="19" selection-end-line="68" selection-end-column="19" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ps3.1.css" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/ps3.1.css">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.21359223" vertical-offset="4532" max-vertical-offset="7876">
-              <caret line="216" column="0" selection-start-line="216" selection-start-column="0" selection-end-line="216" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -222,15 +159,15 @@
         <option value="$PROJECT_DIR$/js/template.js" />
         <option value="$PROJECT_DIR$/mgame.html" />
         <option value="$PROJECT_DIR$/devkit/game.html" />
-        <option value="$PROJECT_DIR$/game.js" />
-        <option value="$PROJECT_DIR$/game.html" />
         <option value="$PROJECT_DIR$/ps3.1.6.js" />
         <option value="$PROJECT_DIR$/ps3.1.js" />
         <option value="$PROJECT_DIR$/site/download.html" />
-        <option value="$PROJECT_DIR$/ps3.1.css" />
         <option value="$PROJECT_DIR$/site/examples/splash/splash.html" />
         <option value="$PROJECT_DIR$/site/examples/rain/rain.html" />
         <option value="$PROJECT_DIR$/site/examples/paint/paint.html" />
+        <option value="$PROJECT_DIR$/ps3.1.css" />
+        <option value="$PROJECT_DIR$/game.html" />
+        <option value="$PROJECT_DIR$/game.js" />
       </list>
     </option>
   </component>
@@ -266,6 +203,7 @@
       <sortByType />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -398,7 +336,6 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -520,7 +457,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-4" y="-4" width="1928" height="1164" extended-state="6" />
-    <editor active="false" />
+    <editor active="true" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
@@ -810,7 +747,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="2644" max-vertical-offset="4796">
           <caret line="124" column="0" selection-start-line="124" selection-start-column="0" selection-end-line="124" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -832,7 +768,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="6710">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="4" selection-end-column="62" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -840,7 +775,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="638">
           <caret line="19" column="6" selection-start-line="19" selection-start-column="6" selection-end-line="19" selection-end-column="6" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -848,7 +782,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="682">
           <caret line="15" column="0" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -856,7 +789,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="550" max-vertical-offset="902">
           <caret line="25" column="61" selection-start-line="25" selection-start-column="61" selection-end-line="25" selection-end-column="61" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -868,27 +800,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/devkit/cover.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-7.096774" vertical-offset="0" max-vertical-offset="1232">
-          <caret line="10" column="35" selection-start-line="10" selection-start-column="35" selection-end-line="10" selection-end-column="35" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/game.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="625" max-vertical-offset="4510">
-          <caret line="68" column="19" selection-start-line="68" selection-start-column="19" selection-end-line="68" selection-end-column="19" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/ps3.1.5.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-8.12" vertical-offset="153247" max-vertical-offset="276826">
           <caret line="6976" column="0" selection-start-line="6976" selection-start-column="0" selection-end-line="6992" selection-end-column="39" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -896,13 +811,12 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.021359224" vertical-offset="0" max-vertical-offset="1030">
           <caret line="1" column="0" selection-start-line="1" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/site/download.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-17.032259" vertical-offset="660" max-vertical-offset="3696">
+        <state vertical-scroll-proportion="0.0" vertical-offset="660" max-vertical-offset="3696">
           <caret line="54" column="65" selection-start-line="54" selection-start-column="65" selection-end-line="54" selection-end-column="65" />
           <folding />
         </state>
@@ -910,7 +824,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/ps3.1.6.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-9.0" vertical-offset="151905" max-vertical-offset="276694">
+        <state vertical-scroll-proportion="0.0" vertical-offset="152152" max-vertical-offset="276716">
           <caret line="6916" column="0" selection-start-line="6916" selection-start-column="0" selection-end-line="6916" selection-end-column="0" />
           <folding />
         </state>
@@ -920,21 +834,12 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.7007007" vertical-offset="92" max-vertical-offset="1144">
           <caret line="36" column="30" selection-start-line="36" selection-start-column="30" selection-end-line="37" selection-end-column="30" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/game.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-25.548388" vertical-offset="198" max-vertical-offset="1298">
-          <caret line="45" column="30" selection-start-line="45" selection-start-column="30" selection-end-line="45" selection-end-column="30" />
-          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/site/examples/splash/splash.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-14.903226" vertical-offset="0" max-vertical-offset="682">
+        <state vertical-scroll-proportion="0.0" vertical-offset="462" max-vertical-offset="682">
           <caret line="21" column="30" selection-start-line="21" selection-start-column="30" selection-end-line="22" selection-end-column="30" />
           <folding />
         </state>
@@ -942,7 +847,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/site/examples/rain/rain.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-15.612904" vertical-offset="0" max-vertical-offset="682">
+        <state vertical-scroll-proportion="0.0" vertical-offset="484" max-vertical-offset="682">
           <caret line="22" column="8" selection-start-line="22" selection-start-column="8" selection-end-line="22" selection-end-column="8" />
           <folding />
         </state>
@@ -950,7 +855,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/site/examples/paint/paint.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-15.612904" vertical-offset="0" max-vertical-offset="682">
+        <state vertical-scroll-proportion="0.0" vertical-offset="484" max-vertical-offset="682">
           <caret line="22" column="8" selection-start-line="22" selection-start-column="8" selection-end-line="22" selection-end-column="8" />
           <folding />
         </state>
@@ -960,6 +865,29 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.21359223" vertical-offset="4532" max-vertical-offset="7876">
           <caret line="216" column="0" selection-start-line="216" selection-start-column="0" selection-end-line="216" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/game.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="286" max-vertical-offset="1298">
+          <caret line="43" column="0" selection-start-line="43" selection-start-column="0" selection-end-line="43" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/game.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.746884" vertical-offset="651" max-vertical-offset="4400">
+          <caret line="65" column="0" selection-start-line="65" selection-start-column="0" selection-end-line="65" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/devkit/cover.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="220" max-vertical-offset="1232">
+          <caret line="10" column="35" selection-start-line="10" selection-start-column="35" selection-end-line="10" selection-end-column="35" />
           <folding />
         </state>
       </provider>
