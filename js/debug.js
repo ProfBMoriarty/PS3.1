@@ -1,286 +1,299 @@
-// debug.js
+// debug.js for Perlenspiel 3
 
-PS = ( function ( ps )
+// The following comments are for JSLint
+/*jslint nomen: true, white: true, vars: true */
+/*global document, window, screen, console, Image, AQ, PIXI */
+
+var PS3ENGINE = ( function ( ps3 )
 {
-	"use strict";
+	var _sys = ps3._sys = ps3._sys || {}; // import _sys
 
-	var _sys = ps._sys = ps._sys || {}; // establish _sys
-
-	var _DID = "debug"; // debugger DOM id
-	var _MID = "monitor"; // monitor DOM id
-	var _dElement = null; // debugger DOM element
-	var _mElement = null; // monitor DOM element
-	var _debugging = false; // true if debugger open
-	var _focused = false; // true if focus is on debugger
-	var _stack = true; // Show debug stack
-	var _html = false; // Show .html source
+	// Augment _sys with module features
 
 	_sys.debug = {
 
-		// VARIABLES
+		// Constants
 
-		errorSound : null, // sound for error reports
+		SHOW_STACK : true, // true if debug stack should be shown
+		SHOW_HTML : false, // true if .html source should be shown
 
-		// METHODS
+		// Variables
 
-		// _sys.debug.init ()
-		// main : object = DOM main element
-		// Initializes debugger module
+		available : false, // true if debugger is available
+		active : false, // true if debugger is open
+		focus : false, // true if debugger has focus
+		sound : null, // error sound, null if none available
+		div : null, // DOM division containing the monitor
+		monitor : null, // DOM text box element for debugging messages
 
-		init : function ( main )
+		// Functions
+
+		// _sys.debug.open()
+		// Open and clear debugger
+
+		open : function ()
 		{
-			var d, m;
+			// Show the debug div if available and not already open
 
-			// Debug div
-
-			_dElement = d = document.createElement( "div" );
-			d.id = _DID;
-			main.appendChild( d );
-
-			// Monitor, append to debug
-
-			_mElement = m = document.createElement( "textarea" );
-			m.id = _MID;
-			m.rows = 8;
-			m.wrap = "soft";
-			m.readonly = "readonly";
-			m.onfocus = function ()
+			if ( _sys.debug.available && !_sys.debug.active )
 			{
-				_focused = true;
-			};
-			m.onblur = function ()
-			{
-				_focused = false;
-			};
-			d.appendChild( m );
+				// Show the div containing the monitor
 
-			_debugging = false;
-			_focused = false;
-		}
-	};
+				_sys.debug.div.style.display = "inline";
 
-	// Improved error reporter with stack trace
-	// Based on code by Mark Diehr
+				// Clear the monitor
 
-
-	function _decodeStackLine ( str )
-	{
-		var text, index, name;
-
-		text = "";
-
-		if ( str.search( ".js" ) !== -1 ) // Code lines
-		{
-			index = str.lastIndexOf( "/" ) + 1;
-			name = str.substr( index ).replace( /^[\s\(\)]+|[\s\(\)]+$/g, '' );
-
-			// Remove the column from the line
-
-			if ( name.split( ":" ).length === 3 )
-			{
-				name = name.substr( 0, name.lastIndexOf( ":" ) );
+				_sys.debug.monitor.value = "";
+				_sys.debug.active = true;
 			}
-			if ( name !== "" )
+
+			_sys.debug.focus = false;
+		},
+
+		// _sys.debug.close()
+		// Close debugger
+
+		close : function ()
+		{
+			if ( _sys.debug.available )
 			{
-				text += ( "    " + name + "\n" );
+				_sys.debug.div.style.display = "none";
 			}
-		}
-		else if ( _html && ( str.search( ".htm" ) !== -1 ) ) // HTML line
+			_sys.debug.active = false;
+			_sys.debug.focus = false;
+		},
+
+		// _sys.debug.clear()
+		// Clear debugger
+
+		clear : function ()
 		{
-			text += ( "\n" + str );
-		}
+			if ( _sys.debug.available )
+			{
+				_sys.debug.monitor.value = "";
+			}
+		},
 
-		return text;
-	}
+		// _sys.debug.append( str )
+		// Append string to debugger
 
-	function _decodeCallstack ( str )
-	{
-		var lines, len, i, text;
-
-		if ( console && console.log )
+		append : function ( str )
 		{
-			console.log( str );
-		}
+			var mon;
 
-		if ( !str.split )
+			if ( _sys.debug.available )
+			{
+				_sys.debug.open();
+				mon = _sys.debug.monitor;
+				mon.value += str; // append string
+				mon.scrollTop = mon.scrollHeight; // keep text box scrolled down
+			}
+
+			_scrollDown();
+		},
+
+		// _sys.debug.warning( str )
+		// Append warning string to debugger
+
+		warning : function ( str )
 		{
-			return str;
-		}
+			if ( typeof str !== "string" )
+			{
+				str = str.toString();
+			}
 
-		lines = str.split( '\n' );
-		text = "";
+			_sys.debug.append( "WARNING: " + str + "\n" );
+		},
 
-		len = lines.length;
-		for ( i = 0; i < len; i += 1 )
+		_decodeStackLine : function ( str )
 		{
-			text += _decodeStackLine( lines[i] );
-		}
+			var text, index, name;
 
-		return text;
-	}
-
-	// Keep browser window scrolled to bottom
-
-	function _scrollDown ()
-	{
-		var e;
-
-		e = document.getElementById( "main" );
-		e.scrollTop = e.scrollHeight;
-	}
-
-	_sys.errorCatch = function ( message, err )
-	{
-		var str;
-
-		// Stop the clock
-
-		_sys.clockActive = false;
-
-		if ( ( typeof message !== "string" ) || ( message.length < 1 ) )
-		{
-			message = "???";
-		}
-
-		str = "ERROR: " + message + "\n";
-
-		// set footer
-
-		_footer.innerHTML = str;
-
-		// Only debugger gets call stack
-
-		if ( _stack && err )
-		{
-			str += ( _decodeCallstack( err.stack ) + "\n" );
-		}
-		PS.debug( str );
-
-		if ( _sys.debug.errorSound )
-		{
-			PS.audioPlay( _DEFAULTS.audio.error_sound, { path : _DEFAULTS.audio.path } );
-		}
-
-		return PS.ERROR;
-	};
-
-	_sys.error = function ( message )
-	{
-		// Throw error to access callstack
-
-		try
-		{
-			throw( new Error( "!" ) );
-		}
-		catch ( err )
-		{
-			return _sys.errorCatch( message, err );
-		}
-	};
-
-	_sys.warning = function ( str )
-	{
-		if ( ( typeof str !== "string" ) || ( str.length < 1 ) )
-		{
-			str = "???";
-		}
-
-		PS.debug( "WARNING: " + str + "\n" );
-	};
-
-	// open()
-	// Open debugger div, clear monitor
-
-	function _open ()
-	{
-		// Show the debug div if not already open
-
-		if ( !_debugging )
-		{
-			_dElement.style.display = "inline";
-			_mElement.value = ""; // clear the monitor
-			_debugging = true;
-			_focused = false;
-		}
-	}
-
-	// PUBLIC API
-
-	// Add line to debugger (does not include CR)
-	// Returns PS.DONE, or PS.ERROR on param error
-
-	ps.debug = function ( textP )
-	{
-		var fn, text, type, e;
-
-		fn = "[PS.debug] ";
-
-		if ( arguments.length > 1 )
-		{
-			return _sys.error( fn + "Too many arguments" );
-		}
-
-		text = textP; // prevent arg mutation
-		type = _typeOf( text );
-		if ( type === "undefined" )
-		{
 			text = "";
-		}
-		else if ( type !== "string" )
+
+			if ( str.search( ".js" ) !== -1 ) // Code lines
+			{
+				index = str.lastIndexOf( "/" ) + 1;
+				name = str.substr( index ).replace( /^[\s\(\)]+|[\s\(\)]+$/g, '' );
+
+				// Remove the column from the line
+
+				if ( name.split( ":" ).length === 3 )
+				{
+					name = name.substr( 0, name.lastIndexOf( ":" ) );
+				}
+				if ( name !== "" )
+				{
+					text += ( "    " + name + "\n" );
+				}
+			}
+			else if ( _sys.debug.SHOW_HTML && ( str.search( ".htm" ) !== -1 ) ) // HTML line
+			{
+				text += ( "\n" + str );
+			}
+
+			return text;
+		},
+
+		_decodeCallstack : function ( str )
 		{
-			text = text.toString();
-		}
+			var lines, len, i, text;
 
-		_open();
+			if ( console && console.log )
+			{
+				console.log( str );
+			}
 
-		if ( text.length > 0 )
+			if ( !str.split )
+			{
+				return str;
+			}
+
+			lines = str.split( '\n' );
+			text = "";
+
+			len = lines.length;
+			for ( i = 0; i < len; i += 1 )
+			{
+				text += _sys.debug._decodeStackLine( lines[i] );
+			}
+
+			return text;
+		},
+
+		// _sys.debug.catchError ( msg, err )
+		// Throw a catch error
+
+		catchError : function ( msg, err )
 		{
-			_mElement.value += text; // append string
-			_mElement.scrollTop = _mElement.scrollHeight; // keep it scrolled down
+			var str;
+
+			// Stop the clock
+
+			_clockActive = false;
+			if ( _footerTimer )
+			{
+				PS.timerStop( _footerTimer );
+			}
+
+			if ( typeof msg !== "string" )
+			{
+				msg = msg.toString();
+			}
+
+			str = "ERROR: " + msg + "\n";
+
+			// set footer
+
+			_footer.style.opacity = 1.0;
+			_footer.innerHTML = str;
+
+			// Only debugger gets call stack
+
+			if ( _sys.debug.SHOW_STACK && err )
+			{
+				str += ( _sys.debug._decodeCallstack( err.stack ) + "\n" );
+			}
+			_sys.debug.append( str );
+
+			if ( _sys.debug.sound )
+			{
+				PS.audioPlay( _DEFAULTS.audio.error_sound, { path : _DEFAULTS.audio.path } );
+			}
+
+			return PS.ERROR;
+		},
+
+		// _sys.debug.error( str )
+		// Append error string to debugger
+
+		error : function ( str )
+		{
+			// Throw error to access call stack
+
+			try
+			{
+				throw( new Error( "!" ) );
+			}
+			catch ( err )
+			{
+				return _sys.debug.catchError( str, err );
+			}
+		},
+
+		// _sys.debug.init ( div, monitor )
+		// Initialize debugger
+		// div : DOM <div> element containing monitor
+		// monitor : DOM <textarea> element for messages
+		// If either element is not specified or of incorrect type,
+		// no debugging messages are shown
+
+		init : function ( div, monitor )
+		{
+			var name;
+
+			_sys.debug.available = false;
+			_sys.debug.active = false;
+			_sys.debug.focus = false;
+
+			// Exit if either element not specified
+
+			if ( !div || !monitor )
+			{
+				return;
+			}
+
+			// Verify <div> element
+
+			name = div.nodeName;
+			if ( !name || ( typeof name !== "string" ) )
+			{
+				return;
+			}
+			name = name.toLowerCase();
+			if ( name !== "div" )
+			{
+				return;
+			}
+
+			// Verify <textarea> element
+
+			name = monitor.nodeName;
+			if ( !name || ( typeof name !== "string" ) )
+			{
+				return;
+			}
+			name = name.toLowerCase();
+			if ( name !== "textarea" )
+			{
+				return;
+			}
+
+			// Make sure monitor is actually a child of div
+
+			if ( monitor.parentNode !== div )
+			{
+				return;
+			}
+
+			// Add onfocus and onblur events to <textarea>
+
+			monitor.onfocus = function ()
+			{
+				_sys.debug.focus = true;
+			};
+
+			monitor.onblur = function ()
+			{
+				_sys.debug.focus = false;
+			};
+
+			_sys.debug.div = div;
+			_sys.debug.monitor = monitor;
+			_sys.debug.available = true;
 		}
-
-		_scrollDown();
-
-		return PS.DONE;
 	};
 
-	// Close debugger div
-	// Returns PS.DONE
+	return ps3;
+} ( PS3ENGINE || {} ) );
 
-	ps.debugClose = function ()
-	{
-		var fn;
-
-		fn = "[PS.debugClose] ";
-
-		if ( arguments.length > 0 )
-		{
-			return _sys.error( fn + "Too many arguments" );
-		}
-
-		_dElement.style.display = "none";
-		_debugging = false;
-
-		return PS.DONE;
-	};
-
-	// Clear monitor
-	// Returns PS.DONE
-
-	ps.debugClear = function ()
-	{
-		var fn;
-
-		fn = "[PS.debugClear] ";
-
-		if ( arguments.length > 0 )
-		{
-			return _error( fn + "Too many arguments" );
-		}
-
-		_mElement.value = "";
-		return PS.DONE;
-	};
-
-	return ps;
-} ( PS ) );

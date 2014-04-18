@@ -1,4 +1,4 @@
-// init.js for Perlenspiel 3
+// template.js for Perlenspiel 3
 
 // The following comments are for JSLint
 /*jslint nomen: true, white: true, vars: true */
@@ -10,7 +10,7 @@ var PS3ENGINE = ( function ( ps3 )
 
 	// Augment _sys with module features
 
-	_sys.init = {
+	_sys.module = {
 
 		// Constants
 
@@ -21,5 +21,3 @@ var PS3ENGINE = ( function ( ps3 )
 
 	return ps3;
 } ( PS3ENGINE || {} ) );
-
-

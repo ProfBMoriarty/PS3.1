@@ -177,7 +177,7 @@ table {
 /* PS3-SPECIFIC STYLING STARTS HERE */
 
 @font-face {
-	font-family: 'Droid';
+	font-family: 'droid';
 	src: url('./fonts/droid.eot');
 	src: url('./fonts/droid.eot?#iefix') format('embedded-opentype'), url('./fonts/droid.woff') format('woff'), url('./fonts/droid.ttf') format('truetype'), url('./fonts/droid.svg#droid') format('svg');
 	font-weight: normal;
@@ -207,7 +207,7 @@ html {
 body {
 	color: #000000;
 	background-color: #FFFFFF;
-	font-family: 'Droid', sans-serif;
+	font-family: 'droid', sans-serif;
 	font-size: 125%; /* new */
 }
 
@@ -218,10 +218,6 @@ body {
 #main {
 	width: 512px;
 	margin: 0 auto;
-}
-
-#init {
-	font-family: 'Droid', sans-serif;
 }
 
 #grid {
