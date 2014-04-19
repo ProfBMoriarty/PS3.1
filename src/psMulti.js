@@ -4335,50 +4335,6 @@ var PS = {}; // Global namespace for public API
 
 					bead.glyph.str = str;
 
-					max = _borderMax( bead );
-
-					if ( bead.border.equal )
-					{
-						if ( bead.border.width > max )
-						{
-							_equalBorder( bead, max );
-						}
-					}
-
-					// Must set all borders equal
-
-					else
-					{
-						top = bead.border.top;
-						if ( top > max )
-						{
-							top = max;
-						}
-
-						left = bead.border.left;
-						if ( left > max )
-						{
-							left = max;
-						}
-
-						bottom = bead.border.bottom;
-						if ( bottom > max )
-						{
-							bottom = max;
-						}
-
-						right = bead.border.right;
-						if ( right > max )
-						{
-							right = max;
-						}
-
-						// set all borders equal to largest border
-
-						max = Math.max( top, left, bottom, right );
-						_equalBorder( bead, max );
-					}
-
 					_makeDirty( bead );
 				}
 
