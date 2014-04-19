@@ -2,32 +2,40 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b12e5ae2-2cfa-458c-9c7e-94910f0a0f24" name="Default" comment="">
-      <change type="DELETED" beforePath="C:\Users\Mark\Documents\GitHub\PS3.1\aq1.0.1.js" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\Mark\Documents\GitHub\PS3.1\aq1.0.2.js" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\Mark\Documents\GitHub\PS3.1\aq1.0.3.js" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\Mark\Documents\GitHub\PS3.1\aq1.0.4.js" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\Mark\Documents\GitHub\PS3.1\aq1.0.5.js" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\Mark\Documents\GitHub\PS3.1\aq1.0.6.js" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\Mark\Documents\GitHub\PS3.1\ps3.0.css" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\Mark\Documents\GitHub\PS3.1\ps3.1.0.js" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\Mark\Documents\GitHub\PS3.1\ps3.1.1.js" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\Mark\Documents\GitHub\PS3.1\ps3.1.2.js" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\Mark\Documents\GitHub\PS3.1\ps3.1.3.js" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\Mark\Documents\GitHub\PS3.1\ps3.1.4.js" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\Mark\Documents\GitHub\PS3.1\ps3.1.5.js" afterPath="" />
-      <change type="MOVED" beforePath="C:\Users\Mark\Documents\GitHub\PS3.1\aq1.0.7.js" afterPath="$PROJECT_DIR$/aq.js" />
-      <change type="MOVED" beforePath="C:\Users\Mark\Documents\GitHub\PS3.1\aq1.0.js" afterPath="$PROJECT_DIR$/aq-min.js" />
-      <change type="MOVED" beforePath="C:\Users\Mark\Documents\GitHub\PS3.1\cover3.1.css" afterPath="$PROJECT_DIR$/cover-style.css" />
-      <change type="MOVED" beforePath="C:\Users\Mark\Documents\GitHub\PS3.1\ps3.0.js" afterPath="$PROJECT_DIR$/ps-min.js" />
-      <change type="MOVED" beforePath="C:\Users\Mark\Documents\GitHub\PS3.1\ps3.1.6.js" afterPath="$PROJECT_DIR$/ps.js" />
-      <change type="MOVED" beforePath="C:\Users\Mark\Documents\GitHub\PS3.1\ps3.1.css" afterPath="$PROJECT_DIR$/ps-style.css" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cover.html" afterPath="$PROJECT_DIR$/cover.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/game.html" afterPath="$PROJECT_DIR$/game.html" />
+      <change type="DELETED" beforePath="C:\Users\Mark\Documents\GitHub\PS3.1\apple-touch-icon.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Mark\Documents\GitHub\PS3.1\aq-min.js" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Mark\Documents\GitHub\PS3.1\aq.js" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Mark\Documents\GitHub\PS3.1\cover-style.css" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Mark\Documents\GitHub\PS3.1\cover.html" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Mark\Documents\GitHub\PS3.1\cover.js" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Mark\Documents\GitHub\PS3.1\cover.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Mark\Documents\GitHub\PS3.1\favicon.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Mark\Documents\GitHub\PS3.1\fonts\droid.eot" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Mark\Documents\GitHub\PS3.1\fonts\droid.svg" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Mark\Documents\GitHub\PS3.1\fonts\droid.ttf" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Mark\Documents\GitHub\PS3.1\fonts\droid.woff" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Mark\Documents\GitHub\PS3.1\game.html" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Mark\Documents\GitHub\PS3.1\game.js" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Mark\Documents\GitHub\PS3.1\js\debug.js" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Mark\Documents\GitHub\PS3.1\js\init.js" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Mark\Documents\GitHub\PS3.1\js\sys.js" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Mark\Documents\GitHub\PS3.1\js\template.js" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Mark\Documents\GitHub\PS3.1\mgame.html" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Mark\Documents\GitHub\PS3.1\move.html" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Mark\Documents\GitHub\PS3.1\move.js" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Mark\Documents\GitHub\PS3.1\pk.html" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Mark\Documents\GitHub\PS3.1\pk.js" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Mark\Documents\GitHub\PS3.1\ps-min.js" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Mark\Documents\GitHub\PS3.1\ps-style.css" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Mark\Documents\GitHub\PS3.1\ps.js" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Mark\Documents\GitHub\PS3.1\ps3.0.jstd" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Mark\Documents\GitHub\PS3.1\ps3.0.test.js" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Mark\Documents\GitHub\PS3.1\ps3.1.js" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Mark\Documents\GitHub\PS3.1\ps3.2.0.js" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Mark\Documents\GitHub\PS3.1\test.html" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Mark\Documents\GitHub\PS3.1\test1.js" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\Mark\Documents\GitHub\PS3.1\test2.js" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" afterPath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mgame.html" afterPath="$PROJECT_DIR$/mgame.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/move.html" afterPath="$PROJECT_DIR$/move.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ps3.0.jstd" afterPath="$PROJECT_DIR$/ps3.0.jstd" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="PS3.1.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -54,15 +62,6 @@
         <entry file="file://$PROJECT_DIR$/site/download.html">
           <provider selected="true" editor-type-id="text-editor">
             <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="2856">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="sys.js" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/js/sys.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="2380">
               <folding />
             </state>
           </provider>
@@ -95,10 +94,28 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="cover.html" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="cover.html" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/devkit/cover.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="28" column="60" selection-start="1194" selection-end="1194" vertical-scroll-proportion="0.72894335" vertical-offset="0" max-vertical-offset="952">
+            <state line="14" column="60" selection-start="625" selection-end="625" vertical-scroll-proportion="-9.153846" vertical-offset="0" max-vertical-offset="952">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ps3.0.test.js" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/unit_tests/ps3.0.test.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="19669">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ps3.0.jstd" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/unit_tests/ps3.0.jstd">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="8" column="20" selection-start="116" selection-end="116" vertical-scroll-proportion="0.20029455" vertical-offset="0" max-vertical-offset="679">
               <folding />
             </state>
           </provider>
@@ -122,42 +139,6 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/site/examples/paint/paint.js" />
-        <option value="$PROJECT_DIR$/site/examples/splash/splash.js" />
-        <option value="$PROJECT_DIR$/site/examples/rain/rain.js" />
-        <option value="$PROJECT_DIR$/site/examples/paint/cover.html" />
-        <option value="$PROJECT_DIR$/site/examples.html" />
-        <option value="$PROJECT_DIR$/site/constants.html" />
-        <option value="$PROJECT_DIR$/test.html" />
-        <option value="$PROJECT_DIR$/test1.js" />
-        <option value="$PROJECT_DIR$/test2.js" />
-        <option value="$PROJECT_DIR$/js/tick.js" />
-        <option value="$PROJECT_DIR$/js/status.js" />
-        <option value="$PROJECT_DIR$/js/fader.js" />
-        <option value="$PROJECT_DIR$/js/audio.js" />
-        <option value="$PROJECT_DIR$/js/sprite.js" />
-        <option value="$PROJECT_DIR$/js/path.js" />
-        <option value="$PROJECT_DIR$/js/image.js" />
-        <option value="$PROJECT_DIR$/js/main.js" />
-        <option value="$PROJECT_DIR$/js/util.js" />
-        <option value="$PROJECT_DIR$/js/clock.js" />
-        <option value="$PROJECT_DIR$/js/color.js" />
-        <option value="$PROJECT_DIR$/js/bead.js" />
-        <option value="$PROJECT_DIR$/js/grid.js" />
-        <option value="$PROJECT_DIR$/site/paths.html" />
-        <option value="users.wpi.edu/~bmoriarty/ps/ps3.1.js" />
-        <option value="$PROJECT_DIR$/whither.html" />
-        <option value="$PROJECT_DIR$/whither.js" />
-        <option value="$PROJECT_DIR$/ps3.1.1.js" />
-        <option value="$PROJECT_DIR$/ps3.2.0.js" />
-        <option value="$PROJECT_DIR$/aq1.0.3.js" />
-        <option value="$PROJECT_DIR$/aq1.0.js" />
-        <option value="$PROJECT_DIR$/ps3.1.5.js" />
-        <option value="$PROJECT_DIR$/pixi/pixitest.html" />
-        <option value="$PROJECT_DIR$/site/beads.html" />
-        <option value="$PROJECT_DIR$/todo.txt" />
-        <option value="$PROJECT_DIR$/pixi/pixitest.js" />
-        <option value="$PROJECT_DIR$/three/3test.html" />
         <option value="$PROJECT_DIR$/js/sys.js" />
         <option value="$PROJECT_DIR$/js/debug.js" />
         <option value="$PROJECT_DIR$/js/init.js" />
@@ -173,6 +154,7 @@
         <option value="$PROJECT_DIR$/ps3.1.css" />
         <option value="$PROJECT_DIR$/game.html" />
         <option value="$PROJECT_DIR$/game.js" />
+        <option value="$PROJECT_DIR$/unit_tests/ps3.0.jstd" />
       </list>
     </option>
   </component>
@@ -227,6 +209,20 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="PS3.1" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="PS3.1" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="unit_tests" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
         </subPane>
       </pane>
     </panes>
@@ -252,13 +248,8 @@
       <recent name="C:\Users\bmoriarty\Dropbox\git\PS3.1\devkit" />
     </key>
   </component>
-  <component name="RunManager" selected="JsTestDriver.ps3.0.jstd">
+  <component name="RunManager" selected="JsTestDriver.alpha1.0.3.test.js">
     <configuration default="false" name="game.html" type="JavascriptDebugType" factoryName="JavaScript Debug" singleton="true" temporary="true" engineId="firefox" uri="http://localhost:63342/PS3.1/game.html">
-      <RunnerSettings RunnerId="JavascriptDebugRunner" />
-      <ConfigurationWrapper RunnerId="JavascriptDebugRunner" />
-      <method />
-    </configuration>
-    <configuration default="false" name="test.html" type="JavascriptDebugType" factoryName="JavaScript Debug" singleton="true" temporary="true" engineId="firefox" uri="http://localhost:63342/PS3.1/test.html">
       <RunnerSettings RunnerId="JavascriptDebugRunner" />
       <ConfigurationWrapper RunnerId="JavascriptDebugRunner" />
       <method />
@@ -276,6 +267,17 @@
     <configuration default="false" name="ps3.0.jstd" type="JSTestDriver:ConfigurationType" factoryName="JsTestDriver" temporary="true">
       <setting name="configLocationType" value="CONFIG_FILE" />
       <setting name="settingsFile" value="$PROJECT_DIR$/ps3.0.jstd" />
+      <setting name="serverType" value="INTERNAL" />
+      <setting name="preferredDebugBrowser" value="CHROME" />
+      <RunnerSettings RunnerId="JsTestDriverClientRunner" />
+      <ConfigurationWrapper RunnerId="JsTestDriverClientRunner" />
+      <method />
+    </configuration>
+    <configuration default="false" name="alpha1.0.3.test.js" type="JSTestDriver:ConfigurationType" factoryName="JsTestDriver" temporary="true">
+      <setting name="configLocationType" value="JS_FILE" />
+      <setting name="configType" value="FILE_PATH" />
+      <setting name="settingsFile" value="" />
+      <setting name="jsFile" value="$PROJECT_DIR$/test/alpha1.0.3.test.js" />
       <setting name="serverType" value="INTERNAL" />
       <setting name="preferredDebugBrowser" value="CHROME" />
       <RunnerSettings RunnerId="JsTestDriverClientRunner" />
@@ -324,18 +326,18 @@
     <list size="6">
       <item index="0" class="java.lang.String" itemvalue="JavaScript Debug.Debug Firefox" />
       <item index="1" class="java.lang.String" itemvalue="JavaScript Debug.game.html" />
-      <item index="2" class="java.lang.String" itemvalue="JavaScript Debug.test.html" />
-      <item index="3" class="java.lang.String" itemvalue="JavaScript Debug.whither.html" />
-      <item index="4" class="java.lang.String" itemvalue="JavaScript Debug.pixitest.html" />
-      <item index="5" class="java.lang.String" itemvalue="JsTestDriver.ps3.0.jstd" />
+      <item index="2" class="java.lang.String" itemvalue="JavaScript Debug.whither.html" />
+      <item index="3" class="java.lang.String" itemvalue="JavaScript Debug.pixitest.html" />
+      <item index="4" class="java.lang.String" itemvalue="JsTestDriver.ps3.0.jstd" />
+      <item index="5" class="java.lang.String" itemvalue="JsTestDriver.alpha1.0.3.test.js" />
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="JsTestDriver.ps3.0.jstd" />
-        <item index="1" class="java.lang.String" itemvalue="JavaScript Debug.game.html" />
-        <item index="2" class="java.lang.String" itemvalue="JavaScript Debug.pixitest.html" />
-        <item index="3" class="java.lang.String" itemvalue="JavaScript Debug.whither.html" />
-        <item index="4" class="java.lang.String" itemvalue="JavaScript Debug.test.html" />
+        <item index="0" class="java.lang.String" itemvalue="JsTestDriver.alpha1.0.3.test.js" />
+        <item index="1" class="java.lang.String" itemvalue="JsTestDriver.ps3.0.jstd" />
+        <item index="2" class="java.lang.String" itemvalue="JavaScript Debug.game.html" />
+        <item index="3" class="java.lang.String" itemvalue="JavaScript Debug.pixitest.html" />
+        <item index="4" class="java.lang.String" itemvalue="JavaScript Debug.whither.html" />
       </list>
     </recent_temporary>
   </component>
@@ -356,7 +358,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1186" extended-state="6" />
-    <editor active="false" />
+    <editor active="true" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
@@ -366,7 +368,7 @@
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3975678" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="true" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="true" content_ui="tabs" />
-      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3298479" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3298479" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="JsTestDriver Server" active="false" anchor="bottom" auto_hide="true" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3298479" sideWeight="0.5" order="10" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -427,48 +429,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/pixi/pixitest.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="0" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/three/3test.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="0" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/js/debug.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="0" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/js/template.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="0" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/js/init.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="0" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/mgame.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="0" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/js/sys.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ps3.1.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="0" />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/site/download.html">
       <provider selected="true" editor-type-id="text-editor">
         <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="0">
@@ -502,19 +462,23 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/game.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="0" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/game.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="0" />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/devkit/cover.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="28" column="60" selection-start="1194" selection-end="1194" vertical-scroll-proportion="0.72894335" vertical-offset="0" max-vertical-offset="952">
+        <state line="14" column="60" selection-start="625" selection-end="625" vertical-scroll-proportion="-9.153846" vertical-offset="0" max-vertical-offset="952">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/unit_tests/ps3.0.test.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="19669">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/unit_tests/ps3.0.jstd">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="8" column="20" selection-start="116" selection-end="116" vertical-scroll-proportion="0.20029455" vertical-offset="0" max-vertical-offset="679">
           <folding />
         </state>
       </provider>
