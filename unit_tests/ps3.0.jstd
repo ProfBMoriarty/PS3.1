@@ -1,0 +1,9 @@
+load:
+  - ../src/ps.js
+  - ../src/aq.js
+test:
+  - ps3.0.test.js
+
+serve:
+  - ../src/ps-style.css
+  - ../src/game.html
