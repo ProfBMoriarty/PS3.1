@@ -1,9 +1,9 @@
 load:
-  - ps3.0.js
-  - aq1.0.js
+  - ps.js
+  - aq.js
 test:
   - ps3.0.test.js
 
 serve:
-  - ps3.0.css
+  - ps-style.css
   - game.html
