@@ -1,42 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="b12e5ae2-2cfa-458c-9c7e-94910f0a0f24" name="Default" comment="">
-      <change type="DELETED" beforePath="C:\Users\Mark\Documents\GitHub\PS3.1\apple-touch-icon.png" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\Mark\Documents\GitHub\PS3.1\aq-min.js" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\Mark\Documents\GitHub\PS3.1\aq.js" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\Mark\Documents\GitHub\PS3.1\cover-style.css" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\Mark\Documents\GitHub\PS3.1\cover.html" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\Mark\Documents\GitHub\PS3.1\cover.js" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\Mark\Documents\GitHub\PS3.1\cover.png" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\Mark\Documents\GitHub\PS3.1\favicon.png" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\Mark\Documents\GitHub\PS3.1\fonts\droid.eot" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\Mark\Documents\GitHub\PS3.1\fonts\droid.svg" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\Mark\Documents\GitHub\PS3.1\fonts\droid.ttf" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\Mark\Documents\GitHub\PS3.1\fonts\droid.woff" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\Mark\Documents\GitHub\PS3.1\game.html" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\Mark\Documents\GitHub\PS3.1\game.js" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\Mark\Documents\GitHub\PS3.1\js\debug.js" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\Mark\Documents\GitHub\PS3.1\js\init.js" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\Mark\Documents\GitHub\PS3.1\js\sys.js" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\Mark\Documents\GitHub\PS3.1\js\template.js" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\Mark\Documents\GitHub\PS3.1\mgame.html" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\Mark\Documents\GitHub\PS3.1\move.html" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\Mark\Documents\GitHub\PS3.1\move.js" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\Mark\Documents\GitHub\PS3.1\pk.html" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\Mark\Documents\GitHub\PS3.1\pk.js" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\Mark\Documents\GitHub\PS3.1\ps-min.js" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\Mark\Documents\GitHub\PS3.1\ps-style.css" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\Mark\Documents\GitHub\PS3.1\ps.js" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\Mark\Documents\GitHub\PS3.1\ps3.0.jstd" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\Mark\Documents\GitHub\PS3.1\ps3.0.test.js" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\Mark\Documents\GitHub\PS3.1\ps3.1.js" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\Mark\Documents\GitHub\PS3.1\ps3.2.0.js" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\Mark\Documents\GitHub\PS3.1\test.html" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\Mark\Documents\GitHub\PS3.1\test1.js" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\Mark\Documents\GitHub\PS3.1\test2.js" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" afterPath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" />
-    </list>
+    <list default="true" id="b12e5ae2-2cfa-458c-9c7e-94910f0a0f24" name="Default" comment="" />
     <ignored path="PS3.1.iws" />
     <ignored path=".idea/workspace.xml" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -103,7 +68,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ps3.0.test.js" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="ps3.0.test.js" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/unit_tests/ps3.0.test.js">
           <provider selected="true" editor-type-id="text-editor">
             <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="19669">
@@ -112,10 +77,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ps3.0.jstd" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="ps3.0.jstd" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/unit_tests/ps3.0.jstd">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="8" column="20" selection-start="116" selection-end="116" vertical-scroll-proportion="0.20029455" vertical-offset="0" max-vertical-offset="679">
+            <state line="8" column="20" selection-start="116" selection-end="116" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="238">
               <folding />
             </state>
           </provider>
@@ -469,16 +434,16 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/unit_tests/ps3.0.test.js">
+    <entry file="file://$PROJECT_DIR$/unit_tests/ps3.0.jstd">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="19669">
+        <state line="8" column="20" selection-start="116" selection-end="116" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="238">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/unit_tests/ps3.0.jstd">
+    <entry file="file://$PROJECT_DIR$/unit_tests/ps3.0.test.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="8" column="20" selection-start="116" selection-end="116" vertical-scroll-proportion="0.20029455" vertical-offset="0" max-vertical-offset="679">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="19669">
           <folding />
         </state>
       </provider>
