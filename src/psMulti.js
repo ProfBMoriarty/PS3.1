@@ -1,5 +1,4 @@
-
-// ps3.2.0.js for Perlenspiel 3.2
+// ps3.1.6.js for Perlenspiel 3.1
 // Remember to update version number in _system!
 
 /*
@@ -43,7 +42,8 @@ var PS = {}; // Global namespace for public API
 		obj.EMPTY = "PS.EMPTY";
 		obj.UNEQUAL = "PS.UNEQUAL";
 		obj.GRID = "PS.GRID";
-		obj.STATUS = "PS.STATUS";
+		obj.HTML5_AUDIO = "PS.HTML5_AUDIO";
+		obj.WEB_AUDIO = "PS.WEB_AUDIO";
 
 		obj.SPRITE_TOUCH = "PS.SPRITE_TOUCH";
 		obj.SPRITE_OVERLAP = "PS.SPRITE_OVERLAP";
@@ -70,6 +70,7 @@ var PS = {}; // Global namespace for public API
 
 		// Key constants
 
+		obj.KEY_ENTER = 13;
 		obj.KEY_TAB = 9;
 		obj.KEY_ESCAPE = 27;
 
@@ -146,21 +147,31 @@ var PS = {}; // Global namespace for public API
 
 			// DOM element ids
 
-			var _OUTER_CLASS 	= "outer";
-			var _MAIN_CLASS 	= "main";
-			var _DEBUG_CLASS 	= "debug";
-			var _STATUS_CLASS 	= "status";
-			var _GRID_CLASS 	= "grid";
-			var _FOOTER_CLASS 	= "footer";
-			var _MONITOR_CLASS	= "monitor";
+			var _OUTER_CLASS = "outer";
+			var _MAIN_CLASS = "main";
+			var _INIT_CLASS = "init";
+			var _DEBUG_CLASS = "debug";
+			var _STATUS_P_CLASS = "stsp";
+			var _INPUT_P_CLASS = "inp";
+			var _INPUT_LABEL_CLASS = "inlabel";
+			var _INPUT_SPAN_CLASS = "inspan";
+			var _INPUT_BOX_CLASS = "inbox";
+			var _GRID_CLASS = "grid";
+			var _FOOTER_CLASS = "footer";
+			var _MONITOR_CLASS = "monitor";
 
-			var _OUTER_ID	= _NAMESPACE + "-" + _OUTER_CLASS;
-			var _MAIN_ID	= _NAMESPACE + "-" + _MAIN_CLASS;
-			var _DEBUG_ID	= _NAMESPACE + "-" + _DEBUG_CLASS;
-			var _STATUS_ID	= _NAMESPACE + "-" + _STATUS_CLASS;
-			var _GRID_ID	= _NAMESPACE + "-" + _GRID_CLASS;
-			var _FOOTER_ID	= _NAMESPACE + "-" + _FOOTER_CLASS;
-			var _MONITOR_ID	= _NAMESPACE + "-" + _MONITOR_CLASS;
+			var _OUTER_ID 		= _NAMESPACE + "-" + _OUTER_CLASS;
+			var _MAIN_ID 		= _NAMESPACE + "-" + _MAIN_CLASS;
+			var _INIT_ID 		= _NAMESPACE + "-" + _INIT_CLASS;
+			var _DEBUG_ID 		= _NAMESPACE + "-" + _DEBUG_CLASS;
+			var _STATUS_P_ID 	= _NAMESPACE + "-" + _STATUS_P_CLASS;
+			var _INPUT_P_ID 	= _NAMESPACE + "-" + _INPUT_P_CLASS;
+			var _INPUT_LABEL_ID = _NAMESPACE + "-" + _INPUT_LABEL_CLASS;
+			var _INPUT_SPAN_ID 	= _NAMESPACE + "-" + _INPUT_SPAN_CLASS;
+			var _INPUT_BOX_ID 	= _NAMESPACE + "-" + _INPUT_BOX_CLASS;
+			var _GRID_ID 		= _NAMESPACE + "-" + _GRID_CLASS;
+			var _FOOTER_ID 		= _NAMESPACE + "-" + _FOOTER_CLASS;
+			var _MONITOR_ID 	= _NAMESPACE + "-" + _MONITOR_CLASS;
 
 			var _LOGIN_ID = "login";
 			var _LOGIN_EMAIL_ID = "login_em";
@@ -491,13 +502,6 @@ var PS = {}; // Global namespace for public API
 				}
 
 				return type;
-			}
-
-			// _appendText ( text, element )
-			// Append [text] to DOM [element]
-			function _appendText(text, element) {
-				var e = document.createTextNode(text);
-				element.appendChild(e);
 			}
 
 			// _isBoolean ( val )
@@ -2351,7 +2355,7 @@ var PS = {}; // Global namespace for public API
 						}
 						catch ( e2 )
 						{
-							return _errorCatch( "PSEngine.touch() failed [" + e2.message + "]", e2 );
+							return _errorCatch( "PS.touch() failed [" + e2.message + "]", e2 );
 						}
 					}
 
@@ -2383,7 +2387,7 @@ var PS = {}; // Global namespace for public API
 						}
 						catch ( err )
 						{
-							return _errorCatch( "PSEngine.release() failed [" + err.message + "]", err );
+							return _errorCatch( "PS.release() failed [" + err.message + "]", err );
 						}
 					}
 				}
@@ -2412,7 +2416,7 @@ var PS = {}; // Global namespace for public API
 						}
 						catch ( err )
 						{
-							return _errorCatch( "PSEngine.enter() failed [" + err.message + "]", err );
+							return _errorCatch( "PS.enter() failed [" + err.message + "]", err );
 						}
 					}
 				}
@@ -2439,7 +2443,7 @@ var PS = {}; // Global namespace for public API
 						}
 						catch ( err )
 						{
-							return _errorCatch( "PSEngine.exit() failed [" + err.message + "]", err );
+							return _errorCatch( "PS.exit() failed [" + err.message + "]", err );
 						}
 					}
 				}
@@ -2464,7 +2468,7 @@ var PS = {}; // Global namespace for public API
 					}
 					catch ( err )
 					{
-						return _errorCatch( "PSEngine.exitGrid() failed [" + err.message + "]", err );
+						return _errorCatch( "PS.exitGrid() failed [" + err.message + "]", err );
 					}
 				}
 				return PS.DONE;
@@ -2945,7 +2949,7 @@ var PS = {}; // Global namespace for public API
 							}
 							catch ( err )
 							{
-								_errorCatch( fn + "PSEngine.keyDown failed [" + err.message + "]", err );
+								_errorCatch( fn + "PS.keyDown failed [" + err.message + "]", err );
 							}
 						}
 					}
@@ -2980,7 +2984,7 @@ var PS = {}; // Global namespace for public API
 								}
 								catch ( err2 )
 								{
-									_errorCatch( fn + "PSEngine.keyDown failed [" + err2.message + "]", err2 );
+									_errorCatch( fn + "PS.keyDown failed [" + err2.message + "]", err2 );
 								}
 							}
 						}
@@ -3061,7 +3065,7 @@ var PS = {}; // Global namespace for public API
 						}
 						catch ( err )
 						{
-							_errorCatch( fn + "PSEngine.keyUp failed [" + err.message + "]", err );
+							_errorCatch( fn + "PS.keyUp failed [" + err.message + "]", err );
 						}
 					}
 
@@ -3091,7 +3095,7 @@ var PS = {}; // Global namespace for public API
 								}
 								catch ( err2 )
 								{
-									_errorCatch( fn + "PSEngine.keyDown failed [" + err2.message + "]", err2 );
+									_errorCatch( fn + "PS.keyDown failed [" + err2.message + "]", err2 );
 								}
 							}
 						}
@@ -3154,7 +3158,7 @@ var PS = {}; // Global namespace for public API
 					}
 					catch ( err )
 					{
-						_errorCatch( "PSEngine.input() failed [" + err.message + "]", err );
+						_errorCatch( "PS.input() failed [" + err.message + "]", err );
 					}
 				}
 
@@ -5119,10 +5123,10 @@ var PS = {}; // Global namespace for public API
 				}
 				catch ( err )
 				{
-					_errorCatch( "[PSEngine.imageLoad] .exec function failed [" + err.message + "]", err );
+					_errorCatch( "[PS.imageLoad] .exec function failed [" + err.message + "]", err );
 				}
 
-				_error( "[PSEngine.imageLoad] Error loading " + image.src );
+				_error( "[PS.imageLoad] Error loading " + image.src );
 			}
 
 			// Return an image table from an imageData file
@@ -5294,7 +5298,7 @@ var PS = {}; // Global namespace for public API
 					}
 					catch ( err )
 					{
-						_errorCatch( "[PSEngine.imageLoad] .exec function failed [" + err.message + "]", err );
+						_errorCatch( "[PS.imageLoad] .exec function failed [" + err.message + "]", err );
 					}
 				}
 			}
@@ -6821,549 +6825,70 @@ var PS = {}; // Global namespace for public API
 				return [x1, y1];
 			}
 
-			// NETWORKING
+			// Status line
 
-			var _net = {
+			function _statusOut ( str )
+			{
+				_status.inputP.style.display = "none"; // hide input paragraph
+				_keysActivate(); // turn on key events
+				_status.statusNode.nodeValue = _status.text = str; // set status text
+				_status.statusP.style.display = "block"; // show status paragraph
+			}
 
-				signup : false, // true if in signup mode
-				recover : false, // true if in recovery mode
+			// _inputKeyDown ( event )
+			// Input keydown handler
 
-				div : null, // login screen div
-				emPrompt : null, //email prompt line
-				emailLine : null, // email label line
-				email : null, // email input element
-				pwPrompt1 : null, // pw1 prompt line
-				pwLine1 : null, // pw1 label line
-				pw1 : null, // pw1 input element
-				pwPrompt2 : null, // pw2 prompt line
-				pwLine2 : null, // pw2 label line
-				pw2 : null, // pw2 input element
-				accountLine : null, // new account link
-				recoverLine : null, // recover link
+			function _inputKeyDown ( event )
+			{
+				var key, val, exec;
 
-				emailText : null, // email text, null if none
-				pwText1 : null, // password 1 text, null if none
-				pwText2 : null, // password 2 text, null if none
-
-				// _net.reset()
-				// Resets all fields and values
-
-				reset : function ()
+				key = event.which; // correct
+				if ( !key )
 				{
-					_net.email.value = "";
-					_net.pw1.value = "";
-					_net.pw2.value = "";
-					_net.emailText = null;
-					_net.pwText1 = null;
-					_net.pwText2 = null;
-					_net.email.focus();
-				},
-
-				// _net.validMail ( str )
-				// Returns false if email string is obviously invalid, else true
-				// This can be refined later
-
-				validMail : function ( str )
-				{
-					var len, i, j;
-
-					len = str.length;
-					if ( len > 5 ) // minimum reasonable length
-					{
-						i = str.indexOf( '@' );
-						if ( i > 0 ) // must have @ at or beyond 1
-						{
-							j = str.indexOf( '.' );
-							if ( j > i ) // . must come after @
-							{
-								return true;
-							}
-						}
-					}
-
-					return false;
-				},
-
-				// _net.validPW( str )
-				// Returns true if password string is valid, else false
-				// Must be at least 8 characters, a-z, A-Z, 0-9 or underscore
-
-				validPW : function ( str )
-				{
-					var len, i, c;
-
-					len = str.length;
-					if ( len < 8 )
-					{
-						return false;
-					}
-
-					for ( i = 0; i < len; i += 1 )
-					{
-						c = str.charAt( i );
-						if( ( c !== '_' ) && /[^a-zA-Z0-9]/.test( c ) )
-						{
-							return false;
-						}
-					}
-					return true;
-				},
-
-				// _net.done()
-				// Called when login is complete
-
-				done : function ()
-				{
-					PSEngine.statusColor( PS.COLOR_BLACK );
-					PSEngine.statusText( "Logged in!" );
-				},
-
-				// _net.createAccount( email, pw )
-				// Create a new account using email & pw1
-				// Returns PS.DONE on success, else PS.ERROR
-
-				createAccount : function ( email, pw )
-				{
-					return PS.DONE;
-				},
-
-				// _net.recoverAccount( email )
-				// Recover an account using email
-				// Returns PS.DONE on success, else PS.ERROR
-
-				recoverAccount : function ( email )
-				{
-					return PS.DONE;
-				},
-
-				// _net.mailKeyDown ( event )
-				// Email input keydown handler
-
-				mailKeyDown : function ( event )
-				{
-					var key, val, result;
-
-					key = event.which; // correct
-					if ( !key )
-					{
-						key = event.keyCode; // IE
-					}
-					if ( ( key === PS.KEY_ENTER ) || ( key === PS.KEY_TAB ) )
-					{
-						val = _net.email.value;
-						if ( _net.validMail ( val ) )
-						{
-							_net.emailText = val;
-							if ( _net.recover ) // recovery mode
-							{
-								result = _net.recoverAccount( _net.emailText );
-								if ( result === PS.DONE )
-								{
-									_net.doLogin();
-								}
-								else
-								{
-									_net.reset();
-								}
-							}
-							else
-							{
-								if ( _net.pwText1 )
-								{
-									if ( _net.signup )
-									{
-										if ( _net.pwText2 )
-										{
-											result = _net.createAccount( _net.emailText, _net.pwText1 );
-											if ( result === PS.DONE )
-											{
-												_net.doLogin();
-											}
-											else
-											{
-												_net.reset();
-											}
-										}
-										else
-										{
-											_net.pw2.value = "";
-											_net.pw2.focus();
-											PSEngine.statusColor( PS.COLOR_BLACK );
-											PSEngine.statusText( "Re-enter password" );
-										}
-									}
-									else
-									{
-										_net.done();
-									}
-								}
-								else
-								{
-									_net.pw1.value = "";
-									_net.pw1.focus();
-									PSEngine.statusColor( PS.COLOR_BLACK );
-									PSEngine.statusText( "Enter password" );
-								}
-							}
-						}
-						else
-						{
-							_net.emailText = null;
-							_net.email.value = "";
-							_net.email.focus();
-							PSEngine.statusColor( PS.COLOR_RED );
-							PSEngine.statusText( "Invalid email address" );
-							PSEngine.audioPlay( "fx_uhoh" );
-						}
-						return _endEvent( event );
-					}
-					return true; // must return true
-				},
-
-				// _net.pwKeyDown1 ( event )
-				// Password 1 input keydown handler
-
-				pwKeyDown1 : function ( event )
-				{
-					var key, val, result;
-
-					key = event.which; // correct
-					if ( !key )
-					{
-						key = event.keyCode; // IE
-					}
-					if ( ( key === PS.KEY_ENTER ) || ( key === PS.KEY_TAB ) )
-					{
-						val = _net.pw1.value;
-						if ( _net.validPW ( val ) )
-						{
-							_net.pwText1 = val;
-							if ( _net.emailText )
-							{
-								if ( _net.signup )
-								{
-									if ( val === _net.pwText2 )
-									{
-										result = _net.createAccount( _net.emailText, _net.pwText1 );
-										if ( result === PS.DONE )
-										{
-											_net.doLogin();
-										}
-										else
-										{
-											_net.reset();
-										}
-									}
-									else
-									{
-										_net.pw2.value = "";
-										_net.pw2.focus();
-										PSEngine.statusColor( PS.COLOR_BLACK );
-										PSEngine.statusText( "Re-enter password" );
-									}
-								}
-								else
-								{
-									_net.done();
-								}
-							}
-							else
-							{
-								_net.email.value = "";
-								_net.email.focus();
-								PSEngine.statusColor( PS.COLOR_BLACK );
-								PSEngine.statusText( "Enter email address" );
-							}
-						}
-						else
-						{
-							_net.pwText1 = null;
-							_net.pw1.value = "";
-							_net.pw1.focus();
-							PSEngine.statusColor( PS.COLOR_RED );
-							PSEngine.statusText( "Invalid password" );
-							PSEngine.audioPlay( "fx_uhoh" );
-						}
-						return _endEvent( event );
-					}
-					return true; // must return true
-				},
-
-				// _net.pwKeyDown2 ( event )
-				// Password 2 input keydown handler
-
-				pwKeyDown2 : function ( event )
-				{
-					var key, val, result;
-
-					key = event.which; // correct
-					if ( !key )
-					{
-						key = event.keyCode; // IE
-					}
-					if ( ( key === PS.KEY_ENTER ) || ( key === PS.KEY_TAB ) )
-					{
-						val = _net.pw2.value;
-						if ( _net.validPW ( val ) && ( val === _net.pwText1 ) )
-						{
-							_net.pwText2 = val;
-							if ( _net.emailText )
-							{
-								result = _net.createAccount( _net.emailText, _net.pwText1 );
-								if ( result === PS.DONE )
-								{
-									_net.doLogin();
-								}
-								else
-								{
-									_net.reset();
-								}
-							}
-							else
-							{
-								_net.email.value = "";
-								_net.email.focus();
-								PSEngine.statusColor( PS.COLOR_BLACK );
-								PSEngine.statusText( "Enter email address" );
-							}
-						}
-						else
-						{
-							_net.pwText2 = null;
-							_net.pw2.value = "";
-							_net.pw2.focus();
-							PSEngine.statusColor( PS.COLOR_RED );
-							PSEngine.statusText( "Passwords do not match" );
-							PSEngine.audioPlay( "fx_uhoh" );
-						}
-						return _endEvent( event );
-					}
-					return true; // must return true
-				},
-
-				//Mousedown event for signup link
-
-				accountDown : function ( event )
-				{
-					_net.doSignup();
-					return _endEvent( event );
-				},
-
-				// Mousedown event for recover link
-
-				recoverDown : function ( event )
-				{
-					_net.doRecover();
-					return _endEvent( event );
-				},
-
-				doLogin : function ()
-				{
-					// Hide/disable elements
-
-					_net.emailLine.style.marginTop = "0.5em";
-					_net.emailLine.style.marginBottom = "0.5em";
-
-					_net.emPrompt.style.display = "none";
-					_net.pwPrompt1.style.display = "none";
-					_net.pwPrompt2.style.display = "none";
-					_net.pwLine2.style.display = "none";
-
-					// Show/enable login elements
-
-					_net.pwLine1.style.display = "block";
-					_net.accountLine.style.display = "block";
-					_net.recoverLine.style.display = "block";
-
-					PSEngine.statusColor( PS.COLOR_BLACK );
-					PSEngine.statusText( "User account login" );
-					_net.div.style.display = "block";
-
-					_net.signup = false; // disable signup mode
-					_net.recover = false; // disable recovery mode
-					_net.reset();
-				},
-
-				doSignup : function ()
-				{
-					_net.emailLine.style.marginTop = "0";
-					_net.emailLine.style.marginBottom = "0";
-
-					// Hide/disable login elements
-
-					_net.accountLine.style.display = "none";
-					_net.recoverLine.style.display = "none";
-
-					// Show/enable signup elements
-
-					_net.emPrompt.style.display = "block";
-					_net.pwPrompt1.style.display = "block";
-					_net.pwLine1.style.display = "block";
-					_net.pwPrompt2.style.display = "block";
-					_net.pwLine2.style.display = "block";
-
-					PSEngine.statusColor( PS.COLOR_BLACK );
-					PSEngine.statusText( "Create new user account" );
-					_net.div.style.display = "block";
-
-					_net.signup = true; // enable signup mode
-					_net.recover = false; // disable recovery mode
-					_net.reset();
-				},
-
-				doRecover : function ()
-				{
-					_net.emailLine.style.marginTop = "0.5em";
-					_net.emailLine.style.marginBottom = "0.5em";
-
-					// Hide/disable elements
-
-					_net.emPrompt.style.display = "none";
-					_net.pwPrompt1.style.display = "none";
-					_net.pwLine1.style.display = "none";
-					_net.pwPrompt2.style.display = "none";
-					_net.pwLine2.style.display = "none";
-					_net.accountLine.style.display = "none";
-					_net.recoverLine.style.display = "none";
-
-					PSEngine.statusColor( PS.COLOR_BLACK );
-					PSEngine.statusText( "Recover user password" );
-					_net.div.style.display = "block";
-
-					_net.signup = false; // disable signup mode
-					_net.recover = true; // enable recovery mode
-					_net.reset();
-				},
-
-				init : function ()
-				{
-					var newline, div, line, e;
-
-					newline = function ( str )
-					{
-						var p, span;
-
-						p = document.createElement( "p" );
-						span = document.createElement( "span" );
-						span.className = "label";
-						span.innerHTML = str + "&nbsp;";
-						p.appendChild( span );
-						return p;
-					};
-
-					// ****************
-					// CREATE LOGIN DIV
-					// ****************
-
-					div = document.createElement( "div" );
-					div.id = _LOGIN_ID;
-					div.style.display = "none";
-					_net.div = div;
-
-					// Create server ID line
-
-					line = newline( "" );
-					_appendText( "Server: PS1", line );
-					div.appendChild( line );
-
-					// Create email prompt line
-
-					_net.emPrompt = line = newline( "" );
-					e = document.createElement( "span" );
-					e.className = "prompt";
-					e.innerHTML = "Enter valid email address";
-					line.appendChild( e );
-					div.appendChild( line );
-
-					// Create email entry line
-
-					_net.emailLine = line = newline( "Email:" );
-					_net.email = e = document.createElement( "input" );
-					e.id = _LOGIN_EMAIL_ID;
-					e.type = "text";
-					e.className = "email";
-					e.tabindex = 0;
-					e.addEventListener( "keydown", _net.mailKeyDown, false );
-					line.appendChild( e );
-					div.appendChild( line );
-
-					// Create password 1 prompt line
-
-					_net.pwPrompt1 = line = newline( "" );
-					e = document.createElement( "span" );
-					e.className = "prompt";
-					e.innerHTML = "Minimum 8 chars, a-z, A-Z, 0-9 or _";
-					line.appendChild( e );
-					div.appendChild( line );
-
-					// Create password 1 entry line
-
-					_net.pwLine1 = line = newline( "Password:" );
-					_net.pw1 = e = document.createElement( "input" );
-					e.id = _LOGIN_PW1_ID;
-					e.type = "password";
-					e.className = "pw";
-					e.tabindex = 1;
-					e.addEventListener( "keydown", _net.pwKeyDown1, false );
-					line.appendChild( e );
-					div.appendChild( line );
-
-					// Create password 2 prompt line
-
-					_net.pwPrompt2 = line = newline( "" );
-					e = document.createElement( "span" );
-					e.className = "prompt";
-					e.innerHTML = "Re-enter password to verify";
-					line.appendChild( e );
-					div.appendChild( line );
-
-					// Create password 2 entry line
-
-					_net.pwLine2 = line = newline( "Password:" );
-					_net.pw2 = e = document.createElement( "input" );
-					e.id = _LOGIN_PW2_ID;
-					e.type = "password";
-					e.className = "pw";
-					e.tabindex = 2;
-					e.addEventListener( "keydown", _net.pwKeyDown2, false );
-					line.appendChild( e );
-					div.appendChild( line );
-
-					// Create new account line
-
-					_net.accountLine = line = newline( "" );
-					e = document.createElement( "a" );
-					e.href = "#";
-					e.innerHTML = "Create new account";
-					e.tabindex = -1;
-					e.addEventListener( "mousedown", _net.accountDown, false );
-					line.appendChild( e );
-					div.appendChild( line );
-
-					// Create recover password line
-
-					_net.recoverLine = line = newline( "" );
-					e = document.createElement( "a" );
-					e.href = "#";
-					e.innerHTML = "Recover password";
-					e.tabindex = -1;
-					e.addEventListener( "mousedown", _net.recoverDown, false );
-					line.appendChild( e );
-					div.appendChild( line );
-
-					// Add login div to _main
-
-					_main.appendChild( div );
-				},
-
-				// _net.login()
-
-				login : function ()
-				{
-					_gridDeactivate();
-					_net.doLogin();
+					key = event.keyCode; // IE
 				}
-			};
+				if ( key === PS.KEY_ENTER )
+				{
+					val = _status.input.value;
+					exec = _status.exec;
+					if ( typeof exec === "function" )
+					{
+						try
+						{
+							exec( val );
+						}
+						catch ( err )
+						{
+							_errorCatch( "PS.statusInput() function failed [" + err.message + "]", err );
+						}
+					}
+
+					_status.input.removeEventListener( "keydown", _inputKeyDown, false ); // stop input handler
+					_statusOut ( _status.text );
+					return _endEvent( event );
+				}
+				return true; // must return true
+			}
+
+			function _statusIn ( strP, exec )
+			{
+				var str;
+
+				_status.statusP.style.display = "none"; // hide status line
+
+				_status.label = str = strP; // prevent arg mutation
+				if ( str.length < 1 )
+				{
+					str = ">"; // at least show a caret
+				}
+				_status.inputNode.nodeValue = str; // set input label text
+				_status.exec = exec; // save exec
+				_status.input.value = ""; // empty input box
+				_keysDeactivate(); // turn off key events
+				_status.input.addEventListener( "keydown", _inputKeyDown, false ); // start input handler
+				_status.inputP.style.display = "block"; // show input line
+				_status.input.focus();
+			}
 
 			//----------------------
 			// ENGINE INITIALIZATION
@@ -7466,7 +6991,7 @@ var PS = {}; // Global namespace for public API
 					catch( err )
 					{
 						console.error( "Problem detecting browser: " + err.message );
-						version = "???";
+						version = "";
 					}
 				}
 
@@ -7510,6 +7035,7 @@ var PS = {}; // Global namespace for public API
 			//-----------
 
 			PSEngine = {
+
 				// This must be in PSEngine namespace
 
 				_lastTick : 0,
@@ -7527,10 +7053,9 @@ var PS = {}; // Global namespace for public API
 
 				_sys : function ()
 				{
-					var fn, errm, i, outer, debug, status, grid, footer, monitor, ctx, cnt, bead, result, str;
+					var fn, i, outer, debug, sp, snode, ip, inode, span, input, grid, footer, monitor, ctx, cnt, bead, aq, result, str;
 
-					fn = "[PSEngine.sys] ";
-					errm = fn + "Invalid element";
+					fn = "[PS.sys] ";
 
 					if ( !String.fromCodePoint )
 					{
@@ -7579,12 +7104,20 @@ var PS = {}; // Global namespace for public API
 
 					// Set up DOM elements
 
-					// Main div
-
 					document.body.id = "body";
 					// set browser background (if not in multispiel mode)
 					if (_NAMESPACE === PS.DEFAULT_NAMESPACE)
 						document.body.style.backgroundColor = _DEFAULTS.grid.color.str;
+
+					// Remove font loading div if it exists
+
+					_init = document.getElementById( _INIT_ID );
+					if ( _init )
+					{
+						_init.parentNode.removeChild( _init );
+					}
+
+					// Create outer/main divs
 
 					outer = document.getElementById(namespace);
 					if ( !outer )
@@ -7592,10 +7125,7 @@ var PS = {}; // Global namespace for public API
 						outer = document.createElement( "div" );
 						document.body.appendChild( outer );
 						if ( !outer )
-						{
-							window.alert( errm );
-							return;
-						}
+							return console.error("No outer div!");
 					}
 					outer.id = _OUTER_ID;
 					outer.tabindex = 12;
@@ -7604,10 +7134,7 @@ var PS = {}; // Global namespace for public API
 
 					_main = document.createElement( "div" );
 					if ( !_main )
-					{
-						window.alert( errm );
-						return;
-					}
+						return console.error("No main div!");
 					_main.id = _MAIN_ID;
 					_main.className = _MAIN_CLASS;
 					outer.appendChild( _main );
@@ -7617,31 +7144,53 @@ var PS = {}; // Global namespace for public API
 					PSEngine._mainLeft = _main.offsetLeft;
 					PSEngine._mainTop = _main.offsetTop;
 
-					// Status line, append to main
+					// Create status line paragraph
 
-					status = document.createElement( "input" );
-					if ( !status )
+					sp = document.createElement( "p" );
+					sp.id = _STATUS_P_ID; // use id for styling
+					sp.style.whiteSpace = "nowrap"; // limits to one line
+					sp.style.display = "block"; // initially visible
+					snode = document.createTextNode( "." );
+					sp.appendChild( snode );
+					_main.appendChild( sp );
+
+					// Create input box paragraph, label and input box
+
+					ip = document.createElement( "p" ); // paragraph for input box
+					ip.id = _INPUT_P_ID; // use id for styling
+					ip.style.display = "none"; // initially hidden
+
+					span = document.createElement( "span" ); // span for label
+					span.id = _INPUT_LABEL_ID; // use id for styling
+					inode = document.createTextNode( "" ); // textNode for label
+					span.appendChild( inode ); // add node to span
+					ip.appendChild( span ); // add span to paragraph
+
+					span = document.createElement( "span" ); // span for input box
+					span.id = _INPUT_SPAN_ID; // use id for styling
+					input = document.createElement( "input" ); // actual input box
+					input.id = _INPUT_BOX_ID; // use id for styling
+					input.type = "text";
+					input.tabindex = 0;
+					input.wrap = "soft";
+					span.appendChild( input ); // add box to span
+					ip.appendChild( span ); // add span to paragraph
+					_main.appendChild( ip ); // add paragraph to main
+
+					// init status line
+
+					_status =
 					{
-						window.alert( errm );
-						return;
-					}
-					status.type = "text";
-					status.readonly = "readonly";
-					status.onfocus = function ()
-					{
-						this.blur();
+						statusP : sp,
+						statusNode : snode,
+						inputP : ip,
+						inputNode : inode,
+						input : input,
+						fader : _newFader( _STATUS_P_ID, _statusRGB, null )
 					};
-					status.tabindex = -1;
-					status.value = "Perlenspiel 3.2";
-					status.wrap = "soft";
-					status.id = _STATUS_ID;
-					status.tabindex = 13;
-					status.className = _STATUS_CLASS;
-					_main.appendChild( status );
 
-					// Init network, appends UI divisions to _main
-
-					_net.init();
+					_copy( _DEFAULTS.status, _status ); // copy default properties
+					_statusOut( "Perlenspiel 3.1" );
 
 					// Create grid canvas
 
@@ -7652,26 +7201,34 @@ var PS = {}; // Global namespace for public API
 						return;
 					}
 					grid.id = _GRID_ID;
-					grid.tabindex = 14;
 					grid.className = _GRID_CLASS;
 					grid.width = _CLIENT_SIZE;
-					grid.backgroundColor = _DEFAULTS.grid.color.str;
-
+					grid.style.backgroundColor = _DEFAULTS.grid.color.str;
+					grid.style.boxShadow = "none";
 					_overGrid = false;
 					_resetCursor();
-
 					_main.appendChild( grid );
+
+					/*
+					// Create grid PIXI stage/renderer
+
+					var stage = new PIXI.Stage( _DEFAULTS.grid.color.rgb );
+					var renderer = PIXI.autoDetectRenderer( _CLIENT_SIZE, _CLIENT_SIZE );
+					renderer.view.id = _GRID_ID;
+					renderer.style.boxShadow = "none";
+					_overGrid = false;
+					_resetCursor();
+					_main.appendChild( renderer.view );
+					*/
 
 					// Footer, append to main
 
 					footer = document.createElement( "p" );
 					if ( !footer )
-					{
-						window.alert( errm );
-						return;
-					}
+						return console.error("No footer p!");
 					footer.id = _FOOTER_ID;
 					footer.className = _FOOTER_CLASS;
+					footer.style.opacity = "1.0";
 					footer.innerHTML = "Loading Perlenspiel";
 					_main.appendChild( footer );
 					_footer = footer;
@@ -7680,10 +7237,7 @@ var PS = {}; // Global namespace for public API
 
 					debug = document.createElement( "div" );
 					if ( !debug )
-					{
-						window.alert( errm );
-						return;
-					}
+						return console.error("No debug div!");
 					debug.id = _DEBUG_ID;
 					debug.className = _DEBUG_CLASS;
 					_main.appendChild( debug );
@@ -7692,10 +7246,7 @@ var PS = {}; // Global namespace for public API
 
 					monitor = document.createElement( "textarea" );
 					if ( !monitor )
-					{
-						window.alert( errm );
-						return;
-					}
+						return console.error("No monitor textarea!");
 					monitor.id = _MONITOR_ID;
 					monitor.className = _MONITOR_CLASS;
 					monitor.rows = 8;
@@ -7716,6 +7267,7 @@ var PS = {}; // Global namespace for public API
 
 					// Init keypress variables and arrays
 
+					_keysActive = false;
 					_pressed = [];
 					_transKeys = [];
 					_shiftedKeys = [];
@@ -7813,18 +7365,7 @@ var PS = {}; // Global namespace for public API
 
 					// clear keypress record if window loses focus
 
-					window.onblur = function ()
-					{
-						var x;
-
-						_holding.length = 0;
-						_holdShift = false;
-						_holdCtrl = false;
-						for ( x = 0; x < 256; x += 1 )
-						{
-							_pressed[ x ] = 0;
-						}
-					};
+					window.onblur = _keyReset();
 
 					ctx = grid.getContext( "2d" );
 
@@ -7915,18 +7456,6 @@ var PS = {}; // Global namespace for public API
 						_beads[ i ] = bead;
 					}
 
-					// init status line
-
-					_status =
-					{
-						div : status,
-						fader : _newFader( _STATUS_ID, _statusRGB, null )
-					};
-
-					// copy default properties
-
-					_copy( _DEFAULTS.status, _status );
-
 					// Init sprite engine
 
 					_sprites = [ ];
@@ -7937,33 +7466,38 @@ var PS = {}; // Global namespace for public API
 					_pathmaps = [ ];
 					_pathmapCnt = 0;
 
-					// init audio system
+					// init audio system if not running iOS
 
-					result = AQ.init(
+					aq = null;
+					if ( _system.host.os !== "iOS" )
+					{
+						aq = AQ.init(
+							{
+								defaultPath : _DEFAULTS.audio.path,
+								defaultFileTypes : [ "ogg", "mp3", "wav" ],
+								onAlert : PS.debug,
+								stack : true,
+								forceHTML5 : true // never use Web Audio; sigh
+							} );
+						if ( ( aq === PS.ERROR ) || ( aq.status === AQ.ERROR ) )
 						{
-							defaultPath : _DEFAULTS.audio.path,
-							defaultFileTypes : [ "ogg", "mp3", "wav" ],
-							onAlert : PSEngine.debug,
-							stack : true,
-							forceHTML5 : true // never use Web Audio; sigh
-						} );
+							return;
+						}
 
-					if ( result.status === AQ.ERROR )
-					{
-						return;
-					}
+						_system.audio = aq; // copy audio specs into system
 
-					// load and lock error sound
+						// load and lock error sound
 
-					_errorSound = null;
-					result = PSEngine.audioLoad( _DEFAULTS.audio.error_sound, { path : _DEFAULTS.audio.path, lock : true } );
-					if ( result === PS.ERROR )
-					{
-						_warning( "Error sound '" + _DEFAULTS.audio.error_sound + "' not loaded" );
-					}
-					else
-					{
-						_errorSound = _DEFAULTS.audio.error_sound;
+						_errorSound = null;
+						result = PS.audioLoad( _DEFAULTS.audio.error_sound, { path : _DEFAULTS.audio.path, lock : true } );
+						if ( result === PS.ERROR )
+						{
+							_warning( "Error sound '" + _DEFAULTS.audio.error_sound + "' not loaded" );
+						}
+						else
+						{
+							_errorSound = _DEFAULTS.audio.error_sound;
+						}
 					}
 
 					// Create offscreen canvas for image manipulation
@@ -7986,62 +7520,65 @@ var PS = {}; // Global namespace for public API
 					if ( typeof PSEngine.init !== "function" )
 					{
 						PSEngine.init = null;
-						_warning( "PSEngine.init" + str );
+						_warning( "PS.init" + str );
 					}
 
 					if ( typeof PSEngine.touch !== "function" )
 					{
 						PSEngine.touch = null;
-						_warning( "PSEngine.touch" + str );
+						_warning( "PS.touch" + str );
 					}
 
 					if ( typeof PSEngine.release !== "function" )
 					{
 						PSEngine.release = null;
-						_warning( "PSEngine.release" + str );
+						_warning( "PS.release" + str );
 					}
 
 					if ( typeof PSEngine.enter !== "function" )
 					{
 						PSEngine.enter = null;
-						_warning( "PSEngine.enter" + str );
+						_warning( "PS.enter" + str );
 					}
 
 					if ( typeof PSEngine.exit !== "function" )
 					{
 						PSEngine.exit = null;
-						_warning( "PSEngine.exit()" + str );
+						_warning( "PS.exit()" + str );
 					}
 
 					if ( typeof PSEngine.exitGrid !== "function" )
 					{
 						PSEngine.exitGrid = null;
-						_warning( "PSEngine.exitGrid" + str );
+						_warning( "PS.exitGrid" + str );
 					}
 
 					if ( typeof PSEngine.keyDown !== "function" )
 					{
 						PSEngine.keyDown = null;
-						_warning( "PSEngine.keyDown" + str );
+						_warning( "PS.keyDown" + str );
 					}
 
 					if ( typeof PSEngine.keyUp !== "function" )
 					{
 						PSEngine.keyUp = null;
-						_warning( "PSEngine.keyUp" + str );
+						_warning( "PS.keyUp" + str );
 					}
 
 					if ( typeof PSEngine.input !== "function" )
 					{
 						PSEngine.input = null;
-						_warning( "PSEngine.input" + str );
+						_warning( "PS.input" + str );
 					}
 
 					// set up footer
 
-					str = _system.engine + " " + _system.major + "." + _system.minor + "." + _system.revision + " | " +
-						_system.host.os + " " + _system.host.app + " " + _system.host.version;
-
+					str = "PS " + _system.major + "." + _system.minor + "." + _system.revision + " | ";
+					if ( aq ) // not set for iOS
+					{
+						str += ( aq.engine + " " + aq.major + "." + aq.minor + "." + aq.revision + " | " );
+					}
+					str += _system.host.os + " " + _system.host.app + " " + _system.host.version;
 					if ( _touchScreen )
 					{
 						str += ( " | Touch " );
@@ -8065,7 +7602,7 @@ var PS = {}; // Global namespace for public API
 
 					_gridActivate ();
 
-
+					_footerTimer = PS.timerStart( 6, _footerFade );
 
 					if ( PSEngine.init )
 					{
@@ -8078,7 +7615,7 @@ var PS = {}; // Global namespace for public API
 						}
 						catch ( err )
 						{
-							_errorCatch( "PSEngine.init() failed [" + err.message + "]", err );
+							_errorCatch( "PS.init() failed [" + err.message + "]", err );
 						}
 					}
 				},
@@ -8095,7 +7632,7 @@ var PS = {}; // Global namespace for public API
 				// GRID FUNCTIONS
 				//---------------
 
-				// PSEngine.gridSize(x, y)
+				// PS.gridSize(x, y)
 				// Sets x/y dimensions of grid
 				// Returns object with .width and .height properties, or PS.ERROR
 
@@ -8103,7 +7640,7 @@ var PS = {}; // Global namespace for public API
 				{
 					var fn, x, y, max;
 
-					fn = "[PSEngine.gridSize] ";
+					fn = "[PS.gridSize] ";
 
 					if ( arguments.length > 2 )
 					{
@@ -8176,7 +7713,7 @@ var PS = {}; // Global namespace for public API
 					return { width : _grid.x, height : _grid.y };
 				},
 
-				// PSEngine.gridPlane ( p )
+				// PS.gridPlane ( p )
 				// Sets current color plane of grid
 				// Returns plane or PS.ERROR on error
 
@@ -8184,7 +7721,7 @@ var PS = {}; // Global namespace for public API
 				{
 					var fn, plane, type;
 
-					fn = "[PSEngine.gridPlane] ";
+					fn = "[PS.gridPlane] ";
 
 					if ( arguments.length > 1 )
 					{
@@ -8219,7 +7756,7 @@ var PS = {}; // Global namespace for public API
 					return _grid.plane;
 				},
 
-				// PSEngine.gridColor( color )
+				// PS.gridColor( color )
 				// Sets color of grid
 				// [p1/p2/p3] is a PS3 color paramater
 				// Returns rgb or PS.ERROR
@@ -8228,7 +7765,7 @@ var PS = {}; // Global namespace for public API
 				{
 					var fn, colors;
 
-					fn = "[PSEngine.gridColor] ";
+					fn = "[PS.gridColor] ";
 
 					if ( arguments.length > 3 )
 					{
@@ -8244,47 +7781,45 @@ var PS = {}; // Global namespace for public API
 					return _gridColor( colors );
 				},
 
-				// PSEngine.gridFade( rate, options )
+				// PS.gridFade( rate, options )
 				// Sets fade rate/options of grid
 				// Returns fader settings or PS.ERROR
 
 				gridFade : function ( rate, optionsP )
 				{
-					var fn, fader, options, type, val;
+					var fn, fader, color, orate, nrate, options, type, val;
 
-					fn = "[PSEngine.gridFade] ";
+					fn = "[PS.gridFade] ";
 
 					if ( arguments.length > 2 )
 					{
 						return _error( fn + "Too many arguments" );
 					}
 
+					color = _grid.color;
 					fader = _grid.fader;
+					orate = fader.rate;
 
-					val = rate;
-					if ( val !== PS.CURRENT )
+					type = _typeOf( rate );
+					if ( ( type === "undefined" ) || ( rate === PS.CURRENT ) )
 					{
-						type = _typeOf( val );
-						if ( type !== "undefined" )
+						nrate = orate;
+					}
+					else if ( rate === PS.DEFAULT )
+					{
+						nrate = _DEFAULTS.fader.rate;
+					}
+					else if ( type === "number" )
+					{
+						nrate = Math.floor( rate );
+						if ( nrate < 0 )
 						{
-							if ( val === PS.DEFAULT )
-							{
-								fader.rate = _DEFAULTS.fader.rate;
-							}
-							else if ( type === "number" )
-							{
-								val = Math.floor( val );
-								if ( val < 0 )
-								{
-									val = 0;
-								}
-								fader.rate = val;
-							}
-							else
-							{
-								return _error( fn + "rate argument invalid" );
-							}
+							nrate = 0;
 						}
+					}
+					else
+					{
+						return _error( fn + "rate argument invalid" );
 					}
 
 					options = _validFadeOptions( fn, optionsP );
@@ -8307,6 +7842,19 @@ var PS = {}; // Global namespace for public API
 						fader.r = options.r;
 						fader.g = options.g;
 						fader.b = options.b;
+					}
+
+					val = options.onStep;
+					if ( val !== PS.CURRENT )
+					{
+						if ( val === PS.DEFAULT )
+						{
+							fader.onStep = _DEFAULTS.fader.onStep;
+						}
+						else
+						{
+							fader.onStep = val;
+						}
 					}
 
 					val = options.onEnd;
@@ -8335,26 +7883,86 @@ var PS = {}; // Global namespace for public API
 						}
 					}
 
+					// Handle rate change
+
+					if ( orate !== nrate )
+					{
+						fader.rate = nrate;
+						if ( nrate < 1 )
+						{
+							fader.active = false;
+							fader.kill = true;
+						}
+						else if ( fader.active )
+						{
+							_recalcFader( fader, color.r, color.g, color.b, 255 );
+						}
+					}
+
 					return {
 						rate : fader.rate,
 						rgb : fader.rgb,
+						onStep : fader.onStep,
 						onEnd : fader.onEnd,
 						params : fader.params
 					};
+				},
+
+				// PS.gridShadow
+				// Activates/deactivates grid shadow and sets its color
+				// show = boolean, PS.CURRENT or PS.DEFAULT
+				// [p1/p2/p3] = PS3 color parameter
+				// Returns rgb or PS.ERROR
+
+				gridShadow : function ( showP, p1, p2, p3 )
+				{
+					var fn, show, colors;
+
+					fn = "[PS.gridShadow] ";
+
+					if ( arguments.length > 4 )
+					{
+						return _error( fn + "Too many arguments" );
+					}
+
+					show = showP; // prevent arg mutation
+					if ( ( show !== true ) && ( show !== false ) && ( show !== PS.CURRENT ) )
+					{
+						if ( ( show === null ) || ( show === PS.DEFAULT ) )
+						{
+							show = false;
+						}
+						else if ( _typeOf( show ) === "number" )
+						{
+							show = ( show !== 0 );
+						}
+						else
+						{
+							return _error( fn + "First argument invalid" );
+						}
+					}
+
+					colors = _decodeColors( fn, p1, p2, p3 );
+					if ( colors === PS.ERROR )
+					{
+						return PS.ERROR;
+					}
+
+					return _gridShadow( show, colors );
 				},
 
 				//---------------
 				// BEAD FUNCTIONS
 				//---------------
 
-				// PSEngine.color ( x, y, color )
+				// PS.color ( x, y, color )
 				// Change/inspect bead color on current grid plane
 
 				color : function ( x, y, p1, p2, p3 )
 				{
 					var fn, args, colors;
 
-					fn = "[PSEngine.color] ";
+					fn = "[PS.color] ";
 
 					args = arguments.length;
 					if ( args < 2 )
@@ -8375,13 +7983,13 @@ var PS = {}; // Global namespace for public API
 					return _beadExec( fn, _color, x, y, colors );
 				},
 
-				// PSEngine.alpha( x, y, a )
+				// PS.alpha( x, y, a )
 
 				alpha : function ( x, y, alpha_p )
 				{
 					var fn, args, alpha, type;
 
-					fn = "[PSEngine.alpha] ";
+					fn = "[PS.alpha] ";
 
 					args = arguments.length;
 					if ( args < 2 )
@@ -8427,7 +8035,7 @@ var PS = {}; // Global namespace for public API
 					return _beadExec( fn, _alpha, x, y, alpha );
 				},
 
-				// PSEngine.fade( x, y, rate, options )
+				// PS.fade( x, y, rate, options )
 				// Sets fade rate/options of bead
 				// Returns fader settings or PS.ERROR
 
@@ -8435,7 +8043,7 @@ var PS = {}; // Global namespace for public API
 				{
 					var fn, args, rate, type, options;
 
-					fn = "[PSEngine.fade] ";
+					fn = "[PS.fade] ";
 
 					args = arguments.length;
 					if ( args < 2 )
@@ -8478,14 +8086,14 @@ var PS = {}; // Global namespace for public API
 					return _beadExec( fn, _fade, x, y, rate, options );
 				},
 
-				// PSEngine.scale ( x, y, scale )
+				// PS.scale ( x, y, scale )
 				// Expects a number between 50 and 100
 
 				scale : function ( x, y, scale_p )
 				{
 					var fn, args, scale, type;
 
-					fn = "[PSEngine.scale] ";
+					fn = "[PS.scale] ";
 
 					args = arguments.length;
 					if ( args < 2 )
@@ -8533,14 +8141,14 @@ var PS = {}; // Global namespace for public API
 					return _beadExec( fn, _scale, x, y, scale );
 				},
 
-				// PSEngine.radius( x, y, radius )
+				// PS.radius( x, y, radius )
 				// Expects a radius between 0 and 50
 
 				radius : function ( x, y, radius_p )
 				{
 					var fn, args, radius, type;
 
-					fn = "[PSEngine.radius] ";
+					fn = "[PS.radius] ";
 
 					args = arguments.length;
 					if ( args < 2 )
@@ -8588,13 +8196,92 @@ var PS = {}; // Global namespace for public API
 					return _beadExec( fn, _radius, x, y, radius );
 				},
 
-				// PSEngine.data( x, y, data )
+				// PS.bgColor ( x, y, color )
+				// Change/inspect bead background color
+
+				bgColor : function ( x, y, p1, p2, p3 )
+				{
+					var fn, args, colors;
+
+					fn = "[PS.bgColor] ";
+
+					args = arguments.length;
+					if ( args < 2 )
+					{
+						return _error( fn + "Missing argument(s)" );
+					}
+					if ( args > 5 )
+					{
+						return _error( fn + "Too many arguments" );
+					}
+
+					colors = _decodeColors( fn, p1, p2, p3 );
+					if ( colors === PS.ERROR )
+					{
+						return PS.ERROR;
+					}
+
+					return _beadExec( fn, _bgColor, x, y, colors );
+				},
+
+				// PS.bgAlpha( x, y, a )
+
+				bgAlpha : function ( x, y, alpha_p )
+				{
+					var fn, args, alpha, type;
+
+					fn = "[PS.bgAlpha] ";
+
+					args = arguments.length;
+					if ( args < 2 )
+					{
+						return _error( fn + "Missing argument(s)" );
+					}
+					if ( args > 3 )
+					{
+						return _error( fn + "Too many arguments" );
+					}
+
+					alpha = alpha_p; // prevent direct mutation of args
+					if ( alpha !== PS.CURRENT )
+					{
+						type = _typeOf( alpha );
+						if ( type === "undefined" )
+						{
+							alpha = PS.CURRENT;
+						}
+						else if ( type === "number" )
+						{
+							alpha = Math.floor( alpha );
+							if ( alpha < 0 )
+							{
+								alpha = 0;
+							}
+							else if ( alpha > 255 )
+							{
+								alpha = 255;
+							}
+						}
+						else if ( alpha === PS.DEFAULT )
+						{
+							alpha = _DEFAULTS.bead.bgColor.a;
+						}
+						else
+						{
+							return _error( fn + "alpha argument invalid" );
+						}
+					}
+
+					return _beadExec( fn, _bgAlpha, x, y, alpha );
+				},
+
+				// PS.data( x, y, data )
 
 				data : function ( x, y, data_p )
 				{
 					var fn, args, data;
 
-					fn = "[PSEngine.data] ";
+					fn = "[PS.data] ";
 
 					args = arguments.length;
 					if ( args < 2 )
@@ -8621,13 +8308,13 @@ var PS = {}; // Global namespace for public API
 					return _beadExec( fn, _data, x, y, data );
 				},
 
-				// PSEngine.exec( x, y, exec )
+				// PS.exec( x, y, exec )
 
 				exec : function ( x, y, exec_p )
 				{
 					var fn, args, exec, type;
 
-					fn = "[PSEngine.exec] ";
+					fn = "[PS.exec] ";
 
 					args = arguments.length;
 					if ( args < 2 )
@@ -8660,13 +8347,13 @@ var PS = {}; // Global namespace for public API
 					return _beadExec( fn, _exec, x, y, exec );
 				},
 
-				// PSEngine.visible( x, y, show )
+				// PS.visible( x, y, show )
 
 				visible : function ( x, y, show_p )
 				{
 					var fn, args, show;
 
-					fn = "[PSEngine.visible] ";
+					fn = "[PS.visible] ";
 
 					args = arguments.length;
 					if ( args < 2 )
@@ -8687,13 +8374,13 @@ var PS = {}; // Global namespace for public API
 					return _beadExec( fn, _visible, x, y, show );
 				},
 
-				// PSEngine.active( x, y, active )
+				// PS.active( x, y, active )
 
 				active : function ( x, y, active_p )
 				{
 					var fn, args, active;
 
-					fn = "[PSEngine.active] ";
+					fn = "[PS.active] ";
 
 					args = arguments.length;
 					if ( args < 2 )
@@ -8718,14 +8405,14 @@ var PS = {}; // Global namespace for public API
 				// BEAD BORDER FUNCTIONS
 				//----------------------
 
-				// PSEngine.border( x, y, width )
+				// PS.border( x, y, width )
 				// Accepts a width integer or an object with .top/.left/.bottom/.right properties
 
 				border : function ( x, y, width_p )
 				{
 					var fn, args, def, width, type, val;
 
-					fn = "[PSEngine.border] ";
+					fn = "[PS.border] ";
 
 					args = arguments.length;
 					if ( args < 2 )
@@ -8890,13 +8577,13 @@ var PS = {}; // Global namespace for public API
 					return _beadExec( fn, _border, x, y, width );
 				},
 
-				// PSEngine.borderColor( x, y, p1, p2, p3 )
+				// PS.borderColor( x, y, p1, p2, p3 )
 
 				borderColor : function ( x, y, p1, p2, p3 )
 				{
 					var fn, colors;
 
-					fn = "[PSEngine.borderColor] ";
+					fn = "[PS.borderColor] ";
 
 					if ( arguments.length < 2 )
 					{
@@ -8916,13 +8603,13 @@ var PS = {}; // Global namespace for public API
 					return _beadExec( fn, _borderColor, x, y, colors );
 				},
 
-				// PSEngine.borderAlpha( x, y, alpha )
+				// PS.borderAlpha( x, y, alpha )
 
 				borderAlpha : function ( x, y, alpha_p )
 				{
 					var fn, args, alpha, type;
 
-					fn = "[PSEngine.borderAlpha] ";
+					fn = "[PS.borderAlpha] ";
 
 					args = arguments.length;
 					if ( args < 2 )
@@ -8967,7 +8654,7 @@ var PS = {}; // Global namespace for public API
 					return _beadExec( fn, _borderAlpha, x, y, alpha );
 				},
 
-				// PSEngine.borderFade( rate, options )
+				// PS.borderFade( rate, options )
 				// Sets fade rate/options of border
 				// Returns fade settings or PS.ERROR
 
@@ -8975,7 +8662,7 @@ var PS = {}; // Global namespace for public API
 				{
 					var fn, args, rate, type, options;
 
-					fn = "[PSEngine.borderFade] ";
+					fn = "[PS.borderFade] ";
 
 					args = arguments.length;
 					if ( args < 2 )
@@ -9024,14 +8711,14 @@ var PS = {}; // Global namespace for public API
 
 				// Improved Unicode handling by Mark Diehr
 
-				// PSEngine.glyph( x, y, glyph )
+				// PS.glyph( x, y, glyph )
 				// [glyph] can be a Unicode number or a string
 
 				glyph : function ( x, y, glyph_p )
 				{
 					var fn, args, glyph, type;
 
-					fn = "[PSEngine.glyph] ";
+					fn = "[PS.glyph] ";
 
 					args = arguments.length;
 					if ( args < 2 )
@@ -9083,13 +8770,13 @@ var PS = {}; // Global namespace for public API
 					return _beadExec( fn, _glyph, x, y, glyph );
 				},
 
-				// PSEngine.glyphColor( x, y, p1, p2, p3 )
+				// PS.glyphColor( x, y, p1, p2, p3 )
 
 				glyphColor : function ( x, y, p1, p2, p3 )
 				{
 					var fn, colors;
 
-					fn = "[PSEngine.glyphColor] ";
+					fn = "[PS.glyphColor] ";
 
 					if ( arguments.length < 2 )
 					{
@@ -9109,13 +8796,13 @@ var PS = {}; // Global namespace for public API
 					return _beadExec( fn, _glyphColor, x, y, colors );
 				},
 
-				// PSEngine.glyphAlpha( x, y, alpha )
+				// PS.glyphAlpha( x, y, alpha )
 
 				glyphAlpha : function ( x, y, alpha_p )
 				{
 					var fn, args, alpha, type;
 
-					fn = "[PSEngine.glyphAlpha] ";
+					fn = "[PS.glyphAlpha] ";
 
 					args = arguments.length;
 					if ( args < 2 )
@@ -9160,13 +8847,13 @@ var PS = {}; // Global namespace for public API
 					return _beadExec( fn, _glyphAlpha, x, y, alpha );
 				},
 
-				// PSEngine.glyphScale( x, y, scale )
+				// PS.glyphScale( x, y, scale )
 
 				glyphScale : function ( x, y, scale_p )
 				{
 					var fn, args, scale, type;
 
-					fn = "[PSEngine.glyphScale] ";
+					fn = "[PS.glyphScale] ";
 
 					args = arguments.length;
 					if ( args < 2 )
@@ -9211,7 +8898,7 @@ var PS = {}; // Global namespace for public API
 					return _beadExec( fn, _glyphScale, x, y, scale );
 				},
 
-				// PSEngine.glyphFade( rate, options )
+				// PS.glyphFade( rate, options )
 				// Sets fade rate/options of glyph
 				// Returns fade settings or PS.ERROR
 
@@ -9219,7 +8906,7 @@ var PS = {}; // Global namespace for public API
 				{
 					var fn, args, rate, type, options;
 
-					fn = "[PSEngine.glyphFade] ";
+					fn = "[PS.glyphFade] ";
 
 					args = arguments.length;
 					if ( args < 2 )
@@ -9270,7 +8957,7 @@ var PS = {}; // Global namespace for public API
 				{
 					var fn, str, type;
 
-					fn = "[PSEngine.statusText] ";
+					fn = "[PS.statusText] ";
 
 					if ( arguments.length > 1 )
 					{
@@ -9290,17 +8977,49 @@ var PS = {}; // Global namespace for public API
 							str = str.toString();
 						}
 
-						_status.div.value = _status.text = str;
+						_statusOut( str );
 					}
 
 					return _status.text;
+				},
+
+				statusInput : function ( strP, exec )
+				{
+					var fn, type, str, len;
+
+					fn = "[PS.statusInput] ";
+
+					if ( arguments.length !== 2 )
+					{
+						return _error( fn + "Expected 2 arguments" );
+					}
+
+					if ( typeof exec !== "function" )
+					{
+						return _error( fn + "2nd argument is not a function" );
+					}
+
+					str = strP; // prevent arg mutation
+					type = _typeOf( str );
+					if ( type !== "string" )
+					{
+						str = str.toString();
+					}
+					len = str.length;
+					if ( len > _LABEL_MAX ) // truncate if too long
+					{
+						str = str.substring( 0, _LABEL_MAX );
+					}
+					_statusIn( str, exec );
+
+					return _status.label;
 				},
 
 				statusColor : function ( p1, p2, p3 )
 				{
 					var fn, colors, current, fader, rgb, r, g, b;
 
-					fn = "[PSEngine.statusColor] ";
+					fn = "[PS.statusColor] ";
 
 					if ( arguments.length > 3 )
 					{
@@ -9402,41 +9121,39 @@ var PS = {}; // Global namespace for public API
 
 				statusFade : function ( rate, options_p )
 				{
-					var fn, fader, val, type, options;
+					var fn, fader, color, orate, nrate, type, val, options;
 
-					fn = "[PSEngine.statusFade] ";
+					fn = "[PS.statusFade] ";
 
 					if ( arguments.length > 2 )
 					{
 						return _error( fn + "Too many arguments" );
 					}
 
+					color = _status.color;
 					fader = _status.fader;
+					orate = fader.rate;
 
-					val = rate;
-					if ( val !== PS.CURRENT )
+					type = _typeOf( rate );
+					if ( ( type === "undefined" ) || ( rate === PS.CURRENT ) )
 					{
-						type = _typeOf( val );
-						if ( type !== "undefined" )
+						nrate = orate;
+					}
+					else if ( rate === PS.DEFAULT )
+					{
+						nrate = _DEFAULTS.fader.rate;
+					}
+					else if ( type === "number" )
+					{
+						nrate = Math.floor( rate );
+						if ( nrate < 0 )
 						{
-							if ( val === PS.DEFAULT )
-							{
-								fader.rate = _DEFAULTS.fader.rate;
-							}
-							else if ( type === "number" )
-							{
-								val = Math.floor( val );
-								if ( val < 0 )
-								{
-									val = 0;
-								}
-								fader.rate = val;
-							}
-							else
-							{
-								return _error( fn + "rate argument invalid" );
-							}
+							nrate = 0;
 						}
+					}
+					else
+					{
+						return _error( fn + "rate argument invalid" );
 					}
 
 					options = _validFadeOptions( fn, options_p );
@@ -9459,6 +9176,19 @@ var PS = {}; // Global namespace for public API
 						fader.r = options.r;
 						fader.g = options.g;
 						fader.b = options.b;
+					}
+
+					val = options.onStep;
+					if ( val !== PS.CURRENT )
+					{
+						if ( val === PS.DEFAULT )
+						{
+							fader.onStep = _DEFAULTS.fader.onStep;
+						}
+						else
+						{
+							fader.onStep = val;
+						}
 					}
 
 					val = options.onEnd;
@@ -9487,9 +9217,26 @@ var PS = {}; // Global namespace for public API
 						}
 					}
 
+					// Handle rate change
+
+					if ( orate !== nrate )
+					{
+						fader.rate = nrate;
+						if ( nrate < 1 )
+						{
+							fader.active = false;
+							fader.kill = true;
+						}
+						else if ( fader.active )
+						{
+							_recalcFader( fader, color.r, color.g, color.b, 255 );
+						}
+					}
+
 					return {
 						rate : fader.rate,
 						rgb : fader.rgb,
+						onStep : fader.onStep,
 						onEnd : fader.onEnd,
 						params : fader.params
 					};
@@ -9499,7 +9246,7 @@ var PS = {}; // Global namespace for public API
 				// TIMER FUNCTIONS
 				// ---------------
 
-				// PSEngine.timerStart( ticks, exec, ... )
+				// PS.timerStart( ticks, exec, ... )
 				// Execute a function [exec] after [ticks] 60ths of a second
 				// Additional parameters are passed as arguments to the function
 				// Returns id of timer
@@ -9508,7 +9255,7 @@ var PS = {}; // Global namespace for public API
 				{
 					var fn, args, ticks, exec, type, obj, arglist, i, len, id;
 
-					fn = "[PSEngine.timerStart] ";
+					fn = "[PS.timerStart] ";
 
 					args = arguments.length;
 					if ( args < 2 )
@@ -9583,7 +9330,7 @@ var PS = {}; // Global namespace for public API
 					return id;
 				},
 
-				// PSEngine.timerStop( id )
+				// PS.timerStop( id )
 				// Stops a timer matching [id]
 				// Returns id or PS.ERROR
 
@@ -9591,9 +9338,9 @@ var PS = {}; // Global namespace for public API
 				{
 					var fn, args, i, len, timer;
 
-					fn = "[PSEngine.timerStop] ";
+					fn = "[PS.timerStop] ";
 
-					// PSEngine.debug(fn + "id = " + id + "\n");
+					// PS.debug(fn + "id = " + id + "\n");
 
 					args = arguments.length;
 					if ( args < 1 )
@@ -9632,7 +9379,7 @@ var PS = {}; // Global namespace for public API
 				{
 					var fn, val;
 
-					fn = "[PSEngine.random] ";
+					fn = "[PS.random] ";
 
 					if ( arguments.length < 1 )
 					{
@@ -9659,7 +9406,7 @@ var PS = {}; // Global namespace for public API
 				{
 					var fn, args, r, g, b;
 
-					fn = "[PSEngine.makeRGB] ";
+					fn = "[PS.makeRGB] ";
 
 					args = arguments.length;
 					if ( args < 3 )
@@ -9726,7 +9473,7 @@ var PS = {}; // Global namespace for public API
 				{
 					var fn, args, rgb, result, red, green, blue, rval, gval, type;
 
-					fn = "[PSEngine.unmakeRGB] ";
+					fn = "[PS.unmakeRGB] ";
 
 					args = arguments.length;
 					if ( args < 2 )
@@ -9803,7 +9550,7 @@ var PS = {}; // Global namespace for public API
 					return result;
 				},
 
-				// PSEngine.applyRect()
+				// PS.applyRect()
 				// Apply a function to a rectangular region of beads
 				// [left, top, width, height] define a region inside the grid
 				// [exec] is a function to be called on each bead
@@ -9813,7 +9560,7 @@ var PS = {}; // Global namespace for public API
 				{
 					var fn, args, xmax, ymax, left, top, width, height, exec, right, bottom, x, y, result, arglist, len, i;
 
-					fn = "[PSEngine.applyRect] ";
+					fn = "[PS.applyRect] ";
 
 					args = arguments.length;
 					if ( args < 5 )
@@ -9977,7 +9724,7 @@ var PS = {}; // Global namespace for public API
 					return result;
 				},
 
-				// PSEngine.hex ( val, padding )
+				// PS.hex ( val, padding )
 				// Converts a number to a hex string with optional padding
 				// Returns string or PS.ERROR
 
@@ -9985,7 +9732,7 @@ var PS = {}; // Global namespace for public API
 				{
 					var fn, val, type, padding, hex;
 
-					fn = "[PSEngine.hex] ";
+					fn = "[PS.hex] ";
 
 					val = val_p; // avoid arg mutation
 					type = _typeOf( val );
@@ -10028,7 +9775,7 @@ var PS = {}; // Global namespace for public API
 					return ( "0x" + hex );
 				},
 
-				// PSEngine.keyRepeat ( repeat, init, delay )
+				// PS.keyRepeat ( repeat, init, delay )
 				// Controls keyboard repeat parameters
 				// [repeat] = true to enable repeats, false to disable, default = true
 				// [init] = initial delay before first repeat, default = 30 (1/2 sec)
@@ -10039,7 +9786,7 @@ var PS = {}; // Global namespace for public API
 				{
 					var fn, type, repeat, delay, init;
 
-					fn = "[PSEngine.keyRepeat] ";
+					fn = "[PS.keyRepeat] ";
 
 					// verify repeat argument
 
@@ -10114,7 +9861,7 @@ var PS = {}; // Global namespace for public API
 				{
 					var fn, args, filename, exec, format, ext, image, id, type;
 
-					fn = "[PSEngine.imageLoad] ";
+					fn = "[PS.imageLoad] ";
 
 					args = arguments.length;
 					if ( args < 2 )
@@ -10210,7 +9957,7 @@ var PS = {}; // Global namespace for public API
 					var fn, args, xmax, ymax, image, xpos, ypos, region, w, h, format, data, type, top, left, width, height, plane,
 						val, wsize, rowptr, ptr, drawx, drawy, y, x, r, g, b, a, rgb, rval, gval, i, bead, color, any;
 
-					fn = "[PSEngine.imageBlit] ";
+					fn = "[PS.imageBlit] ";
 
 					args = arguments.length;
 					if ( args < 3 )
@@ -10558,7 +10305,7 @@ var PS = {}; // Global namespace for public API
 					var fn, args, format, region, type, w, h, data, top, left, width, height, total, output,
 						right, bottom, id, cnt, x, y, i, bead, color;
 
-					fn = "[PSEngine.imageCapture] ";
+					fn = "[PS.imageCapture] ";
 
 					args = arguments.length;
 					if ( args > 2 )
@@ -10773,7 +10520,7 @@ var PS = {}; // Global namespace for public API
 					var fn, args, image, region, format, linelen, hex, w, h, psize, data, type, top, left, width, height,
 						total, str, wsize, pcnt, done, a, rowptr, ptr, y, x, r, g, b, rgb, rval, gval;
 
-					fn = "[PSEngine.imageDump] ";
+					fn = "[PS.imageDump] ";
 
 					args = arguments.length;
 					if ( args < 1 )
@@ -11074,14 +10821,14 @@ var PS = {}; // Global namespace for public API
 				// SPRITE API
 				// ----------
 
-				// PSEngine.spriteSolid( image, region )
+				// PS.spriteSolid( image, region )
 				// Create a solid sprite of specified dimensions
 
 				spriteSolid : function ( widthP, heightP )
 				{
 					var fn, args, width, height, s;
 
-					fn = "[PSEngine.spriteSolid] ";
+					fn = "[PS.spriteSolid] ";
 
 					args = arguments.length;
 					if ( args < 2 )
@@ -11144,14 +10891,14 @@ var PS = {}; // Global namespace for public API
 					return s.id;
 				},
 
-				// PSEngine.spriteSolidColor ( sprite, color )
+				// PS.spriteSolidColor ( sprite, color )
 				// Sets color of a solid sprite
 
 				spriteSolidColor : function ( sprite, p1, p2, p3 )
 				{
 					var fn, args, s, colors, current, rgb, r, g, b;
 
-					fn = "[PSEngine.spriteSolidColor] ";
+					fn = "[PS.spriteSolidColor] ";
 
 					args = arguments.length;
 					if ( args < 1 )
@@ -11247,14 +10994,14 @@ var PS = {}; // Global namespace for public API
 					return current.rgb;
 				},
 
-				// PSEngine.spriteSolidAlpha ( sprite, alpha )
+				// PS.spriteSolidAlpha ( sprite, alpha )
 				// Sets alpha of a solid sprite
 
 				spriteSolidAlpha : function ( spriteP, alphaP )
 				{
 					var fn, args, sprite, alpha, s, current, type;
 
-					fn = "[PSEngine.spriteSolidAlpha] ";
+					fn = "[PS.spriteSolidAlpha] ";
 
 					args = arguments.length;
 					if ( args < 1 )
@@ -11321,7 +11068,7 @@ var PS = {}; // Global namespace for public API
 					return current.a;
 				},
 
-				// PSEngine.spriteImage( image, region )
+				// PS.spriteImage( image, region )
 				// Create a sprite from an image with optional subregion
 				// Makes a private format 4 reference image
 
@@ -11329,7 +11076,7 @@ var PS = {}; // Global namespace for public API
 				{
 					var fn, args, w, h, format, data, type, top, left, width, height, ndata, wsize, rowptr, ptr, x, y, i, rgb, r, g, b, a, rval, gval, s;
 
-					fn = "[PSEngine.spriteImage] ";
+					fn = "[PS.spriteImage] ";
 					args = arguments.length;
 
 					if ( args < 1 )
@@ -11538,19 +11285,19 @@ var PS = {}; // Global namespace for public API
 
 					_imageCnt += 1;
 
-					// PSEngine.imageDump( s.image );
+					// PS.imageDump( s.image );
 
 					return s.id;
 				},
 
-				// PSEngine.spriteShow( sprite, show )
+				// PS.spriteShow( sprite, show )
 				// Toggles visibility of a sprite
 
 				spriteShow : function ( spriteP, showP )
 				{
 					var fn, args, sprite, show, s;
 
-					fn = "[PSEngine.spriteShow] ";
+					fn = "[PS.spriteShow] ";
 
 					args = arguments.length;
 					if ( args < 1 )
@@ -11605,14 +11352,14 @@ var PS = {}; // Global namespace for public API
 					return s.visible;
 				},
 
-				// PSEngine.spriteAxis( sprite, x, y )
+				// PS.spriteAxis( sprite, x, y )
 				// Sets/inspects positional axis of sprite
 
 				spriteAxis : function ( spriteP, xP, yP )
 				{
 					var fn, args, sprite, x, y, s, type;
 
-					fn = "[PSEngine.spriteAxis] ";
+					fn = "[PS.spriteAxis] ";
 
 					args = arguments.length;
 					if ( args < 1 )
@@ -11695,14 +11442,14 @@ var PS = {}; // Global namespace for public API
 
 				},
 
-				// PSEngine.spritePlane( sprite, plane )
+				// PS.spritePlane( sprite, plane )
 				// Sets/inspects sprite plane
 
 				spritePlane : function ( spriteP, planeP )
 				{
 					var fn, args, sprite, plane, s, type;
 
-					fn = "[PSEngine.spritePlane] ";
+					fn = "[PS.spritePlane] ";
 
 					args = arguments.length;
 					if ( args < 1 )
@@ -11780,7 +11527,7 @@ var PS = {}; // Global namespace for public API
 					return s.plane;
 				},
 
-				// PSEngine.spriteMove ( sprite, x, y )
+				// PS.spriteMove ( sprite, x, y )
 				// Erases sprite at previous location (if any)
 				// Redraws at x/y
 
@@ -11788,7 +11535,7 @@ var PS = {}; // Global namespace for public API
 				{
 					var fn, args, sprite, x, y, s, type, h_left, h_top, h_width, h_height, v_left, v_top, v_width, v_height, any;
 
-					fn = "[PSEngine.spriteMove] ";
+					fn = "[PS.spriteMove] ";
 
 					args = arguments.length;
 					if ( args < 1 )
@@ -11975,14 +11722,14 @@ var PS = {}; // Global namespace for public API
 					return { x : s.x, y : s.y };
 				},
 
-				// PSEngine.spriteCollide( sprite, exec )
+				// PS.spriteCollide( sprite, exec )
 				// Sets/inspects collision function
 
 				spriteCollide : function ( sprite, execP )
 				{
 					var fn, args, s, exec, type;
 
-					fn = "[PSEngine.spriteCollide] ";
+					fn = "[PS.spriteCollide] ";
 
 					args = arguments.length;
 					if ( args < 1 )
@@ -12026,14 +11773,14 @@ var PS = {}; // Global namespace for public API
 					return s.collide;
 				},
 
-				// PSEngine.spriteDelete( sprite)
+				// PS.spriteDelete( sprite)
 				// Deletes a sprite
 
 				spriteDelete : function ( sprite )
 				{
 					var fn, args, len, i, s;
 
-					fn = "[PSEngine.spriteDelete] ";
+					fn = "[PS.spriteDelete] ";
 
 					args = arguments.length;
 					if ( args < 1 )
@@ -12072,7 +11819,7 @@ var PS = {}; // Global namespace for public API
 				// AUDIO FUNCTIONS
 				//----------------
 
-				// PSEngine.audioLoad()
+				// PS.audioLoad()
 				// Loads a library sound and assigns a buffer
 				// REQUIRED [filename] is the name of a library sound
 				// OPTIONAL [params] is an object with the following optional properties:
@@ -12091,7 +11838,7 @@ var PS = {}; // Global namespace for public API
 				{
 					var fn, result;
 
-					fn = "[PSEngine.audioLoad] ";
+					fn = "[PS.audioLoad] ";
 
 					if ( arguments.length < 1 )
 					{
@@ -12110,7 +11857,7 @@ var PS = {}; // Global namespace for public API
 					return result.channel;
 				},
 
-				// PSEngine.audioPlay()
+				// PS.audioPlay()
 				// Loads a library sound, assigns a buffer and plays it
 				// REQUIRED [name] is the name of a library sound
 				// OPTIONAL [params] is an object with the following optional properties:
@@ -12127,7 +11874,7 @@ var PS = {}; // Global namespace for public API
 				{
 					var fn, args, filename, params, type, result;
 
-					fn = "[PSEngine.audioPlay] ";
+					fn = "[PS.audioPlay] ";
 
 					args = arguments.length;
 					if ( args < 1 )
@@ -12164,7 +11911,7 @@ var PS = {}; // Global namespace for public API
 					return result.channel;
 				},
 
-				// PSEngine.audioPause()
+				// PS.audioPause()
 				// Toggles pause on an audio channel
 				// [channel] is a channel id
 				// Returns channel id on success, PS.ERROR on error
@@ -12173,7 +11920,7 @@ var PS = {}; // Global namespace for public API
 				{
 					var fn, args, result;
 
-					fn = "[PSEngine.audioPause] ";
+					fn = "[PS.audioPause] ";
 
 					args = arguments.length;
 					if ( args < 1 )
@@ -12193,7 +11940,7 @@ var PS = {}; // Global namespace for public API
 					return result;
 				},
 
-				// PSEngine.audioStop()
+				// PS.audioStop()
 				// Stops a playing audio channel
 				// [channel] is a channel id
 				// Returns channel id on success, PS.ERROR on error
@@ -12202,7 +11949,7 @@ var PS = {}; // Global namespace for public API
 				{
 					var fn, args, result;
 
-					fn = "[PSEngine.audioStop] ";
+					fn = "[PS.audioStop] ";
 
 					args = arguments.length;
 					if ( args < 1 )
@@ -12226,7 +11973,7 @@ var PS = {}; // Global namespace for public API
 					return result;
 				},
 
-				// PSEngine.piano ( val, flag )
+				// PS.piano ( val, flag )
 				// Returns filename of indexed piano note
 				// [val] is index
 				// Optional [flag] specifies long version
@@ -12235,7 +11982,7 @@ var PS = {}; // Global namespace for public API
 				{
 					var fn, len, type, val, flag, str;
 
-					fn = "[PSEngine.piano] ";
+					fn = "[PS.piano] ";
 					len = _PIANO_FILES.length;
 
 					val = val_p; // avoid arg mutation;
@@ -12276,7 +12023,7 @@ var PS = {}; // Global namespace for public API
 					return str;
 				},
 
-				// PSEngine.harpsichord ( val, flag )
+				// PS.harpsichord ( val, flag )
 				// Returns filename of indexed harpsichord note
 				// [val] is index
 				// Optional [flag] specifies long version
@@ -12285,7 +12032,7 @@ var PS = {}; // Global namespace for public API
 				{
 					var fn, len, type, val, flag, str;
 
-					fn = "[PSEngine.harpsichord] ";
+					fn = "[PS.harpsichord] ";
 					len = _HCHORD_FILES.length;
 
 					val = val_p; // avoid arg mutation;
@@ -12326,7 +12073,7 @@ var PS = {}; // Global namespace for public API
 					return str;
 				},
 
-				// PSEngine.xylophone ( val )
+				// PS.xylophone ( val )
 				// Returns filename of indexed xylophone note
 				// [val] is index
 
@@ -12334,7 +12081,7 @@ var PS = {}; // Global namespace for public API
 				{
 					var fn, len, type, val, str;
 
-					fn = "[PSEngine.xylophone] ";
+					fn = "[PS.xylophone] ";
 					len = _XYLO_FILES.length;
 
 					val = val_p; // avoid arg mutation;
@@ -12368,7 +12115,7 @@ var PS = {}; // Global namespace for public API
 				{
 					var fn, text, type, e;
 
-					fn = "[PSEngine.debug] ";
+					fn = "[PS.debug] ";
 
 					if ( arguments.length > 1 )
 					{
@@ -12408,7 +12155,7 @@ var PS = {}; // Global namespace for public API
 				{
 					var fn, e;
 
-					fn = "[PSEngine.debugClose] ";
+					fn = "[PS.debugClose] ";
 
 					if ( arguments.length > 0 )
 					{
@@ -12429,7 +12176,7 @@ var PS = {}; // Global namespace for public API
 				{
 					var fn, e;
 
-					fn = "[PSEngine.debugClear] ";
+					fn = "[PS.debugClear] ";
 
 					if ( arguments.length > 0 )
 					{
@@ -12446,14 +12193,14 @@ var PS = {}; // Global namespace for public API
 				// PATHFINDING API
 				//----------------
 
-				// PSEngine.pathMap ( image )
-				// Takes an image and returns a pathmap id for PSEngine.pathFind()
+				// PS.pathMap ( image )
+				// Takes an image and returns a pathmap id for PS.pathFind()
 
 				line : function ( x1_p, y1_p, x2_p, y2_p )
 				{
 					var fn, args, x1, y1, x2, y2, path;
 
-					fn = "[PSEngine.line] ";
+					fn = "[PS.line] ";
 
 					args = arguments.length;
 					if ( args < 4 )
@@ -12520,14 +12267,14 @@ var PS = {}; // Global namespace for public API
 					return path;
 				},
 
-				// PSEngine.pathMap ( image )
-				// Takes an image and returns a pathmap id for PSEngine.pathFind()
+				// PS.pathMap ( image )
+				// Takes an image and returns a pathmap id for PS.pathFind()
 
 				pathMap : function ( image )
 				{
 					var fn, args, pm;
 
-					fn = "[PSEngine.pathMap] ";
+					fn = "[PS.pathMap] ";
 
 					args = arguments.length;
 					if ( args < 1 )
@@ -12563,7 +12310,7 @@ var PS = {}; // Global namespace for public API
 				{
 					var fn, args, pathmap, x1, y1, x2, y2, options, pm, type, path, val, no_diagonals, cut_corners;
 
-					fn = "[PSEngine.pathFind] ";
+					fn = "[PS.pathFind] ";
 
 					args = arguments.length;
 					if ( args < 5 )
@@ -12733,7 +12480,7 @@ var PS = {}; // Global namespace for public API
 				{
 					var fn, args, pathmap, left, top, width, height, data, pm, max, type, result;
 
-					fn = "[PSEngine.pathData] ";
+					fn = "[PS.pathData] ";
 
 					args = arguments.length;
 					if ( args < 5 )
@@ -12885,7 +12632,7 @@ var PS = {}; // Global namespace for public API
 				{
 					var fn, args;
 
-					fn = "[PSEngine.pathDelete] ";
+					fn = "[PS.pathDelete] ";
 
 					args = arguments.length;
 					if ( args < 1 )
@@ -12912,7 +12659,7 @@ var PS = {}; // Global namespace for public API
 				{
 					var fn, args, pm, result;
 
-					fn = "[PSEngine.pathNear] ";
+					fn = "[PS.pathNear] ";
 
 					args = arguments.length;
 					if ( args < 5 )
@@ -12939,18 +12686,10 @@ var PS = {}; // Global namespace for public API
 
 					result = _pathNear( pm, x1, y1, x2, y2 );
 					return result;
-				},
-
-				//------------
-				// NETWORK API
-				//------------
-
-				netLogin : function ()
-				{
-					_net.login();
 				}
 			};
 
+			// Put the PS constants into the PSEngine object
 			ProvideConstants(PSEngine);
 
 			// Stubs to make it more permissive of errors
