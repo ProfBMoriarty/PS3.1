@@ -24,7 +24,7 @@
 // The following comments are for JSLint
 
 /*jslint nomen: true, white: true, vars: true */
-/*global document, window, screen, console, Image, AQ */
+/*global document, window, screen, console, Image, AQ, PIXI */
 
 var Perlenspiel; // Engine bootstrap
 var PS = {}; // Global namespace for public API
@@ -191,6 +191,7 @@ var PS = {}; // Global namespace for public API
 			var _CLEAR = -1; // flag for not touching or not over a bead
 			var _FADER_FPS = 4; // do fader queue every 1/15 of a second
 			var _DIAGONAL_COST = 1.4142; // square root of 2; for pathfinder
+			var _LABEL_MAX = 16; // maximum input label length
 
 			// Names of instrument files
 
@@ -240,6 +241,13 @@ var PS = {}; // Global namespace for public API
 						rgb : 0xFFFFFF,
 						str : "rgba(255,255,255,1)"
 					},
+					shadow : {
+						show : false,
+						r : 0xC0, g : 0xC0, b : 0xC0, a : 255,
+						rgb : 0xC0C0C0,
+						str : "rgba(192,192,192,1)",
+						params : "0px 0px 64px 8px "
+					},
 					padLeft : 0,
 					padRight : 0,
 					ready : false
@@ -249,6 +257,8 @@ var PS = {}; // Global namespace for public API
 
 				status : {
 					text : "",
+					label : "",
+					exec : null,
 					color : {
 						r : 0, g : 0, b : 0, a : 255,
 						rgb : 0x000000,
@@ -259,8 +269,13 @@ var PS = {}; // Global namespace for public API
 				// Fader defaults
 
 				fader : {
+					active : false,
+					kill : false,
+					r : 0, g : 0, b: 0, rgb : null,
+					tr : 0, tg : 0, tb: 0, trgb: 0, tstr : null,
+					step : 0,
 					rate : 0,
-					rgb : null,
+					onStep : null,
 					onEnd : null,
 					params : null
 				},
@@ -276,6 +291,11 @@ var PS = {}; // Global namespace for public API
 						r : 255, g : 255, b : 255, a : 255,
 						rgb : 0xFFFFFF,
 						str : "rgba(255,255,255,1)"
+					},
+					bgColor : {
+						r : 255, g : 255, b : 255, a : 0,
+						rgb : 0xFFFFFF,
+						str : "rgba(255,255,255,0)"
 					},
 					radius : 0,
 					scale : 100,
@@ -316,7 +336,7 @@ var PS = {}; // Global namespace for public API
 				audio : {
 					volume : 0.5,
 					max_volume : 1.0,
-					path : "http://users.wpi.edu/~bmoriarty/ps/audio/", // default audio path, case sensitive!
+					path : "http://alpheus.wpi.edu/~bmoriarty/ps/audio/",
 					loop : false,
 					error_sound : "fx_uhoh"
 				}
@@ -331,12 +351,13 @@ var PS = {}; // Global namespace for public API
 			var _system = {
 				engine : "Perlenspiel",
 				major : 3,
-				minor : 2,
-				revision : 0,
+				minor : 1,
+				revision : 6,
+				audio : null, // populated by PS._sys()
 				host : {
-					app : "Unknown App",
-					version : "?",
-					os : "Unknown OS" },
+					app : "",
+					version : "",
+					os : "" },
 				inputs : {
 					touch : false
 				}
@@ -344,12 +365,13 @@ var PS = {}; // Global namespace for public API
 
 			var _RSTR, _GBSTR, _BASTR, _ASTR; // color strings
 
-			//	var _DEFAULTS; // working copy of _DEFAULTS
+			var _main = null; // main DOM element
+			var _init = null; // font loading div
 
-			var _main; // main DOM element
 			var _grid; // master grid object
 			var _beads; // master list of bead objects
 			var _status; // status line object
+
 			var _anyDirty = false; // dirty bead flag
 
 			// Image support
@@ -373,6 +395,7 @@ var PS = {}; // Global namespace for public API
 
 			// Keyboard support
 
+			var _keysActive; // true if keyboard events are active
 			var _transKeys; // regular key translation array
 			var _shiftedKeys; // shifted key translation array
 			var _unshiftedKeys; // unshifted key translation array
@@ -408,6 +431,31 @@ var PS = {}; // Global namespace for public API
 
 			var _pathmaps; // array of pathmaps
 			var _pathmapCnt; // counter for pathmap ids
+
+			// Footer fader
+
+			var _footerTimer = null;
+			var _footerDelay = 50; // wait 5 seconds before fade
+			var _footerOpacity = 1.0;
+
+			function _footerFade ()
+			{
+				if ( _footerDelay >= 0 )
+				{
+					_footerDelay -= 1;
+				}
+				else
+				{
+					_footerOpacity -= 0.05;
+					if ( _footerOpacity <= 0 )
+					{
+						PS.timerStop( _footerTimer );
+						_footerTimer = null;
+						_footerOpacity = 0;
+					}
+					_footer.style.opacity = _footerOpacity;
+				}
+			}
 
 			//----------------
 			// GENERAL SUPPORT
@@ -447,13 +495,9 @@ var PS = {}; // Global namespace for public API
 
 			// _appendText ( text, element )
 			// Append [text] to DOM [element]
-
-			function _appendText ( text, element )
-			{
-				var e;
-
-				e = document.createTextNode( text );
-				element.appendChild( e );
+			function _appendText(text, element) {
+				var e = document.createTextNode(text);
+				element.appendChild(e);
 			}
 
 			// _isBoolean ( val )
@@ -616,9 +660,9 @@ var PS = {}; // Global namespace for public API
 
 			// Draw bead with specified colors
 
-			function _drawBead ( bead, borderColor, beadColor, glyphColor, gridColor )
+			function _drawBead ( bead, borderColor, beadColor, glyphColor, bgColor, gridColor )
 			{
-				var ctx, size, left, top, width, height, border, radius, curve;
+				var ctx, size, left, top, width, height, border, scaled, radius, curve;
 
 				ctx = _grid.context;
 				size = _grid.bead_size;
@@ -629,45 +673,76 @@ var PS = {}; // Global namespace for public API
 				top = bead.top;
 				width = size;
 				height = size;
-				border = bead.border;
-				radius = bead.radius;
 
-				if ( ( bead.size < size ) || ( radius > 0 ) || ( ( border.width > 0 ) && ( border.color.a < 255 ) ) || !bead.visible )
+				if ( !bead.visible )
 				{
 					ctx.fillStyle = gridColor;
 					ctx.fillRect( left, top, width, height );
+					return;
+				}
 
-					// Done if bead is invisible
+				// Paint bgColor if scaled or non-zero radius
 
-					if ( !bead.visible )
+				scaled = ( bead.size < size );
+				radius = bead.radius;
+				if ( scaled || ( radius > 0 ) )
+				{
+					// If bgColor has transparency, must draw grid color first
+					// This is horribly inefficient
+
+					if ( bead.bgColor.a < 255 )
 					{
-						return;
+						ctx.fillStyle = gridColor;
+						ctx.fillRect( left, top, width, height );
 					}
 
-					// Size is < 100%, so adjust working rect
+					// Only draw bgColor if not transparent
 
-					left += bead.margin;
-					top += bead.margin;
-					width = bead.size;
-					height = bead.size;
+					if ( bead.bgColor.a > 0 )
+					{
+						ctx.fillStyle = bgColor;
+						ctx.fillRect( left, top, width, height );
+					}
+
+					// If scaled, adjust working rect
+
+					if ( scaled )
+					{
+						left += bead.margin;
+						top += bead.margin;
+						width = bead.size;
+						height = bead.size;
+					}
 				}
 
 				// Draw border if needed
 
+				border = bead.border;
 				if ( border.width > 0 ) // > 0 if any border is visible
 				{
-					// fill entire rect with border color
-					// Is this faster than a separate fill for each border?
+					// Draw grid color first if border has transparency
+					// This is horribly inefficient
 
-					ctx.fillStyle = borderColor;
-					if ( !radius )
+					if ( border.color.a < 255 )
 					{
+						ctx.fillStyle = gridColor;
 						ctx.fillRect( left, top, width, height );
 					}
-					else
+
+					// Only draw border if not transparent
+
+					if ( border.color.a > 0 )
 					{
-						curve = Math.floor( ( width * radius ) / 100 );
-						curve = ctx.fillRoundedRect( left, top, width, height, curve );
+						ctx.fillStyle = borderColor;
+						if ( radius === 0 )
+						{
+							ctx.fillRect( left, top, width, height );
+						}
+						else
+						{
+							curve = Math.floor( ( width * radius ) / 100 );
+							curve = ctx.fillRoundedRect( left, top, width, height, curve );
+						}
 					}
 
 					// adjust position and size of color rect
@@ -681,7 +756,7 @@ var PS = {}; // Global namespace for public API
 				// Draw color rect
 
 				ctx.fillStyle = beadColor;
-				if ( !radius )
+				if ( radius === 0 )
 				{
 					ctx.fillRect( left, top, width, height );
 				}
@@ -691,9 +766,9 @@ var PS = {}; // Global namespace for public API
 					ctx.fillRoundedRect( left, top, width, height, curve );
 				}
 
-				// draw glyph
+				// draw glyph if present and not transparent
 
-				if ( bead.glyph.code > 0 )
+				if ( ( bead.glyph.code > 0 ) && ( bead.glyph.color.a > 0 ) )
 				{
 					_grid.context.font = bead.glyph.font;
 					ctx.fillStyle = glyphColor;
@@ -804,17 +879,18 @@ var PS = {}; // Global namespace for public API
 
 			function _gridRGB ( data )
 			{
-				var str, canvas, context, i, bead, level, color, beadColor, borderColor;
+				var str, canvas, i, bead, level, color, beadColor, borderColor;
 
 				str = data.str;
 
 				canvas = _grid.canvas;
-				context = _grid.context;
 
 				// Clear parts of canvas not under the grid
 
-				canvas.backgroundColor = str;
+				canvas.style.backgroundColor = str;
 
+				/*
+				context = _grid.context;
 				if ( _grid.left > 0 )
 				{
 					context.clearRect( 0, _grid.top, _grid.left, canvas.height );
@@ -827,6 +903,7 @@ var PS = {}; // Global namespace for public API
 				{
 					context.clearRect( 0, _grid.bottom, canvas.width, canvas.height - _grid.bottom );
 				}
+				*/
 
 				// set browser background (if not in multispiel mode)
 				if(_NAMESPACE === PS.DEFAULT_NAMESPACE)
@@ -838,7 +915,8 @@ var PS = {}; // Global namespace for public API
 
 				// set status line background
 
-				_status.div.style.backgroundColor = str;
+				_status.statusP.style.backgroundColor = str;
+				_status.inputP.style.backgroundColor = str;
 
 				// set footer background
 
@@ -868,7 +946,7 @@ var PS = {}; // Global namespace for public API
 
 					if ( !bead.visible || ( bead.size < _grid.bead_size ) || ( bead.radius > 0 ) || ( color.a < 255 ) || ( borderColor.a < 255 ) )
 					{
-						_drawBead( bead, borderColor.str, beadColor, bead.glyph.color.str, str );
+						_drawBead( bead, borderColor.str, beadColor, bead.glyph.color.str, bead.bgColor.str, str );
 					}
 				}
 			}
@@ -912,11 +990,19 @@ var PS = {}; // Global namespace for public API
 				_footer.style.color = _RSTR[ r ] + _GBSTR[ g ] + _BASTR[ b ];
 			}
 
+			// Set color of grid shadow
+
+			function _gridShadowRGB ( data )
+			{
+				_grid.canvas.style.boxShadow = _grid.shadow.params + data.str;
+			}
+
 			// Change status line text color
 
 			function _statusRGB ( data )
 			{
-				_status.div.style.color = data.str;
+				_status.statusP.style.color = data.str;
+				_status.inputP.style.color = data.str;
 			}
 
 			// Change bead color
@@ -926,7 +1012,7 @@ var PS = {}; // Global namespace for public API
 				var bead;
 
 				bead = _beads[ element ];
-				_drawBead( bead, bead.border.color.str, data.str, bead.glyph.color.str, _grid.color.str );
+				_drawBead( bead, bead.border.color.str, data.str, bead.glyph.color.str, bead.bgColor.str, _grid.color.str );
 			}
 
 			// Change border color
@@ -936,7 +1022,7 @@ var PS = {}; // Global namespace for public API
 				var bead;
 
 				bead = _beads[ element ];
-				_drawBead( bead, data.str, bead.color.str, bead.glyph.color.str, _grid.color.str );
+				_drawBead( bead, data.str, bead.color.str, bead.glyph.color.str, bead.bgColor.str, _grid.color.str );
 			}
 
 			// Change glyph color
@@ -946,7 +1032,7 @@ var PS = {}; // Global namespace for public API
 				var bead;
 
 				bead = _beads[ element ];
-				_drawBead( bead, bead.border.color.str, bead.color.str, data.str, _grid.color.str );
+				_drawBead( bead, bead.border.color.str, bead.color.str, data.str, bead.bgColor.str, _grid.color.str );
 			}
 
 			// Mark a bead as dirty
@@ -972,7 +1058,7 @@ var PS = {}; // Global namespace for public API
 						if ( bead.dirty )
 						{
 							bead.dirty = false;
-							_drawBead( bead, bead.border.color.str, bead.color.str, bead.glyph.color.str, _grid.color.str );
+							_drawBead( bead, bead.border.color.str, bead.color.str, bead.glyph.color.str, bead.bgColor.str, _grid.color.str );
 						}
 					}
 					_anyDirty = false;
@@ -1089,6 +1175,10 @@ var PS = {}; // Global namespace for public API
 				// Stop the clock
 
 				_clockActive = false;
+				if ( _footerTimer )
+				{
+					PS.timerStop( _footerTimer );
+				}
 
 				if ( ( typeof message !== "string" ) || ( message.length < 1 ) )
 				{
@@ -1099,6 +1189,7 @@ var PS = {}; // Global namespace for public API
 
 				// set footer
 
+				_footer.style.opacity = 1.0;
 				_footer.innerHTML = str;
 
 				// Only debugger gets call stack
@@ -1157,20 +1248,7 @@ var PS = {}; // Global namespace for public API
 
 			function _resetFader ( fader )
 			{
-				var def;
-
-				def = _DEFAULTS.fader;
-
-				fader.active = false;
-				fader.kill = false;
-				fader.rate = def.rate;
-				fader.rgb = def.rgb;
-				fader.onEnd = def.onEnd;
-				fader.params = def.params;
-				fader.r = 0;
-				fader.g = 0;
-				fader.b = 0;
-				fader.step = 0;
+				_copy ( _DEFAULTS.fader, fader );
 				fader.frames.length = 0;
 			}
 
@@ -1209,6 +1287,15 @@ var PS = {}; // Global namespace for public API
 				{
 					return;
 				}
+
+				// Save target data in the fader
+
+				fader.tr = tr;
+				fader.tg = tg;
+				fader.tb = tb;
+				fader.ta = ta;
+				fader.trgb = ( tr * _RSHIFT ) + ( tg * _GSHIFT ) + tb;
+				fader.tstr = _RSTR[ tr ] + _GBSTR[ tg ] + _GBSTR[ tb ] + _ASTR[ ta ];
 
 				cr = r;
 				cg = g;
@@ -1416,11 +1503,13 @@ var PS = {}; // Global namespace for public API
 
 			function _tick ()
 			{
-				var fn, len, i, fader, frame, key, timer, result, exec, id, params;
+				var fn, refresh, len, i, fader, frame, flen, key, timer, result, exec, id, params;
 
-			//		_reportTime();
+				// _reportTime();
 
 				fn = "[_tick] ";
+
+				refresh = false;
 
 				// Fader support
 
@@ -1433,29 +1522,63 @@ var PS = {}; // Global namespace for public API
 					while ( i < len )
 					{
 						fader = _faders[ i ];
+						flen = fader.frames.length; // number of frames in this fader
 						if ( fader.kill )
 						{
-							_faders.splice( i, 1 );
+							_faders.splice( i, 1 ); // remove this frame
 							len -= 1;
 						}
 						else if ( fader.active ) // only active faders
 						{
-							frame = fader.frames[ fader.step ];
+							frame = fader.frames[ fader.step ]; // current frame
+
+							// Call user onStep if present
+
+							exec = fader.onStep;
+							if ( exec )
+							{
+								// 1st param = number of fader steps
+								// 2nd param = current step
+								// 3rd param = current rgb color
+
+								params = [ flen, fader.step, frame.rgb ];
+								if ( fader.params )
+								{
+									params = params.concat( fader.params ); // append user params
+								}
+								try
+								{
+									result = exec.apply( _EMPTY, params );
+									if ( ( result === false ) || ( result === null ) )
+									{
+										// skip ahead to final step
+										fader.step = flen - 1;
+										frame = fader.frames[ fader.step ];
+									}
+									refresh = true;
+								}
+								catch ( e1 )
+								{
+									_errorCatch( fn + "fader .onStep failed [" + e1.message + "]", e1 );
+									return;
+								}
+							}
+
 							if ( fader.exec )
 							{
 								try
 								{
 									fader.exec( frame, fader.element ); // call frame exec with frame data and fader element
 								}
-								catch ( e3 )
+								catch ( e2 )
 								{
-									_errorCatch( fn + "fader .exec failed [" + e3.message + "]", e3 );
+									_errorCatch( fn + "fader .exec failed [" + e2.message + "]", e2 );
 									return;
 								}
 							}
 
 							fader.step += 1;
-							if ( fader.step >= fader.frames.length )
+							if ( fader.step >= flen )
 							{
 								fader.active = false;
 								fader.step = 0;
@@ -1469,9 +1592,9 @@ var PS = {}; // Global namespace for public API
 									{
 										fader.execEnd( frame, fader.element );
 									}
-									catch ( e4 )
+									catch ( e3 )
 									{
-										_errorCatch( fn + "fader .execEnd failed [" + e4.message + "]", e4 );
+										_errorCatch( fn + "fader .execEnd failed [" + e3.message + "]", e3 );
 										return;
 									}
 								}
@@ -1489,10 +1612,11 @@ var PS = {}; // Global namespace for public API
 									try
 									{
 										exec.apply( _EMPTY, params );
+										refresh = true;
 									}
-									catch ( e5 )
+									catch ( e4 )
 									{
-										_errorCatch( fn + "fader .onEnd failed [" + e5.message + "]", e5 );
+										_errorCatch( fn + "fader .onEnd failed [" + e4.message + "]", e4 );
 										return;
 									}
 								}
@@ -1531,14 +1655,14 @@ var PS = {}; // Global namespace for public API
 							key = _holding[ i ];
 							if ( key )
 							{
-			//						key = _keyFilter( key, _holdShift );
 								try
 								{
-									PSEngine.keyDown( key, _holdShift, _holdCtrl );
+									PS.keyDown( key, _holdShift, _holdCtrl );
+									refresh = true;
 								}
-								catch ( e6 )
+								catch ( e5 )
 								{
-									_errorCatch( fn + "Key repeat failed [" + e6.message + "]", e6 );
+									_errorCatch( fn + "Key repeat failed [" + e5.message + "]", e5 );
 									return;
 								}
 							}
@@ -1574,17 +1698,18 @@ var PS = {}; // Global namespace for public API
 							try
 							{
 								result = timer.exec.apply( _EMPTY, timer.arglist );
+								refresh = true;
 							}
-							catch ( e7 )
+							catch ( e6 )
 							{
-								result = _errorCatch( fn + "Timed function failed [" + e7.message + "]", e7 );
+								result = _errorCatch( fn + "Timed function failed [" + e6.message + "]", e6 );
 							}
 
 							// If exec result is PS.ERROR, remove from queue
 
 							if ( result === PS.ERROR )
 							{
-								PSEngine.timerStop( id );
+								PS.timerStop( id );
 							}
 
 							len = _timers.length; // recalc in case timer queue was changed by a timer function or an error
@@ -1598,9 +1723,10 @@ var PS = {}; // Global namespace for public API
 							i += 1;
 						}
 					}
+				}
 
-					// render all changes
-
+				if ( refresh )
+				{
 					_gridDraw();
 				}
 			}
@@ -1941,23 +2067,23 @@ var PS = {}; // Global namespace for public API
 
 			function _rescaleGlyph ( bead )
 			{
-				var bsize, nsize, scale;
+				var bsize, nsize, scale, height;
 
 				bsize = _grid.bead_size;
-				bead.glyph.x = Math.floor( bsize / 2 ); // x is always centered
+				bead.glyph.x = Math.round( bsize / 2 ); // x is always centered
 
 				scale = bead.glyph.scale;
 				if ( scale < 100 )
 				{
-					nsize = Math.floor( ( bsize * scale ) / 100 );
+					nsize = Math.round( ( bsize * scale ) / 100 );
 				}
 				else
 				{
 					nsize = bsize;
 				}
-				bead.glyph.size = Math.floor( nsize / 2 );
-				bead.glyph.font = bead.glyph.size + "pt sans-serif";
-				bead.glyph.y = Math.floor( ( bsize - nsize ) / 2 ) + Math.floor( ( nsize / 7 ) * 4 ); // empirical
+				bead.glyph.size = height = Math.round( nsize / 2 );
+				bead.glyph.font = height + "px 'Droid'";
+				bead.glyph.y = Math.round( ( ( bsize - height ) / 2 ) + ( height / 2 ) );
 			}
 
 			// Reset bead default attributes
@@ -2684,6 +2810,22 @@ var PS = {}; // Global namespace for public API
 				return _endEvent( event );
 			}
 
+			// _keyReset ()
+			// Reset all key params when focus is taken off grid
+
+			function _keyReset ()
+			{
+				var i;
+
+				_holding.length = 0;
+				_holdShift = false;
+				_holdCtrl = false;
+				for ( i = 0; i < 256; i += 1 )
+				{
+					_pressed[ i ] = 0;
+				}
+			}
+
 			// _keyFilter ( key, shift )
 			// Translates weird or shifted keycodes to useful values
 
@@ -3023,6 +3165,28 @@ var PS = {}; // Global namespace for public API
 			// GRID FUNCTIONS
 			//---------------
 
+			function _keysActivate ()
+			{
+				if ( !_keysActive )
+				{
+					document.addEventListener( "keydown", _keyDown, false );
+					document.addEventListener( "keyup", _keyUp, false );
+					_keysActive = true;
+				}
+			}
+
+			function _keysDeactivate ()
+			{
+				_keyReset(); // reset key status
+
+				if ( _keysActive )
+				{
+					document.removeEventListener( "keydown", _keyDown, false );
+					document.removeEventListener( "keyup", _keyUp, false );
+					_keysActive = false;
+				}
+			}
+
 			// Focus manager - instance received mouse focus
 			function _gridFocus(e) {
 				if (!_grid.focused) {
@@ -3068,6 +3232,8 @@ var PS = {}; // Global namespace for public API
 				grid.addEventListener( "mousemove", _mouseMove, false );
 				grid.addEventListener( "mouseout", _gridOut, false );
 
+				_keysActivate();
+
 				// Add the focus manager events if in multispiel mode
 				if (_NAMESPACE !== PS.DEFAULT_NAMESPACE)
 				{
@@ -3107,6 +3273,8 @@ var PS = {}; // Global namespace for public API
 				grid.removeEventListener( "mouseup", _mouseUp, false );
 				grid.removeEventListener( "mousemove", _mouseMove, false );
 				grid.removeEventListener( "mouseout", _gridOut, false );
+
+				_keysDeactivate();
 
 				// Remove the focus manager if in multispiel mode
 				if (_NAMESPACE !== PS.DEFAULT_NAMESPACE)
@@ -3228,6 +3396,91 @@ var PS = {}; // Global namespace for public API
 				return current.rgb;
 			}
 
+			// Set grid shadow color
+			// Returns rgb
+
+			function _gridShadow( show, colors )
+			{
+				var current, rgb, r, g, b;
+
+				current = _grid.shadow;
+				rgb = colors.rgb;
+				if ( rgb !== PS.CURRENT )
+				{
+					if ( rgb === null ) // must inspect r/g/b values
+					{
+						r = colors.r;
+						if ( r === PS.CURRENT )
+						{
+							colors.r = r = current.r;
+						}
+						else if ( r === PS.DEFAULT )
+						{
+							colors.r = r = _DEFAULTS.grid.shadow.r;
+						}
+
+						g = colors.g;
+						if ( g === PS.CURRENT )
+						{
+							colors.g = g = current.g;
+						}
+						else if ( g === PS.DEFAULT )
+						{
+							colors.g = g = _DEFAULTS.grid.shadow.g;
+						}
+
+						b = colors.b;
+						if ( b === PS.CURRENT )
+						{
+							colors.b = b = current.b;
+						}
+						else if ( b === PS.DEFAULT )
+						{
+							colors.b = b = _DEFAULTS.grid.shadow.b;
+						}
+
+						colors.rgb = (r * _RSHIFT) + (g * _GSHIFT) + b;
+					}
+					else if ( rgb === PS.DEFAULT )
+					{
+						_copy( _DEFAULTS.grid.shadow, colors );
+					}
+
+					// Only change color if different
+
+					if ( current.rgb !== colors.rgb )
+					{
+						current.rgb = colors.rgb;
+
+						r = colors.r;
+						g = colors.g;
+						b = colors.b;
+
+						current.str = colors.str = _RSTR[r] + _GBSTR[g] + _BASTR[b];
+
+						current.r = r;
+						current.g = g;
+						current.b = b;
+					}
+				}
+
+				if ( show !== PS.CURRENT )
+				{
+					_grid.shadow.show = show;
+				}
+
+				if ( _grid.shadow.show )
+				{
+					_gridShadowRGB ( current );
+				}
+				else
+				{
+					_grid.canvas.style.boxShadow = "none";
+				}
+
+				return { show : _grid.shadow.show, rgb : current.rgb };
+			}
+
 			// Resize grid to dimensions x/y
 			// Resets all bead attributes
 
@@ -3250,35 +3503,29 @@ var PS = {}; // Global namespace for public API
 
 					// calc size of beads, position/dimensions of centered grid
 
+					_grid.left = 0;
+					_grid.top = 0;
+
 					if ( x >= y )
 					{
 						size = Math.floor( _CLIENT_SIZE / x );
-						_grid.left = 0;
 					}
 					else
 					{
 						size = Math.floor( _CLIENT_SIZE / y );
-						_grid.left = Math.floor( ( _CLIENT_SIZE - (size * x ) ) / 2 );
 					}
 
 					_grid.bead_size = size;
 					_grid.width = size * x;
 					_grid.height = size * y;
-					_grid.right = _grid.left + _grid.width;
-					_grid.top = 0;
+					_grid.right = _grid.width;
 					_grid.bottom = _grid.height;
 
-					// Reset height of grid canvas
-					// Changing the height also clears the canvas
+					// Reset width/height of grid canvas
+					// Changing either of these also clears the canvas
 
-					if ( y >= x )
-					{
-						_grid.canvas.height = _CLIENT_SIZE;
-					}
-					else
-					{
-						_grid.canvas.height = _grid.height;
-					}
+					_grid.canvas.width = _grid.width;
+					_grid.canvas.height = _grid.height;
 
 					_grid.context.textAlign = "center";
 					_grid.context.textBaseline = "middle";
@@ -3604,6 +3851,7 @@ var PS = {}; // Global namespace for public API
 					return {
 						rgb : PS.CURRENT,
 						r : 0, g : 0, b : 0,
+						onStep : PS.CURRENT,
 						onEnd : PS.CURRENT,
 						params : PS.CURRENT
 					};
@@ -3614,6 +3862,7 @@ var PS = {}; // Global namespace for public API
 					return {
 						rgb : PS.DEFAULT,
 						r : 0, g : 0, b : 0,
+						onStep : PS.CURRENT,
 						onEnd : PS.DEFAULT,
 						params : PS.DEFAULT };
 				}
@@ -3683,6 +3932,22 @@ var PS = {}; // Global namespace for public API
 					options.b = 0;
 				}
 
+				// Check .onStep
+
+				val = options.onStep;
+				if ( ( val !== PS.CURRENT ) && ( val !== PS.DEFAULT ) )
+				{
+					type = _typeOf( val );
+					if ( ( type === "undefined" ) || ( val === null ) )
+					{
+						options.onStep = PS.CURRENT;
+					}
+					else if ( type !== "function" )
+					{
+						return _error( fn + "options.onStep property invalid" );
+					}
+				}
+
 				// Check .onEnd
 
 				val = options.onEnd;
@@ -3720,24 +3985,27 @@ var PS = {}; // Global namespace for public API
 
 			function _fade ( x, y, rate, options )
 			{
-				var id, bead, fader, val;
+				var id, bead, color, fader, orate, nrate, val;
 
 				id = ( y * _grid.x ) + x;
 				bead = _beads[ id ];
+				color = bead.color;
 				fader = bead.fader;
+				orate = fader.rate; // save current rate
 
 				if ( bead.active )
 				{
-					if ( rate !== PS.CURRENT )
+					if ( rate === PS.CURRENT )
 					{
-						if ( rate === PS.DEFAULT )
-						{
-							fader.rate = _DEFAULTS.fader.rate;
-						}
-						else
-						{
-							fader.rate = rate;
-						}
+						nrate = orate;
+					}
+					else if ( rate === PS.DEFAULT )
+					{
+						nrate = _DEFAULTS.fader.rate;
+					}
+					else
+					{
+						nrate = rate;
 					}
 
 					val = options.rgb;
@@ -3754,6 +4022,19 @@ var PS = {}; // Global namespace for public API
 						fader.r = options.r;
 						fader.g = options.g;
 						fader.b = options.b;
+					}
+
+					val = options.onStep;
+					if ( val !== PS.CURRENT )
+					{
+						if ( val === PS.DEFAULT )
+						{
+							fader.onStep = _DEFAULTS.fader.onStep;
+						}
+						else
+						{
+							fader.onStep = val;
+						}
 					}
 
 					val = options.onEnd;
@@ -3781,11 +4062,28 @@ var PS = {}; // Global namespace for public API
 							fader.params = val;
 						}
 					}
+
+					// Handle rate change
+
+					if ( orate !== nrate )
+					{
+						fader.rate = nrate;
+						if ( nrate < 1 )
+						{
+							fader.active = false;
+							fader.kill = true;
+						}
+						else if ( fader.active )
+						{
+							_recalcFader( fader, color.r, color.g, color.b, 255 );
+						}
+					}
 				}
 
 				return {
 					rate : fader.rate,
 					rgb : fader.rgb,
+					onStep : fader.onStep,
 					onEnd : fader.onEnd,
 					params : fader.params
 				};
@@ -3831,6 +4129,103 @@ var PS = {}; // Global namespace for public API
 				}
 
 				return bead.radius;
+			}
+
+			function _bgColor ( x, y, colors )
+			{
+				var id, bead, def, current, rgb, r, g, b;
+
+				id = ( y * _grid.x ) + x;
+				bead = _beads[ id ];
+
+				def = _DEFAULTS.bead.bgColor;
+				current = bead.bgColor;
+
+				rgb = colors.rgb;
+				if ( !bead.active || ( rgb === PS.CURRENT ) )
+				{
+					return current.rgb;
+				}
+
+				if ( rgb === null ) // must inspect r/g/b values
+				{
+					r = colors.r;
+					if ( r === PS.CURRENT )
+					{
+						colors.r = r = current.r;
+					}
+					else if ( r === PS.DEFAULT )
+					{
+						colors.r = r = def.r;
+					}
+
+					g = colors.g;
+					if ( g === PS.CURRENT )
+					{
+						colors.g = g = current.g;
+					}
+					else if ( g === PS.DEFAULT )
+					{
+						colors.g = g = def.g;
+					}
+
+					b = colors.b;
+					if ( b === PS.CURRENT )
+					{
+						colors.b = b = current.b;
+					}
+					else if ( b === PS.DEFAULT )
+					{
+						colors.b = b = def.b;
+					}
+
+					colors.rgb = ( r * _RSHIFT ) + ( g * _GSHIFT ) + b;
+				}
+
+				else if ( rgb === PS.DEFAULT )
+				{
+					_copy( def, colors );
+				}
+
+				// Only change color if different
+
+				if ( current.rgb !== colors.rgb )
+				{
+					current.rgb = colors.rgb;
+					current.r = r = colors.r;
+					current.g = g = colors.g;
+					current.b = b = colors.b;
+					current.str = _RSTR[ r ] + _GBSTR[ g ] + _GBSTR[ b ] + _ASTR[ current.a ];
+
+					if ( bead.active && ( ( bead.scale < 100 ) || ( bead.radius > 0 ) ) )
+					{
+						_makeDirty( bead );
+					}
+				}
+
+				return current.rgb;
+			}
+
+			function _bgAlpha ( x, y, alpha )
+			{
+				var id, bead, current;
+
+				id = ( y * _grid.x ) + x;
+				bead = _beads[ id ];
+				current = bead.bgColor;
+
+				if ( ( alpha !== PS.CURRENT ) && ( alpha !== current.a ) )
+				{
+					current.a = alpha;
+					current.str = _RSTR[ current.r ] + _GBSTR[ current.g ] + _GBSTR[ current.b ] + _ASTR[ alpha ];
+
+					if ( bead.active && ( ( bead.scale < 100 ) || ( bead.radius > 0 ) ) )
+					{
+						_makeDirty( bead );
+					}
+				}
+
+				return current.a;
 			}
 
 			function _data ( x, y, data )
@@ -4042,9 +4437,11 @@ var PS = {}; // Global namespace for public API
 							}
 						}
 
-						// Unequal sides allowed only on square beads and beads without glyphs
+						// Unequal sides allowed only on square beads
+						// and beads without glyphs?
 
-						else if ( ( bead.radius > 0 ) || ( bead.glyph.code > 0 ) )
+		//				else if ( ( bead.radius > 0 ) || ( bead.glyph.code > 0 ) )
+						else if ( bead.radius > 0 )
 						{
 							max = Math.max( top, left, bottom, right );
 							_equalBorder( bead, max );
@@ -4200,7 +4597,6 @@ var PS = {}; // Global namespace for public API
 					b = current.b;
 
 					current.str = _RSTR[ r ] + _GBSTR[ g ] + _GBSTR[ b ] + _ASTR[ alpha ];
-					PSEngine.statusText("str = " + current.str);
 					if ( bead.visible )
 					{
 						fader = bead.borderFader;
@@ -4236,24 +4632,27 @@ var PS = {}; // Global namespace for public API
 
 			function _borderFade ( x, y, rate, options )
 			{
-				var id, bead, fader, val;
+				var id, bead, fader, color, orate, nrate, val;
 
 				id = ( y * _grid.x ) + x;
 				bead = _beads[ id ];
+				color = bead.border.color;
 				fader = bead.borderFader;
+				orate = fader.rate;
 
 				if ( bead.active )
 				{
-					if ( rate !== PS.CURRENT )
+					if ( rate === PS.CURRENT )
 					{
-						if ( rate === PS.DEFAULT )
-						{
-							fader.rate = _DEFAULTS.fader.rate;
-						}
-						else
-						{
-							fader.rate = rate;
-						}
+						nrate = orate;
+					}
+					else if ( rate === PS.DEFAULT )
+					{
+						nrate = _DEFAULTS.fader.rate;
+					}
+					else
+					{
+						nrate = rate;
 					}
 
 					val = options.rgb;
@@ -4270,6 +4669,19 @@ var PS = {}; // Global namespace for public API
 						fader.r = options.r;
 						fader.g = options.g;
 						fader.b = options.b;
+					}
+
+					val = options.onStep;
+					if ( val !== PS.CURRENT )
+					{
+						if ( val === PS.DEFAULT )
+						{
+							fader.onStep = _DEFAULTS.fader.onStep;
+						}
+						else
+						{
+							fader.onStep = val;
+						}
 					}
 
 					val = options.onEnd;
@@ -4297,11 +4709,28 @@ var PS = {}; // Global namespace for public API
 							fader.params = val;
 						}
 					}
+
+					// Handle rate change
+
+					if ( orate !== nrate )
+					{
+						fader.rate = nrate;
+						if ( nrate < 1 )
+						{
+							fader.active = false;
+							fader.kill = true;
+						}
+						else if ( fader.active )
+						{
+							_recalcFader( fader, color.r, color.g, color.b, 255 );
+						}
+					}
 				}
 
 				return {
 					rate : fader.rate,
 					rgb : fader.rgb,
+					onStep : fader.onStep,
 					onEnd : fader.onEnd,
 					params : fader.params
 				};
@@ -4315,7 +4744,7 @@ var PS = {}; // Global namespace for public API
 
 			function _glyph ( x, y, glyph )
 			{
-				var id, bead, str, max, top, left, bottom, right;
+				var id, bead, str;
 
 				id = ( y * _grid.x ) + x;
 				bead = _beads[ id ];
@@ -4334,6 +4763,52 @@ var PS = {}; // Global namespace for public API
 					}
 
 					bead.glyph.str = str;
+
+					/*
+					max = _borderMax( bead );
+
+					if ( bead.border.equal )
+					{
+						if ( bead.border.width > max )
+						{
+							_equalBorder( bead, max );
+						}
+					}
+
+					// Must set all borders equal
+
+					else
+					{
+						top = bead.border.top;
+						if ( top > max )
+						{
+							top = max;
+						}
+
+						left = bead.border.left;
+						if ( left > max )
+						{
+							left = max;
+						}
+
+						bottom = bead.border.bottom;
+						if ( bottom > max )
+						{
+							bottom = max;
+						}
+
+						right = bead.border.right;
+						if ( right > max )
+						{
+							right = max;
+						}
+
+						// set all borders equal to largest border
+
+						max = Math.max( top, left, bottom, right );
+						_equalBorder( bead, max );
+					}
+					*/
 
 					_makeDirty( bead );
 				}
@@ -4508,24 +4983,27 @@ var PS = {}; // Global namespace for public API
 
 			function _glyphFade ( x, y, rate, options )
 			{
-				var id, bead, fader, val;
+				var id, bead, color, fader, orate, nrate, val;
 
 				id = ( y * _grid.x ) + x;
 				bead = _beads[ id ];
+				color = bead.glyph.color;
 				fader = bead.glyphFader;
+				orate = fader.rate;
 
 				if ( bead.active )
 				{
-					if ( rate !== PS.CURRENT )
+					if ( rate === PS.CURRENT )
 					{
-						if ( rate === PS.DEFAULT )
-						{
-							fader.rate = _DEFAULTS.fader.rate;
-						}
-						else
-						{
-							fader.rate = rate;
-						}
+						nrate = orate;
+					}
+					else if ( rate === PS.DEFAULT )
+					{
+						nrate = _DEFAULTS.fader.rate;
+					}
+					else
+					{
+						nrate = rate;
 					}
 
 					val = options.rgb;
@@ -4542,6 +5020,19 @@ var PS = {}; // Global namespace for public API
 						fader.r = options.r;
 						fader.g = options.g;
 						fader.b = options.b;
+					}
+
+					val = options.onStep;
+					if ( val !== PS.CURRENT )
+					{
+						if ( val === PS.DEFAULT )
+						{
+							fader.onStep = _DEFAULTS.fader.onStep;
+						}
+						else
+						{
+							fader.onStep = val;
+						}
 					}
 
 					val = options.onEnd;
@@ -4569,11 +5060,28 @@ var PS = {}; // Global namespace for public API
 							fader.params = val;
 						}
 					}
+
+					// Handle rate change
+
+					if ( orate !== nrate )
+					{
+						fader.rate = nrate;
+						if ( nrate < 1 )
+						{
+							fader.active = false;
+							fader.kill = true;
+						}
+						else if ( fader.active )
+						{
+							_recalcFader( fader, color.r, color.g, color.b, 255 );
+						}
+					}
 				}
 
 				return {
 					rate : fader.rate,
 					rgb : fader.rgb,
+					onStep: fader.onStep,
 					onEnd : fader.onEnd,
 					params : fader.params
 				};
