@@ -149,7 +149,6 @@ var PS = {}; // Global namespace for public API
 
 			var _OUTER_CLASS = "outer";
 			var _MAIN_CLASS = "main";
-			var _INIT_CLASS = "init";
 			var _DEBUG_CLASS = "debug";
 			var _STATUS_P_CLASS = "stsp";
 			var _INPUT_P_CLASS = "inp";
@@ -162,7 +161,7 @@ var PS = {}; // Global namespace for public API
 
 			var _OUTER_ID 		= _NAMESPACE + "-" + _OUTER_CLASS;
 			var _MAIN_ID 		= _NAMESPACE + "-" + _MAIN_CLASS;
-			var _INIT_ID 		= _NAMESPACE + "-" + _INIT_CLASS;
+			var _INIT_ID 		= "init";
 			var _DEBUG_ID 		= _NAMESPACE + "-" + _DEBUG_CLASS;
 			var _STATUS_P_ID 	= _NAMESPACE + "-" + _STATUS_P_CLASS;
 			var _INPUT_P_ID 	= _NAMESPACE + "-" + _INPUT_P_CLASS;
@@ -7148,6 +7147,7 @@ var PS = {}; // Global namespace for public API
 
 					sp = document.createElement( "p" );
 					sp.id = _STATUS_P_ID; // use id for styling
+					sp.className = _STATUS_P_CLASS; // use class for styling
 					sp.style.whiteSpace = "nowrap"; // limits to one line
 					sp.style.display = "block"; // initially visible
 					snode = document.createTextNode( "." );
@@ -7158,18 +7158,22 @@ var PS = {}; // Global namespace for public API
 
 					ip = document.createElement( "p" ); // paragraph for input box
 					ip.id = _INPUT_P_ID; // use id for styling
+					ip.className = _INPUT_P_CLASS; // use id for styling
 					ip.style.display = "none"; // initially hidden
 
 					span = document.createElement( "span" ); // span for label
 					span.id = _INPUT_LABEL_ID; // use id for styling
+					span.className = _INPUT_LABEL_CLASS; // use class for styling
 					inode = document.createTextNode( "" ); // textNode for label
 					span.appendChild( inode ); // add node to span
 					ip.appendChild( span ); // add span to paragraph
 
 					span = document.createElement( "span" ); // span for input box
 					span.id = _INPUT_SPAN_ID; // use id for styling
+					span.className = _INPUT_SPAN_CLASS; // use class for styling
 					input = document.createElement( "input" ); // actual input box
 					input.id = _INPUT_BOX_ID; // use id for styling
+					input.className = _INPUT_BOX_CLASS; // use class for styling
 					input.type = "text";
 					input.tabindex = 0;
 					input.wrap = "soft";
