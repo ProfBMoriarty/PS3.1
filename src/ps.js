@@ -459,7 +459,7 @@ var PS = {}; // Global namespace for public API
 					_footerOpacity -= 0.05;
 					if ( _footerOpacity <= 0 )
 					{
-						PS.timerStop( _footerTimer );
+						PSEngine.timerStop( _footerTimer );
 						_footerTimer = null;
 						_footerOpacity = 0;
 					}
@@ -1180,7 +1180,7 @@ var PS = {}; // Global namespace for public API
 				_clockActive = false;
 				if ( _footerTimer )
 				{
-					PS.timerStop( _footerTimer );
+					PSEngine.timerStop( _footerTimer );
 				}
 
 				if ( ( typeof message !== "string" ) || ( message.length < 1 ) )
@@ -1712,7 +1712,7 @@ var PS = {}; // Global namespace for public API
 
 							if ( result === PS.ERROR )
 							{
-								PS.timerStop( id );
+								PSEngine.timerStop( id );
 							}
 
 							len = _timers.length; // recalc in case timer queue was changed by a timer function or an error
@@ -7606,7 +7606,7 @@ var PS = {}; // Global namespace for public API
 
 					_gridActivate ();
 
-					_footerTimer = PS.timerStart( 6, _footerFade );
+					_footerTimer = PSEngine.timerStart( 6, _footerFade );
 
 					if ( PSEngine.init )
 					{

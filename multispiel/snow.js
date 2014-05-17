@@ -112,9 +112,12 @@ GAME.Snowball = function(x, y, color) {
 	PS.data(x, y, 1)		// Make solid
 	PS.color(x, y, color)	// Fill color with flake color
 	PS.radius(x, y, 50)		// Turn into a snowball shape
-	// Tween it to a square bead
+	PS.border(x, y, 15)		// Set border to match the background color
+	PS.borderColor(x, y, PS.COLOR_BLACK)
+	TweenTo(x, y, 0.4, PS.border.bind(PS), 0, lerpBorder)
+	// Tween the one below to a square bead
 	if( GAME.data(x, y+1, GAME.offGrid) === GAME.solid ) {
-		TweenTo(x, y+1, 1.0, PS.radius.bind(PS), 0, lerp) }}
+		TweenTo(x, y+1, 0.8, PS.radius.bind(PS), 0, lerp) } }
 
 // Make a flake
 GAME.SpawnFlake = function(x, y) {
@@ -148,6 +151,13 @@ function bind(func, object) {
 
 function lerp(a, b, t) {
 	return (a + (b-a) * t); }
+
+function lerpBorder(a, b, t) {
+	if (typeof a === "object")
+		a = a.width
+	if (typeof b === "object")
+		b = b.width
+	return Math.floor(a + (b-a) * t); }
 
 function lerp2(a, b, t) {
 	return (a + (b-a) * (t*t)); }
