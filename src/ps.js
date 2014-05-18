@@ -1502,7 +1502,7 @@ Start : function (namespace) {
 		PSEngine.statusText ( "MS: " + ( now - _lastTime ) );
 		_lastTime = now;
 	}
-     */
+	*/
 
 	function _tick ()
 	{
@@ -12697,19 +12697,20 @@ Start : function (namespace) {
 	ProvideConstants(PSEngine);
 
 	// Stubs to make it more permissive of errors
-	PSEngine.touch		= function( x, y, data, options ) {};
-	PSEngine.release	= function( x, y, data, options ) {};
-	PSEngine.enter		= function( x, y, data, options ) {};
-	PSEngine.exit		= function( x, y, data, options ) {};
-	PSEngine.exitGrid	= function( options ) {};
-	PSEngine.keyDown	= function( key, shift, ctrl, options ) {};
-	PSEngine.keyUp		= function( key, shift, ctrl, options ) {};
-	PSEngine.input		= function( sensors, options ) {};
+	// PSEngine.touch		= function( x, y, data, options ) {};
+	// PSEngine.release	= function( x, y, data, options ) {};
+	// PSEngine.enter		= function( x, y, data, options ) {};
+	// PSEngine.exit		= function( x, y, data, options ) {};
+	// PSEngine.exitGrid	= function( options ) {};
+	// PSEngine.keyDown	= function( key, shift, ctrl, options ) {};
+	// PSEngine.keyUp		= function( key, shift, ctrl, options ) {};
+	// PSEngine.input		= function( sensors, options ) {};
 
 	return PSEngine;
-}
-};
+}	// End of Perlenspiel.Start
+};	// End of Perlenspiel object
 
+	// Create default Perlenspiel instance in the default namespace
 	PS = Perlenspiel.Start(PS.DEFAULT_NAMESPACE);
 }() );
 
