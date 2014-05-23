@@ -25,11 +25,121 @@
 /*jslint nomen: true, white: true, vars: true */
 /*global document, window, screen, console, Image, AQ, PIXI */
 
-var PS; // Global namespace for public API
+var Perlenspiel; // Engine bootstrap
+var PS = {}; // Global namespace for public API
 
 ( function ()
 {
 	"use strict";
+
+	// Places the perlenspiel constants into an object
+	function ProvideConstants(obj) {
+		obj.ALL = "PS.ALL";
+		obj.CURRENT = "PS.CURRENT";
+		obj.DONE = "PS.DONE";
+		obj.DEFAULT = "PS.DEFAULT";
+		obj.ERROR = "PS.ERROR";
+		obj.EMPTY = "PS.EMPTY";
+		obj.UNEQUAL = "PS.UNEQUAL";
+		obj.GRID = "PS.GRID";
+		obj.HTML5_AUDIO = "PS.HTML5_AUDIO";
+		obj.WEB_AUDIO = "PS.WEB_AUDIO";
+
+		obj.SPRITE_TOUCH = "PS.SPRITE_TOUCH";
+		obj.SPRITE_OVERLAP = "PS.SPRITE_OVERLAP";
+
+		// Color constants
+
+		obj.COLOR_BLACK = 0x000000;
+		obj.COLOR_WHITE = 0xFFFFFF;
+		obj.COLOR_GRAY_LIGHT = 0xC0C0C0;
+		obj.COLOR_GRAY = 0x808080;
+		obj.COLOR_GRAY_DARK = 0x404040;
+		obj.COLOR_RED = 0xFF0000;
+		obj.COLOR_ORANGE = 0xFF8000;
+		obj.COLOR_YELLOW = 0xFFFF00;
+		obj.COLOR_GREEN = 0x00FF00;
+		obj.COLOR_BLUE = 0x0000FF;
+		obj.COLOR_INDIGO = 0x4000FF;
+		obj.COLOR_VIOLET = 0x8000FF;
+		obj.COLOR_MAGENTA = 0xFF00FF;
+		obj.COLOR_CYAN = 0x00FFFF;
+
+		obj.ALPHA_OPAQUE = 255;
+		obj.ALPHA_TRANSPARENT = 0;
+
+		// Key constants
+
+		obj.KEY_ENTER = 13;
+		obj.KEY_TAB = 9;
+		obj.KEY_ESCAPE = 27;
+
+		obj.KEY_PAGE_UP = 1001, // 3;
+		obj.KEY_PAGE_DOWN = 1002, // 3;
+		obj.KEY_END = 1003, // 3;
+		obj.KEY_HOME = 1004, // 3;
+
+		obj.KEY_ARROW_LEFT = 1005, // 3;
+		obj.KEY_ARROW_UP = 1006, // 3;
+		obj.KEY_ARROW_RIGHT = 1007, // 3;
+		obj.KEY_ARROW_DOWN = 1008, // 4;
+
+		obj.KEY_INSERT = 1009, // 4;
+		obj.KEY_DELETE = 1010, // 4;
+
+		obj.KEY_PAD_0 = 96;
+		obj.KEY_PAD_1 = 97;
+		obj.KEY_PAD_2 = 98;
+		obj.KEY_PAD_3 = 99;
+		obj.KEY_PAD_4 = 100;
+		obj.KEY_PAD_5 = 101;
+		obj.KEY_PAD_6 = 102;
+		obj.KEY_PAD_7 = 103;
+		obj.KEY_PAD_8 = 104;
+		obj.KEY_PAD_9 = 105;
+		obj.KEY_F1 = 112;
+		obj.KEY_F2 = 113;
+		obj.KEY_F3 = 114;
+		obj.KEY_F4 = 115;
+		obj.KEY_F5 = 116;
+		obj.KEY_F6 = 117;
+		obj.KEY_F7 = 118;
+		obj.KEY_F8 = 119;
+		obj.KEY_F9 = 120;
+		obj.KEY_F10 = 121;
+
+		// Input device constants
+
+		obj.WHEEL_FORWARD = "PS.WHEEL_FORWARD";
+		obj.WHEEL_BACKWARD = "PS.WHEEL_BACKWARD";
+
+		// Pathfinder constants
+
+		obj.FINDER_ASTAR = "PS.FINDER_ASTAR";
+		obj.FINDER_BREADTH_FIRST = "PS.FINDER_BREADTH_FIRST";
+		obj.FINDER_BEST_FIRST = "PS.FINDER_BEST_FIRST";
+		obj.FINDER_DIJKSTRA = "PS.FINDER_DIJKSTRA";
+		obj.FINDER_BI_ASTAR = "PS.FINDER_BI_ASTAR";
+		obj.FINDER_BI_BEST_FIRST = "PS.FINDER_BI_BEST_FIRST";
+		obj.FINDER_BI_DIJKSTRA = "PS.FINDER_BI_DIJKSTRA";
+		obj.FINDER_BI_BREADTH_FIRST = "PS.FINDER_BI_BREADTH_FIRST";
+		obj.FINDER_JUMP_POINT = "PS.FINDER_JUMP_POINT";
+
+		// Multispiel support
+		obj.DEFAULT_NAMESPACE = "game";
+	}
+
+	// Copy perlenspiel constants into global object
+	ProvideConstants(PS);
+
+Perlenspiel = {
+//-----------
+// PUBLIC API
+//-----------
+Start : function (namespace) {
+	var PSEngine;
+
+	var _NAMESPACE = namespace;
 
 	//------------------
 	// PRIVATE CONSTANTS
@@ -37,18 +147,30 @@ var PS; // Global namespace for public API
 
 	// DOM element ids
 
-	var _OUTER_ID = "outer";
-	var _MAIN_ID = "main";
-	var _INIT_ID = "init";
-	var _DEBUG_ID = "debug";
-	var _STATUS_P_ID = "stsp";
-	var _INPUT_P_ID = "inp";
-	var _INPUT_LABEL_ID = "inlabel";
-	var _INPUT_SPAN_ID = "inspan";
-	var _INPUT_BOX_ID = "inbox";
-	var _GRID_ID = "grid";
-	var _FOOTER_ID = "footer";
-	var _MONITOR_ID = "monitor";
+	var _OUTER_CLASS = "outer";
+	var _MAIN_CLASS = "main";
+	var _DEBUG_CLASS = "debug";
+	var _STATUS_P_CLASS = "stsp";
+	var _INPUT_P_CLASS = "inp";
+	var _INPUT_LABEL_CLASS = "inlabel";
+	var _INPUT_SPAN_CLASS = "inspan";
+	var _INPUT_BOX_CLASS = "inbox";
+	var _GRID_CLASS = "grid";
+	var _FOOTER_CLASS = "footer";
+	var _MONITOR_CLASS = "monitor";
+
+	var _OUTER_ID 		= _NAMESPACE + "-" + _OUTER_CLASS;
+	var _MAIN_ID 		= _NAMESPACE + "-" + _MAIN_CLASS;
+	var _INIT_ID 		= "init";
+	var _DEBUG_ID 		= _NAMESPACE + "-" + _DEBUG_CLASS;
+	var _STATUS_P_ID 	= _NAMESPACE + "-" + _STATUS_P_CLASS;
+	var _INPUT_P_ID 	= _NAMESPACE + "-" + _INPUT_P_CLASS;
+	var _INPUT_LABEL_ID = _NAMESPACE + "-" + _INPUT_LABEL_CLASS;
+	var _INPUT_SPAN_ID 	= _NAMESPACE + "-" + _INPUT_SPAN_CLASS;
+	var _INPUT_BOX_ID 	= _NAMESPACE + "-" + _INPUT_BOX_CLASS;
+	var _GRID_ID 		= _NAMESPACE + "-" + _GRID_CLASS;
+	var _FOOTER_ID 		= _NAMESPACE + "-" + _FOOTER_CLASS;
+	var _MONITOR_ID 	= _NAMESPACE + "-" + _MONITOR_CLASS;
 
 	var _LOGIN_ID = "login";
 	var _LOGIN_EMAIL_ID = "login_em";
@@ -337,7 +459,7 @@ var PS; // Global namespace for public API
 			_footerOpacity -= 0.05;
 			if ( _footerOpacity <= 0 )
 			{
-				PS.timerStop( _footerTimer );
+				PSEngine.timerStop( _footerTimer );
 				_footerTimer = null;
 				_footerOpacity = 0;
 			}
@@ -470,7 +592,7 @@ var PS; // Global namespace for public API
 
 		return val;
 	}
-	 */
+	*/
 
 	// Recursively copy all properties of [src] object into [dest] object
 	// Returns true on success, else PS.ERROR
@@ -534,7 +656,6 @@ var PS; // Global namespace for public API
 		}
 		return chars.join( "" );
 	}
-
 
 	//--------------------
 	// GRAPHICS PRIMITIVES
@@ -787,9 +908,13 @@ var PS; // Global namespace for public API
 		}
 		*/
 
-		// set browser background
+		// set browser background (if not in multispiel mode)
+		if(_NAMESPACE === PS.DEFAULT_NAMESPACE)
+			document.body.style.backgroundColor = str;
 
-		document.body.style.backgroundColor = str;
+		// Set outer div background
+		var outer = document.getElementById(_OUTER_ID);
+		outer.style.backgroundColor = str;
 
 		// set status line background
 
@@ -982,7 +1107,7 @@ var PS; // Global namespace for public API
 			str = "???";
 		}
 
-		PS.debug( "WARNING: " + str + "\n" );
+		PSEngine.debug( "WARNING: " + str + "\n" );
 	}
 
 	// Debugger options
@@ -1055,7 +1180,7 @@ var PS; // Global namespace for public API
 		_clockActive = false;
 		if ( _footerTimer )
 		{
-			PS.timerStop( _footerTimer );
+			PSEngine.timerStop( _footerTimer );
 		}
 
 		if ( ( typeof message !== "string" ) || ( message.length < 1 ) )
@@ -1076,11 +1201,11 @@ var PS; // Global namespace for public API
 		{
 			str += ( _decodeCallstack( err.stack ) + "\n" );
 		}
-		PS.debug( str );
+		PSEngine.debug( str );
 
 		if ( _errorSound )
 		{
-			PS.audioPlay( _DEFAULTS.audio.error_sound, { path : _DEFAULTS.audio.path } );
+			PSEngine.audioPlay( _DEFAULTS.audio.error_sound, { path : _DEFAULTS.audio.path } );
 		}
 
 		return PS.ERROR;
@@ -1374,16 +1499,16 @@ var PS; // Global namespace for public API
 
 		date = new Date();
 		now = date.getTime();
-		PS.statusText ( "MS: " + ( now - _lastTime ) );
+		PSEngine.statusText ( "MS: " + ( now - _lastTime ) );
 		_lastTime = now;
 	}
-     */
+	*/
 
 	function _tick ()
 	{
 		var fn, refresh, len, i, fader, frame, flen, key, timer, result, exec, id, params;
 
-//		_reportTime();
+		// _reportTime();
 
 		fn = "[_tick] ";
 
@@ -1587,7 +1712,7 @@ var PS; // Global namespace for public API
 
 					if ( result === PS.ERROR )
 					{
-						PS.timerStop( id );
+						PSEngine.timerStop( id );
 					}
 
 					len = _timers.length; // recalc in case timer queue was changed by a timer function or an error
@@ -2195,6 +2320,9 @@ var PS; // Global namespace for public API
 	{
 		var data, any;
 
+		// Set grid to focused
+		_gridFocus();
+
 		if ( bead.active )
 		{
 			any = false;
@@ -2215,13 +2343,13 @@ var PS; // Global namespace for public API
 				}
 			}
 
-			// Call PS.touch()
+			// Call PSEngine.touch()
 
-			if ( PS.touch )
+			if ( PSEngine.touch )
 			{
 				try
 				{
-					PS.touch( bead.x, bead.y, data, _EMPTY );
+					PSEngine.touch( bead.x, bead.y, data, _EMPTY );
 					any = true;
 				}
 				catch ( e2 )
@@ -2248,12 +2376,12 @@ var PS; // Global namespace for public API
 
 		if ( bead.active )
 		{
-			if ( PS.release )
+			if ( PSEngine.release )
 			{
 				data = _getData( bead );
 				try
 				{
-					PS.release( bead.x, bead.y, data, _EMPTY );
+					PSEngine.release( bead.x, bead.y, data, _EMPTY );
 					_gridDraw();
 				}
 				catch ( err )
@@ -2277,12 +2405,12 @@ var PS; // Global namespace for public API
 
 		if ( bead.active )
 		{
-			if ( PS.enter )
+			if ( PSEngine.enter )
 			{
 				data = _getData( bead );
 				try
 				{
-					PS.enter( bead.x, bead.y, data, _EMPTY );
+					PSEngine.enter( bead.x, bead.y, data, _EMPTY );
 					_gridDraw();
 				}
 				catch ( err )
@@ -2304,12 +2432,12 @@ var PS; // Global namespace for public API
 
 		if ( bead.active )
 		{
-			if ( PS.exit )
+			if ( PSEngine.exit )
 			{
 				data = _getData( bead );
 				try
 				{
-					PS.exit( bead.x, bead.y, data, _EMPTY );
+					PSEngine.exit( bead.x, bead.y, data, _EMPTY );
 					_gridDraw();
 				}
 				catch ( err )
@@ -2330,11 +2458,11 @@ var PS; // Global namespace for public API
 	{
 		_overGrid = false;
 
-		if ( PS.exitGrid )
+		if ( PSEngine.exitGrid )
 		{
 			try
 			{
-				PS.exitGrid( _EMPTY );
+				PSEngine.exitGrid( _EMPTY );
 				_gridDraw();
 			}
 			catch ( err )
@@ -2363,7 +2491,7 @@ var PS; // Global namespace for public API
 		x += ( document.body.scrollLeft + document.documentElement.scrollLeft - canvas.offsetLeft - _grid.padLeft );
 		y += ( document.body.scrollTop + document.documentElement.scrollTop - canvas.offsetTop - _grid.padRight );
 
-//		PS.debug( "_getBead(): x = " + x + ", y = " + y + "\n" );
+	//		PSEngine.debug( "_getBead(): x = " + x + ", y = " + y + "\n" );
 
 		// Over the grid?
 
@@ -2423,8 +2551,16 @@ var PS; // Global namespace for public API
 		{
 			_touchBead( bead );
 		}
+		else
+		{
+			_gridUnfocus();
+		}
 
-		return _endEvent( event );
+		// Only stop event propogation if not in Multispiel mode
+		if (_NAMESPACE === PS.DEFAULT_NAMESPACE)
+			event.preventDefault();
+		else
+			return _endEvent( event );
 	}
 
 	// _mouseUp ()
@@ -2532,20 +2668,20 @@ var PS; // Global namespace for public API
 	{
 		var xpos, ypos, touch, bead;
 
-//		PS.debug("_touchStart called\n");
+		// PSEngine.debug("_touchStart called\n");
 
 		// If a finger already down
 
 		if ( _currentFinger !== _CLEAR )
 		{
-//			PS.debug( "Finger already down\n" );
+			// PSEngine.debug( "Finger already down\n" );
 			return _endEvent( event ); // ignore
 		}
 
 		touch = event.changedTouches[ 0 ];
 		_currentFinger = touch.identifier; // get the identifier for this finger
 
-//		PS.debug( "_touchStart finger = " + _currentFinger + "\n" );
+		// PSEngine.debug( "_touchStart finger = " + _currentFinger + "\n" );
 
 		xpos = touch.pageX;
 		ypos = touch.pageY;
@@ -2693,7 +2829,7 @@ var PS; // Global namespace for public API
 		}
 	}
 
-	//_keyFilter ( key, shift )
+	// _keyFilter ( key, shift )
 	// Translates weird or shifted keycodes to useful values
 
 	function _keyFilter ( key, shift )
@@ -2737,6 +2873,9 @@ var PS; // Global namespace for public API
 
 	function _keyDown ( event )
 	{
+		if(!_grid.focused)
+			return;
+
 		var fn, any, hardkey, key, len, i;
 
 		fn = "[_keyDown] ";
@@ -2749,9 +2888,9 @@ var PS; // Global namespace for public API
 			return true;
 		}
 
-		// Call PS.keyDown to report event
+		// Call PSEngine.keyDown to report event
 
-		if ( PS.keyDown )
+		if ( PSEngine.keyDown )
 		{
 			_holdShift = event.shiftKey;
 			_holdCtrl = event.ctrlKey;
@@ -2766,8 +2905,8 @@ var PS; // Global namespace for public API
 			}
 			key = _keyFilter( hardkey, _holdShift );
 
-//			PS.debug( "D: h = " + hardkey + ", k = " + key +
-//				", s = " + _holdShift + ", c = " + _holdCtrl + "\n");
+			//			PSEngine.debug( "D: h = " + hardkey + ", k = " + key +
+			//				", s = " + _holdShift + ", c = " + _holdCtrl + "\n");
 
 			if ( _legalKey( key ) )
 			{
@@ -2804,7 +2943,7 @@ var PS; // Global namespace for public API
 
 					try
 					{
-						PS.keyDown( key, _holdShift, _holdCtrl, _EMPTY );
+						PSEngine.keyDown( key, _holdShift, _holdCtrl, _EMPTY );
 						any = true;
 					}
 					catch ( err )
@@ -2816,7 +2955,7 @@ var PS; // Global namespace for public API
 
 			// If shift key is pressed,
 			// All currently held keys with an alternate shift value
-			// must generate a new PS.keyDown event
+			// must generate a new PSEngine.keyDown event
 
 			else if ( key === _KEY_SHIFT )
 			{
@@ -2839,7 +2978,7 @@ var PS; // Global namespace for public API
 						_holding[ i ] = key; // replace unshifted key with shifted
 						try
 						{
-							PS.keyDown( key, true, _holdCtrl, _EMPTY );
+							PSEngine.keyDown( key, true, _holdCtrl, _EMPTY );
 							any = true;
 						}
 						catch ( err2 )
@@ -2864,6 +3003,9 @@ var PS; // Global namespace for public API
 
 	function _keyUp ( event )
 	{
+		if(!_grid.focused)
+			return;
+
 		var fn, any, shift, ctrl, hardkey, key, i, len;
 
 		fn = "[_keyUp] ";
@@ -2876,9 +3018,9 @@ var PS; // Global namespace for public API
 			return true;
 		}
 
-		// Call PS.keyUp to report event
+		// Call PSEngine.keyUp to report event
 
-		if ( PS.keyUp )
+		if ( PSEngine.keyUp )
 		{
 			shift = _holdShift = event.shiftKey;
 			ctrl = _holdCtrl = event.ctrlKey;
@@ -2893,8 +3035,8 @@ var PS; // Global namespace for public API
 			}
 			key = _keyFilter( hardkey, _holdShift );
 
-//			PS.debug( "U: h = " + hardkey + ", k = " + key +
-//				", s = " + _holdShift + ", c = " + _holdCtrl + "\n");
+			//			PSEngine.debug( "U: h = " + hardkey + ", k = " + key +
+			//				", s = " + _holdShift + ", c = " + _holdCtrl + "\n");
 
 			if ( _legalKey( key ) )
 			{
@@ -2917,7 +3059,7 @@ var PS; // Global namespace for public API
 
 				try
 				{
-					PS.keyUp( key, shift, ctrl, _EMPTY );
+					PSEngine.keyUp( key, shift, ctrl, _EMPTY );
 					any = true;
 				}
 				catch ( err )
@@ -2928,7 +3070,7 @@ var PS; // Global namespace for public API
 
 			// If shift key is released,
 			// All currently held keys with an alternate shift value
-			// must generate a new PS.keyDown event
+			// must generate a new PSEngine.keyDown event
 
 			else if ( key === _KEY_SHIFT )
 			{
@@ -2947,7 +3089,7 @@ var PS; // Global namespace for public API
 						_holding[ i ] = key; // replace shifted key with unshifted
 						try
 						{
-							PS.keyDown( key, false, ctrl, _EMPTY );
+							PSEngine.keyDown( key, false, ctrl, _EMPTY );
 							any = true;
 						}
 						catch ( err2 )
@@ -2972,6 +3114,9 @@ var PS; // Global namespace for public API
 
 	function _wheel ( event )
 	{
+		if(!_grid.focused)
+			return;
+
 		var delta;
 
 		// Only respond when mouse is actually over the grid!
@@ -2981,9 +3126,9 @@ var PS; // Global namespace for public API
 			return true;
 		}
 
-		// Call PS.input to report the event
+		// Call PSEngine.input to report the event
 
-		if ( PS.input ) // only if function exists
+		if ( PSEngine.input ) // only if function exists
 		{
 			if ( !event ) // for IE
 			{
@@ -3007,7 +3152,7 @@ var PS; // Global namespace for public API
 
 			try
 			{
-				PS.input( { wheel : delta }, _EMPTY );
+				PSEngine.input( { wheel : delta }, _EMPTY );
 				_gridDraw();
 			}
 			catch ( err )
@@ -3045,12 +3190,45 @@ var PS; // Global namespace for public API
 		}
 	}
 
+	// Focus manager - instance received mouse focus
+	function _gridFocus(e) {
+		if (!_grid.focused) {
+			_grid.focused = true;
+			// console.info("Perlenspiel " + _NAMESPACE + " focused.");
+		}
+		if(e)
+			e.preventDefault();
+	}
+
+	// Focus manager - instance lost mouse focus
+	function _gridUnfocus(e) {
+		if (_grid.focused) {
+			var target = e.target;
+			var grid	= _grid.canvas;
+			var main	= document.getElementById(_MAIN_ID);
+			var outer	= document.getElementById(_OUTER_ID);
+			var footer	= document.getElementById(_FOOTER_ID);
+			if(target === grid || target === _status.div || target === footer || target === main || target === outer)
+				return;
+			_grid.focused = false;
+			// console.warn("Perlenspiel " + _NAMESPACE + " lost focus.");
+			if(e)
+				e.preventDefault();
+		}
+	}
+
 	function _gridActivate ()
 	{
 		var grid;
 
 		grid = _grid.canvas;
 		grid.style.display = "block";
+		
+		// If not in multispiel mode, the grid is always considered focused
+		if (_NAMESPACE === PS.DEFAULT_NAMESPACE)
+			grid.focused = true;
+		else
+			grid.focused = false;
 
 		grid.addEventListener( "mousedown", _mouseDown, false );
 		grid.addEventListener( "mouseup", _mouseUp, false );
@@ -3058,6 +3236,17 @@ var PS; // Global namespace for public API
 		grid.addEventListener( "mouseout", _gridOut, false );
 
 		_keysActivate();
+
+		// Add the focus manager events if in multispiel mode
+		if (_NAMESPACE !== PS.DEFAULT_NAMESPACE)
+		{
+			var outer = document.getElementById(_OUTER_ID);
+			outer.addEventListener   ( "mousedown", _gridFocus,   true  );
+			document.addEventListener( "mousedown", _gridUnfocus, false );
+		}
+
+		document.addEventListener( "keydown", _keyDown, false );
+		document.addEventListener( "keyup", _keyUp, false );
 
 		window.addEventListener( "DOMMouseScroll", _wheel, false ); // for Firefox
 		window.addEventListener( "mousewheel", _wheel, false ); // for others
@@ -3073,6 +3262,44 @@ var PS; // Global namespace for public API
 			document.addEventListener( "touchstart", _touchStart, false );
 			document.addEventListener( "touchend", _touchEnd, false );
 			document.addEventListener( "touchcancel", _touchEnd, false );
+		}
+	}
+
+	function _gridDeactivate ()
+	{
+		var grid;
+
+		grid = _grid.canvas;
+		grid.style.display = "none";
+
+		grid.removeEventListener( "mousedown", _mouseDown, false );
+		grid.removeEventListener( "mouseup", _mouseUp, false );
+		grid.removeEventListener( "mousemove", _mouseMove, false );
+		grid.removeEventListener( "mouseout", _gridOut, false );
+
+		_keysDeactivate();
+
+		// Remove the focus manager if in multispiel mode
+		if (_NAMESPACE !== PS.DEFAULT_NAMESPACE)
+		{
+			var outer = document.getElementById(_OUTER_ID);
+			if(outer)
+				outer.removeEventListener   ( "mousedown", _gridFocus,   true  );
+			document.removeEventListener( "mousedown", _gridUnfocus, false );
+		}
+
+		document.removeEventListener( "keydown", _keyDown, false );
+		document.removeEventListener( "keyup", _keyUp, false );
+
+		window.removeEventListener( "DOMMouseScroll", _wheel, false ); // for Firefox
+		window.removeEventListener( "mousewheel", _wheel, false ); // for others
+
+		if ( _touchScreen )
+		{
+			document.removeEventListener( "touchmove", _touchMove, false );
+			document.removeEventListener( "touchstart", _touchStart, false );
+			document.removeEventListener( "touchend", _touchEnd, false );
+			document.removeEventListener( "touchcancel", _touchEnd, false );
 		}
 	}
 
@@ -3306,9 +3533,9 @@ var PS; // Global namespace for public API
 			_grid.context.textAlign = "center";
 			_grid.context.textBaseline = "middle";
 
-//			_grid.font_size = font_size = Math.floor( ( size / 11 ) * 5 ); // adjusted for Google Droid font
-//			font_size_px = font_size + "px";
-//			_grid.font_margin = Math.floor( font_size / 2 );
+			// _grid.font_size = font_size = Math.floor( ( size / 11 ) * 5 ); // adjusted for Google Droid font
+			// font_size_px = font_size + "px";
+			// _grid.font_margin = Math.floor( font_size / 2 );
 
 			cnt = 0;
 			ypos = _grid.top;
@@ -3328,16 +3555,16 @@ var PS; // Global namespace for public API
 					_resetBead( bead );
 					_rescale( bead );
 
-//					p = bead.glyph_p;
-//					p.style.fontSize = font_size_px;
-//					if ( bead.visible )
-//					{
-//						bead.div.style.display = "block";
-//					}
-//					else
-//					{
-//						bead.div.style.display = "none";
-//					}
+					// p = bead.glyph_p;
+					// p.style.fontSize = font_size_px;
+					// if ( bead.visible )
+					// {
+					// 	bead.div.style.display = "block";
+					// }
+					// else
+					// {
+					// 	bead.div.style.display = "none";
+					// }
 
 					xpos += size;
 					cnt += 1;
@@ -3371,7 +3598,7 @@ var PS; // Global namespace for public API
 		_anyDirty = true;
 
 		_gridColor( { rgb : PS.DEFAULT } );
-		PS.statusColor( PS.DEFAULT );
+		PSEngine.statusColor( PS.DEFAULT );
 
 		_gridDraw();
 		_resetCursor();
@@ -3638,7 +3865,7 @@ var PS; // Global namespace for public API
 			return {
 				rgb : PS.DEFAULT,
 				r : 0, g : 0, b : 0,
-				onStep : PS.DEFAULT,
+				onStep : PS.CURRENT,
 				onEnd : PS.DEFAULT,
 				params : PS.DEFAULT };
 		}
@@ -4216,7 +4443,7 @@ var PS; // Global namespace for public API
 				// Unequal sides allowed only on square beads
 				// and beads without glyphs?
 
-//				else if ( ( bead.radius > 0 ) || ( bead.glyph.code > 0 ) )
+				// else if ( ( bead.radius > 0 ) || ( bead.glyph.code > 0 ) )
 				else if ( bead.radius > 0 )
 				{
 					max = Math.max( top, left, bottom, right );
@@ -6806,103 +7033,9 @@ var PS; // Global namespace for public API
 	// PUBLIC API
 	//-----------
 
-	PS = {
+	PSEngine = {
 
-		// Constants
-
-		ALL : "PS.ALL",
-		CURRENT : "PS.CURRENT",
-		DONE : "PS.DONE",
-		DEFAULT : "PS.DEFAULT",
-		ERROR : "PS.ERROR",
-		EMPTY : "PS.EMPTY",
-		UNEQUAL : "PS.UNEQUAL",
-		GRID : "PS.GRID",
-		STATUS : "PS.STATUS",
-		HTML5_AUDIO : "PS.HTML5_AUDIO",
-		WEB_AUDIO : "PS.WEB_AUDIO",
-
-		SPRITE_TOUCH : "PS.SPRITE_TOUCH",
-		SPRITE_OVERLAP : "PS.SPRITE_OVERLAP",
-
-		// Color constants
-
-		COLOR_BLACK : 0x000000,
-		COLOR_WHITE : 0xFFFFFF,
-		COLOR_GRAY_LIGHT : 0xC0C0C0,
-		COLOR_GRAY : 0x808080,
-		COLOR_GRAY_DARK : 0x404040,
-		COLOR_RED : 0xFF0000,
-		COLOR_ORANGE : 0xFF8000,
-		COLOR_YELLOW : 0xFFFF00,
-		COLOR_GREEN : 0x00FF00,
-		COLOR_BLUE : 0x0000FF,
-		COLOR_INDIGO : 0x4000FF,
-		COLOR_VIOLET : 0x8000FF,
-		COLOR_MAGENTA : 0xFF00FF,
-		COLOR_CYAN : 0x00FFFF,
-
-		ALPHA_OPAQUE : 255,
-		ALPHA_TRANSPARENT : 0,
-
-		// Key constants
-
-		KEY_ENTER : 13,
-		KEY_TAB : 9,
-		KEY_ESCAPE : 27,
-
-		KEY_PAGE_UP : 1001, // 33
-		KEY_PAGE_DOWN : 1002, // 34
-		KEY_END : 1003, // 35
-		KEY_HOME : 1004, // 36
-
-		KEY_ARROW_LEFT : 1005, // 37
-		KEY_ARROW_UP : 1006, // 38
-		KEY_ARROW_RIGHT : 1007, // 39
-		KEY_ARROW_DOWN : 1008, // 40
-
-		KEY_INSERT : 1009, // 45
-		KEY_DELETE : 1010, // 46
-
-		KEY_PAD_0 : 96,
-		KEY_PAD_1 : 97,
-		KEY_PAD_2 : 98,
-		KEY_PAD_3 : 99,
-		KEY_PAD_4 : 100,
-		KEY_PAD_5 : 101,
-		KEY_PAD_6 : 102,
-		KEY_PAD_7 : 103,
-		KEY_PAD_8 : 104,
-		KEY_PAD_9 : 105,
-		KEY_F1 : 112,
-		KEY_F2 : 113,
-		KEY_F3 : 114,
-		KEY_F4 : 115,
-		KEY_F5 : 116,
-		KEY_F6 : 117,
-		KEY_F7 : 118,
-		KEY_F8 : 119,
-		KEY_F9 : 120,
-		KEY_F10 : 121,
-
-		// Input device constants
-
-		WHEEL_FORWARD : "PS.WHEEL_FORWARD",
-		WHEEL_BACKWARD : "PS.WHEEL_BACKWARD",
-
-		// Pathfinder constants
-
-		FINDER_ASTAR : "PS.FINDER_ASTAR",
-		FINDER_BREADTH_FIRST : "PS.FINDER_BREADTH_FIRST",
-		FINDER_BEST_FIRST : "PS.FINDER_BEST_FIRST",
-		FINDER_DIJKSTRA : "PS.FINDER_DIJKSTRA",
-		FINDER_BI_ASTAR : "PS.FINDER_BI_ASTAR",
-		FINDER_BI_BEST_FIRST : "PS.FINDER_BI_BEST_FIRST",
-		FINDER_BI_DIJKSTRA : "PS.FINDER_BI_DIJKSTRA",
-		FINDER_BI_BREADTH_FIRST : "PS.FINDER_BI_BREADTH_FIRST",
-		FINDER_JUMP_POINT : "PS.FINDER_JUMP_POINT",
-
-		// This must be in PS namespace
+		// This must be in PSEngine namespace
 
 		_lastTick : 0,
 
@@ -6910,7 +7043,7 @@ var PS; // Global namespace for public API
 		{
 			if ( _clockActive )
 			{
-				window.requestAnimationFrame( PS._clock );
+				window.requestAnimationFrame( PSEngine._clock );
 				_tick();
 			}
 		},
@@ -6971,7 +7104,9 @@ var PS; // Global namespace for public API
 			// Set up DOM elements
 
 			document.body.id = "body";
-			document.body.style.backgroundColor = _DEFAULTS.grid.color.str;
+			// set browser background (if not in multispiel mode)
+			if (_NAMESPACE === PS.DEFAULT_NAMESPACE)
+				document.body.style.backgroundColor = _DEFAULTS.grid.color.str;
 
 			// Remove font loading div if it exists
 
@@ -6983,23 +7118,36 @@ var PS; // Global namespace for public API
 
 			// Create outer/main divs
 
-			outer = document.createElement( "div" );
+			outer = document.getElementById(namespace);
+			if ( !outer )
+			{
+				outer = document.createElement( "div" );
+				document.body.appendChild( outer );
+				if ( !outer )
+					return console.error("No outer div!");
+			}
 			outer.id = _OUTER_ID;
-			document.body.appendChild( outer );
+			outer.tabindex = 12;
+			outer.className = _OUTER_CLASS;
+			outer.style.backgroundColor = _DEFAULTS.grid.color.str;
 
 			_main = document.createElement( "div" );
+			if ( !_main )
+				return console.error("No main div!");
 			_main.id = _MAIN_ID;
+			_main.className = _MAIN_CLASS;
 			outer.appendChild( _main );
 
 			// save offset coordinates
 
-			PS._mainLeft = _main.offsetLeft;
-			PS._mainTop = _main.offsetTop;
+			PSEngine._mainLeft = _main.offsetLeft;
+			PSEngine._mainTop = _main.offsetTop;
 
 			// Create status line paragraph
 
 			sp = document.createElement( "p" );
 			sp.id = _STATUS_P_ID; // use id for styling
+			sp.className = _STATUS_P_CLASS; // use class for styling
 			sp.style.whiteSpace = "nowrap"; // limits to one line
 			sp.style.display = "block"; // initially visible
 			snode = document.createTextNode( "." );
@@ -7010,18 +7158,22 @@ var PS; // Global namespace for public API
 
 			ip = document.createElement( "p" ); // paragraph for input box
 			ip.id = _INPUT_P_ID; // use id for styling
+			ip.className = _INPUT_P_CLASS; // use id for styling
 			ip.style.display = "none"; // initially hidden
 
 			span = document.createElement( "span" ); // span for label
 			span.id = _INPUT_LABEL_ID; // use id for styling
+			span.className = _INPUT_LABEL_CLASS; // use class for styling
 			inode = document.createTextNode( "" ); // textNode for label
 			span.appendChild( inode ); // add node to span
 			ip.appendChild( span ); // add span to paragraph
 
 			span = document.createElement( "span" ); // span for input box
 			span.id = _INPUT_SPAN_ID; // use id for styling
+			span.className = _INPUT_SPAN_CLASS; // use class for styling
 			input = document.createElement( "input" ); // actual input box
 			input.id = _INPUT_BOX_ID; // use id for styling
+			input.className = _INPUT_BOX_CLASS; // use class for styling
 			input.type = "text";
 			input.tabindex = 0;
 			input.wrap = "soft";
@@ -7053,6 +7205,7 @@ var PS; // Global namespace for public API
 				return;
 			}
 			grid.id = _GRID_ID;
+			grid.className = _GRID_CLASS;
 			grid.width = _CLIENT_SIZE;
 			grid.style.backgroundColor = _DEFAULTS.grid.color.str;
 			grid.style.boxShadow = "none";
@@ -7075,7 +7228,10 @@ var PS; // Global namespace for public API
 			// Footer, append to main
 
 			footer = document.createElement( "p" );
+			if ( !footer )
+				return console.error("No footer p!");
 			footer.id = _FOOTER_ID;
+			footer.className = _FOOTER_CLASS;
 			footer.style.opacity = "1.0";
 			footer.innerHTML = "Loading Perlenspiel";
 			_main.appendChild( footer );
@@ -7084,13 +7240,19 @@ var PS; // Global namespace for public API
 			// Debug div
 
 			debug = document.createElement( "div" );
+			if ( !debug )
+				return console.error("No debug div!");
 			debug.id = _DEBUG_ID;
+			debug.className = _DEBUG_CLASS;
 			_main.appendChild( debug );
 
 			// Monitor, append to debug
 
 			monitor = document.createElement( "textarea" );
+			if ( !monitor )
+				return console.error("No monitor textarea!");
 			monitor.id = _MONITOR_ID;
+			monitor.className = _MONITOR_CLASS;
 			monitor.rows = 8;
 			monitor.wrap = "soft";
 			monitor.readonly = "readonly";
@@ -7274,8 +7436,8 @@ var PS; // Global namespace for public API
 			// Calculate canvas padding for mouse offset (Mark Diehr)
 
 			var canvasStyle = window.getComputedStyle( _grid.canvas, null );
-			_grid.padLeft = parseInt(canvasStyle.getPropertyValue('padding-top').replace("px", ""), 10);
-			_grid.padRight = parseInt(canvasStyle.getPropertyValue('padding-left').replace("px", ""), 10);
+			_grid.padLeft = parseInt( canvasStyle.getPropertyValue('padding-top').replace("px", ""), 10 );
+			_grid.padRight = parseInt( canvasStyle.getPropertyValue('padding-left').replace("px", ""), 10 );
 
 			// Set up master 32 x 32 bead array
 
@@ -7359,57 +7521,57 @@ var PS; // Global namespace for public API
 
 			str = "() event function undefined";
 
-			if ( typeof PS.init !== "function" )
+			if ( typeof PSEngine.init !== "function" )
 			{
-				PS.init = null;
+				PSEngine.init = null;
 				_warning( "PS.init" + str );
 			}
 
-			if ( typeof PS.touch !== "function" )
+			if ( typeof PSEngine.touch !== "function" )
 			{
-				PS.touch = null;
+				PSEngine.touch = null;
 				_warning( "PS.touch" + str );
 			}
 
-			if ( typeof PS.release !== "function" )
+			if ( typeof PSEngine.release !== "function" )
 			{
-				PS.release = null;
+				PSEngine.release = null;
 				_warning( "PS.release" + str );
 			}
 
-			if ( typeof PS.enter !== "function" )
+			if ( typeof PSEngine.enter !== "function" )
 			{
-				PS.enter = null;
+				PSEngine.enter = null;
 				_warning( "PS.enter" + str );
 			}
 
-			if ( typeof PS.exit !== "function" )
+			if ( typeof PSEngine.exit !== "function" )
 			{
-				PS.exit = null;
+				PSEngine.exit = null;
 				_warning( "PS.exit()" + str );
 			}
 
-			if ( typeof PS.exitGrid !== "function" )
+			if ( typeof PSEngine.exitGrid !== "function" )
 			{
-				PS.exitGrid = null;
+				PSEngine.exitGrid = null;
 				_warning( "PS.exitGrid" + str );
 			}
 
-			if ( typeof PS.keyDown !== "function" )
+			if ( typeof PSEngine.keyDown !== "function" )
 			{
-				PS.keyDown = null;
+				PSEngine.keyDown = null;
 				_warning( "PS.keyDown" + str );
 			}
 
-			if ( typeof PS.keyUp !== "function" )
+			if ( typeof PSEngine.keyUp !== "function" )
 			{
-				PS.keyUp = null;
+				PSEngine.keyUp = null;
 				_warning( "PS.keyUp" + str );
 			}
 
-			if ( typeof PS.input !== "function" )
+			if ( typeof PSEngine.input !== "function" )
 			{
-				PS.input = null;
+				PSEngine.input = null;
 				_warning( "PS.input" + str );
 			}
 
@@ -7438,21 +7600,21 @@ var PS; // Global namespace for public API
 			_initTimers();
 
 			_clockActive = true;
-			PS._clock();
+			PSEngine._clock();
 
 			// Init all event listeners
 
 			_gridActivate ();
 
-			_footerTimer = PS.timerStart( 6, _footerFade );
+			_footerTimer = PSEngine.timerStart( 6, _footerFade );
 
-			if ( PS.init )
+			if ( PSEngine.init )
 			{
 				// Call user initializer
 
 				try
 				{
-					PS.init( _system, _EMPTY );
+					PSEngine.init( _system, _EMPTY );
 					_gridDraw();
 				}
 				catch ( err )
@@ -7460,6 +7622,14 @@ var PS; // Global namespace for public API
 					_errorCatch( "PS.init() failed [" + err.message + "]", err );
 				}
 			}
+		},
+
+		// Shuts down the engine
+		shutdown : function ()
+		{
+			console.info("Deactivating " + _grid.canvas.id);
+			_clockActive = false;
+			_gridDeactivate();
 		},
 
 		//---------------
@@ -9159,7 +9329,7 @@ var PS; // Global namespace for public API
 
 			_timers.push( obj );
 
-//			PS.debug(fn + "id = " + id + "\n");
+			// PSEngine.debug(fn + "id = " + id + "\n");
 
 			return id;
 		},
@@ -9174,7 +9344,7 @@ var PS; // Global namespace for public API
 
 			fn = "[PS.timerStop] ";
 
-//			PS.debug(fn + "id = " + id + "\n");
+			// PS.debug(fn + "id = " + id + "\n");
 
 			args = arguments.length;
 			if ( args < 1 )
@@ -10557,7 +10727,7 @@ var PS; // Global namespace for public API
 			if ( total < 1 )
 			{
 				str += "]\n};\n";
-				PS.debug( str );
+				PSEngine.debug( str );
 				return PS.DONE;
 			}
 
@@ -10646,7 +10816,7 @@ var PS; // Global namespace for public API
 
 			str += "\n\t]\n};\n"; // end the string
 
-			PS.debug( str );
+			PSEngine.debug( str );
 
 			return PS.DONE;
 		},
@@ -11119,7 +11289,7 @@ var PS; // Global namespace for public API
 
 			_imageCnt += 1;
 
-//			PS.imageDump( s.image );
+			// PS.imageDump( s.image );
 
 			return s.id;
 		},
@@ -12522,6 +12692,26 @@ var PS; // Global namespace for public API
 			return result;
 		}
 	};
+
+	// Put the PS constants into the PSEngine object
+	ProvideConstants(PSEngine);
+
+	// Stubs to make it more permissive of errors
+	// PSEngine.touch		= function( x, y, data, options ) {};
+	// PSEngine.release	= function( x, y, data, options ) {};
+	// PSEngine.enter		= function( x, y, data, options ) {};
+	// PSEngine.exit		= function( x, y, data, options ) {};
+	// PSEngine.exitGrid	= function( options ) {};
+	// PSEngine.keyDown	= function( key, shift, ctrl, options ) {};
+	// PSEngine.keyUp		= function( key, shift, ctrl, options ) {};
+	// PSEngine.input		= function( sensors, options ) {};
+
+	return PSEngine;
+}	// End of Perlenspiel.Start
+};	// End of Perlenspiel object
+
+	// Create default Perlenspiel instance in the default namespace
+	PS = Perlenspiel.Start(PS.DEFAULT_NAMESPACE);
 }() );
 
 // requestAnimationFrame polyfill by Erik Möller
@@ -12551,9 +12741,9 @@ var PS; // Global namespace for public API
 			ct = new Date().getTime();
 			ttc = Math.max( 0, 16 - ( ct - lt ) );
 			id = window.setTimeout( function ()
-			                        {
-				                        cb( ct + ttc );
-			                        }, ttc );
+			{
+				cb( ct + ttc );
+			}, ttc );
 			lt = ct + ttc;
 			return id;
 		};

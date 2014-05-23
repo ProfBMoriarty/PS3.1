@@ -211,13 +211,23 @@ body {
 	font-size: 125%; /* new */
 }
 
-#outer {
+#outer, .outer {
 
 }
 
-#main {
+#main, .main {
 	width: 512px;
 	margin: 0 auto;
+}
+
+#status, .status {
+	width: 100%;
+	font-size: 1.25em; /* new */
+	margin: 1em 0 1em 0; /* trbl */
+	padding: 0;
+	border: 0;
+	text-align: center;
+	overflow: hidden;
 }
 
 #grid {
@@ -276,11 +286,11 @@ body {
 	font-size: 0.75em;
 }
 
-#debug {
+#debug, .debug {
 	display: none;
 }
 
-#monitor {
+#monitor, .monitor {
 	width: 100%;
 	text-align: left;
 	font-family: monospace;
@@ -291,13 +301,13 @@ body {
 	box-shadow: none;
 }
 
-#footer {
+#footer, .footer {
 	width: 100%;
 	font-size: 0.67em;
 	text-align: center;
 }
 
-#login {
+.login {
 	width: 100%;
 	color: #000000;
 	background-color: #FFFFFF;
@@ -305,20 +315,20 @@ body {
 	clear: both;
 }
 
-#login p {
+.login p {
 	text-align: left;
 	padding: 0;
 	border: 0;
 	margin: 0;
 }
 
-#login a {
+.login a {
 	font-size: 0.75em;
 	text-decoration: none;
 	color: #0000FF;
 }
 
-#login a:hover {
+.login a:hover {
 	text-decoration: underline;
 }
 
@@ -341,7 +351,7 @@ body {
 	text-align: left;
 }
 
-#go {
+.go {
 	margin: 0;
 	padding: 0;
 }

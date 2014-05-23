@@ -35,8 +35,6 @@ along with Perlenspiel. If not, see <http://www.gnu.org/licenses/>.
 // [system] = an object containing engine and platform information; see documentation for details
 // [options] = an object with optional parameters; see documentation for details
 
-var channel;
-
 PS.init = function( system, options ) {
 	"use strict";
 
@@ -46,6 +44,8 @@ PS.init = function( system, options ) {
 	// Otherwise you will get the default 8x8 grid
 
 	PS.gridSize( 8, 8 );
+
+	PS.gridColor(0x336699);
 
 	// Add any other initialization code you need here
 };
@@ -191,3 +191,6 @@ PS.input = function( sensors, options ) {
 
 	// Add code here for when an input event is detected
 };
+
+// Start the Perlenspiel engine
+PS._sys();

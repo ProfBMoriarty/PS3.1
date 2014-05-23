@@ -211,11 +211,11 @@ body {
 	font-size: 125%; /* new */
 }
 
-#outer {
+.outer, #outer {
 
 }
 
-#main {
+.main, #main {
 	width: 512px;
 	margin: 0 auto;
 }
@@ -224,7 +224,7 @@ body {
 	font-family: 'Droid', sans-serif;
 }
 
-#grid {
+.grid, #grid {
 	padding: 0;
 	border: 0;
 	margin-left: auto;
@@ -232,16 +232,17 @@ body {
 	display: block;
 }
 
-#stsp {
+.status, #status, .stsp, #stsp {
 	font-size: 1.25em;
 	margin: 1em 0 1em 0; /* trbl */
 	padding: 0;
 	border: 0;
 	text-align: center;
 	overflow: hidden;
+	width: 100%;
 }
 
-#inp {
+.inp, #inp {
 	font-size: 1.25em;
 	margin: 1em 0 1em 0; /* trbl */
 	padding: 0;
@@ -250,14 +251,14 @@ body {
 	display: none;
 }
 
-#inlabel {
+.inlabel, #inlabel {
 	float: left;
 	margin: 0;
 	padding: 0;
 	border: 0;
 }
 
-#inspan {
+.inspan, #inspan {
 	display: block;
 	overflow: hidden;
 	color : inherit;
@@ -267,7 +268,7 @@ body {
 	padding: 0 0.5em 0 0.5em; /* trbl */
 }
 
-#inbox {
+.inbox, #inbox {
 	text-align: left;
 	border: 1px solid #000000;
 	box-shadow: none;
@@ -280,11 +281,11 @@ body {
 	font-size: 0.75em;
 }
 
-#debug {
+.debug, #debug {
 	display: none;
 }
 
-#monitor {
+.monitor, #monitor {
 	width: 100%;
 	text-align: left;
 	font-family: monospace;
@@ -295,13 +296,13 @@ body {
 	box-shadow: none;
 }
 
-#footer {
+.footer, #footer {
 	width: 100%;
 	font-size: 0.67em;
 	text-align: center;
 }
 
-#login {
+.login, #login {
 	width: 100%;
 	color: #000000;
 	background-color: #FFFFFF;
@@ -309,20 +310,20 @@ body {
 	clear: both;
 }
 
-#login p {
+.login p, #login p {
 	text-align: left;
 	padding: 0;
 	border: 0;
 	margin: 0;
 }
 
-#login a {
+.login a, #login a {
 	font-size: 0.75em;
 	text-decoration: none;
 	color: #0000FF;
 }
 
-#login a:hover {
+.login a:hover, #login a:hover {
 	text-decoration: underline;
 }
 
@@ -345,7 +346,7 @@ body {
 	text-align: left;
 }
 
-#go {
+.go, #go {
 	margin: 0;
 	padding: 0;
 }
