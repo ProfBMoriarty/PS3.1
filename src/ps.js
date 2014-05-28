@@ -1110,16 +1110,22 @@ Start : function (namespace) {
 		PSEngine.debug( "WARNING: " + str + "\n" );
 	}
 
-	// Error checking and throwing
-	function _checkNumArgs(fn, num, min, max) {
-		if ( num < min ) {
-			return _error( fn + "Missing argument(s)" );
-		}
-		if ( num > max )
+	// Check the number of arguments that were passed to a function
+	
+	function _checkNumArgs(methodName, numArgs, min, max)
+	{
+		if ( numArgs < min )
 		{
-			return _warning( fn + "Too many arguments" );
+			return _error( methodName + "Missing argument(s)" );
+		}
+
+		if ( numArgs > max )
+		{
+			return _warning( methodName + "Too many arguments" );
 		}
 	}
+
+
 
 	// Debugger options
 
