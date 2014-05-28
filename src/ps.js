@@ -1110,6 +1110,17 @@ Start : function (namespace) {
 		PSEngine.debug( "WARNING: " + str + "\n" );
 	}
 
+	// Error checking and throwing
+	function _checkNumArgs(fn, num, min, max) {
+		if ( num < min ) {
+			return _error( fn + "Missing argument(s)" );
+		}
+		if ( num > max )
+		{
+			return _warning( fn + "Too many arguments" );
+		}
+	}
+
 	// Debugger options
 
 	var _DEBUG_STACK = true; // Show debug stack
@@ -1178,7 +1189,7 @@ Start : function (namespace) {
 		// Stop the clock
 
 		_clockActive = false;
-		if ( _footerTimer )
+		if ( _footerTimer && _timers.length > 0 )
 		{
 			PSEngine.timerStop( _footerTimer );
 		}
@@ -7646,10 +7657,8 @@ Start : function (namespace) {
 
 			fn = "[PS.gridSize] ";
 
-			if ( arguments.length > 2 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 0, 2))
+				return PS.ERROR;
 
 			// prevent arg mutation
 
@@ -7727,10 +7736,8 @@ Start : function (namespace) {
 
 			fn = "[PS.gridPlane] ";
 
-			if ( arguments.length > 1 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 0, 1))
+				return PS.ERROR;
 
 			plane = planeP; // avoid direct mutation of argument
 
@@ -7771,10 +7778,8 @@ Start : function (namespace) {
 
 			fn = "[PS.gridColor] ";
 
-			if ( arguments.length > 3 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 0, 3))
+				return PS.ERROR;
 
 			colors = _decodeColors( fn, p1, p2, p3 );
 			if ( colors === PS.ERROR )
@@ -7795,10 +7800,8 @@ Start : function (namespace) {
 
 			fn = "[PS.gridFade] ";
 
-			if ( arguments.length > 2 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 0, 2))
+				return PS.ERROR;
 
 			color = _grid.color;
 			fader = _grid.fader;
@@ -7924,10 +7927,8 @@ Start : function (namespace) {
 
 			fn = "[PS.gridShadow] ";
 
-			if ( arguments.length > 4 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 0, 4))
+				return PS.ERROR;
 
 			show = showP; // prevent arg mutation
 			if ( ( show !== true ) && ( show !== false ) && ( show !== PS.CURRENT ) )
@@ -7968,15 +7969,8 @@ Start : function (namespace) {
 
 			fn = "[PS.color] ";
 
-			args = arguments.length;
-			if ( args < 2 )
-			{
-				return _error( fn + "Missing argument(s)" );
-			}
-			if ( args > 5 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 2, 5))
+				return PS.ERROR;
 
 			colors = _decodeColors( fn, p1, p2, p3 );
 			if ( colors === PS.ERROR )
@@ -7995,16 +7989,8 @@ Start : function (namespace) {
 
 			fn = "[PS.alpha] ";
 
-			args = arguments.length;
-			if ( args < 2 )
-			{
-				return _error( fn + "Missing argument(s)" );
-			}
-			if ( args > 3 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
-
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 2, 3))
+				return PS.ERROR;
 			alpha = alpha_p; // prevent direct mutation of args
 
 			if ( alpha !== PS.CURRENT )
@@ -8049,15 +8035,8 @@ Start : function (namespace) {
 
 			fn = "[PS.fade] ";
 
-			args = arguments.length;
-			if ( args < 2 )
-			{
-				return _error( fn + "Missing argument(s)" );
-			}
-			if ( args > 4 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 2, 4))
+				return PS.ERROR;
 
 			rate = rate_p; // prevent arg mutation
 			if ( ( rate !== PS.CURRENT ) && ( rate !== PS.DEFAULT ) )
@@ -8099,15 +8078,9 @@ Start : function (namespace) {
 
 			fn = "[PS.scale] ";
 
-			args = arguments.length;
-			if ( args < 2 )
-			{
-				return _error( fn + "Missing argument(s)" );
-			}
-			if ( args > 3 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 2, 3))
+				return PS.ERROR;
+
 
 			// prevent arg mutation
 
@@ -8154,15 +8127,8 @@ Start : function (namespace) {
 
 			fn = "[PS.radius] ";
 
-			args = arguments.length;
-			if ( args < 2 )
-			{
-				return _error( fn + "Missing argument(s)" );
-			}
-			if ( args > 3 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 2, 3))
+				return PS.ERROR;
 
 			// prevent arg mutation
 
@@ -8209,15 +8175,8 @@ Start : function (namespace) {
 
 			fn = "[PS.bgColor] ";
 
-			args = arguments.length;
-			if ( args < 2 )
-			{
-				return _error( fn + "Missing argument(s)" );
-			}
-			if ( args > 5 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 2, 5))
+				return PS.ERROR;
 
 			colors = _decodeColors( fn, p1, p2, p3 );
 			if ( colors === PS.ERROR )
@@ -8236,15 +8195,8 @@ Start : function (namespace) {
 
 			fn = "[PS.bgAlpha] ";
 
-			args = arguments.length;
-			if ( args < 2 )
-			{
-				return _error( fn + "Missing argument(s)" );
-			}
-			if ( args > 3 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 2, 3))
+				return PS.ERROR;
 
 			alpha = alpha_p; // prevent direct mutation of args
 			if ( alpha !== PS.CURRENT )
@@ -8287,15 +8239,8 @@ Start : function (namespace) {
 
 			fn = "[PS.data] ";
 
-			args = arguments.length;
-			if ( args < 2 )
-			{
-				return _error( fn + "Missing argument(s)" );
-			}
-			if ( args > 3 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 2, 3))
+				return PS.ERROR;
 
 			// Prevent arg mutation
 
@@ -8320,15 +8265,8 @@ Start : function (namespace) {
 
 			fn = "[PS.exec] ";
 
-			args = arguments.length;
-			if ( args < 2 )
-			{
-				return _error( fn + "Missing argument(s)" );
-			}
-			if ( args > 3 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 2, 3))
+				return PS.ERROR;
 
 			exec = exec_p; // prevent arg mutation
 			if ( exec !== PS.CURRENT )
@@ -8359,15 +8297,8 @@ Start : function (namespace) {
 
 			fn = "[PS.visible] ";
 
-			args = arguments.length;
-			if ( args < 2 )
-			{
-				return _error( fn + "Missing argument(s)" );
-			}
-			if ( args > 3 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 2, 3))
+				return PS.ERROR;
 
 			show = _isBoolean( show_p, PS.CURRENT, true, PS.CURRENT );
 			if ( show === PS.ERROR )
@@ -8386,15 +8317,8 @@ Start : function (namespace) {
 
 			fn = "[PS.active] ";
 
-			args = arguments.length;
-			if ( args < 2 )
-			{
-				return _error( fn + "Missing argument(s)" );
-			}
-			if ( args > 3 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 2, 3))
+				return PS.ERROR;
 
 			active = _isBoolean( active_p, PS.CURRENT, true, PS.CURRENT );
 			if ( active === PS.ERROR )
@@ -8418,15 +8342,8 @@ Start : function (namespace) {
 
 			fn = "[PS.border] ";
 
-			args = arguments.length;
-			if ( args < 2 )
-			{
-				return _error( fn + "Missing argument(s)" );
-			}
-			if ( args > 3 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 2, 3))
+				return PS.ERROR;
 
 			def = _DEFAULTS.bead.border;
 
@@ -8589,14 +8506,8 @@ Start : function (namespace) {
 
 			fn = "[PS.borderColor] ";
 
-			if ( arguments.length < 2 )
-			{
-				return _error( fn + "Missing argument(s)" );
-			}
-			if ( arguments.length > 5 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 2, 5))
+				return PS.ERROR;
 
 			colors = _decodeColors( fn, p1, p2, p3 );
 			if ( colors === PS.ERROR )
@@ -8615,15 +8526,8 @@ Start : function (namespace) {
 
 			fn = "[PS.borderAlpha] ";
 
-			args = arguments.length;
-			if ( args < 2 )
-			{
-				return _error( fn + "Missing argument(s)" );
-			}
-			if ( args > 3 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 2, 3))
+				return PS.ERROR;
 
 			alpha = alpha_p; // prevent arg mutation
 			if ( alpha !== PS.CURRENT )
@@ -8668,15 +8572,8 @@ Start : function (namespace) {
 
 			fn = "[PS.borderFade] ";
 
-			args = arguments.length;
-			if ( args < 2 )
-			{
-				return _error( fn + "Missing argument(s)" );
-			}
-			if ( args > 4 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 2, 4))
+				return PS.ERROR;
 
 			rate = rate_p; // prevent arg mutation
 			if ( ( rate !== PS.CURRENT ) && ( rate !== PS.DEFAULT ) )
@@ -8724,15 +8621,8 @@ Start : function (namespace) {
 
 			fn = "[PS.glyph] ";
 
-			args = arguments.length;
-			if ( args < 2 )
-			{
-				return _error( fn + "Missing argument(s)" );
-			}
-			if ( args > 3 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 2, 3))
+				return PS.ERROR;
 
 			glyph = glyph_p; // prevent arg mutation
 			if ( glyph !== PS.CURRENT )
@@ -8782,14 +8672,8 @@ Start : function (namespace) {
 
 			fn = "[PS.glyphColor] ";
 
-			if ( arguments.length < 2 )
-			{
-				return _error( fn + "Missing argument(s)" );
-			}
-			if ( arguments.length > 5 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 2, 5))
+				return PS.ERROR;
 
 			colors = _decodeColors( fn, p1, p2, p3 );
 			if ( colors === PS.ERROR )
@@ -8808,15 +8692,8 @@ Start : function (namespace) {
 
 			fn = "[PS.glyphAlpha] ";
 
-			args = arguments.length;
-			if ( args < 2 )
-			{
-				return _error( fn + "Missing argument(s)" );
-			}
-			if ( args > 3 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 2, 3))
+				return PS.ERROR;
 
 			alpha = alpha_p; // prevent arg mutation
 			if ( alpha !== PS.CURRENT )
@@ -8859,15 +8736,8 @@ Start : function (namespace) {
 
 			fn = "[PS.glyphScale] ";
 
-			args = arguments.length;
-			if ( args < 2 )
-			{
-				return _error( fn + "Missing argument(s)" );
-			}
-			if ( args > 3 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 2, 3))
+				return PS.ERROR;
 
 			scale = scale_p; // prevents arg mutation
 			if ( scale !== PS.CURRENT )
@@ -8912,15 +8782,8 @@ Start : function (namespace) {
 
 			fn = "[PS.glyphFade] ";
 
-			args = arguments.length;
-			if ( args < 2 )
-			{
-				return _error( fn + "Missing argument(s)" );
-			}
-			if ( args > 4 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 2, 4))
+				return PS.ERROR;
 
 			rate = rate_p; // prevent arg mutation
 			if ( ( rate !== PS.CURRENT ) && ( rate !== PS.DEFAULT ) )
@@ -8963,10 +8826,8 @@ Start : function (namespace) {
 
 			fn = "[PS.statusText] ";
 
-			if ( arguments.length > 1 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 0, 1))
+				return PS.ERROR;
 
 			str = strP; // prevent arg mutation
 			type = _typeOf( str );
@@ -9025,10 +8886,8 @@ Start : function (namespace) {
 
 			fn = "[PS.statusColor] ";
 
-			if ( arguments.length > 3 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 0, 3))
+				return PS.ERROR;
 
 			colors = _decodeColors( fn, p1, p2, p3 );
 			if ( colors === PS.ERROR )
@@ -9129,10 +8988,8 @@ Start : function (namespace) {
 
 			fn = "[PS.statusFade] ";
 
-			if ( arguments.length > 2 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 0, 2))
+				return PS.ERROR;
 
 			color = _status.color;
 			fader = _status.fader;
@@ -9261,11 +9118,8 @@ Start : function (namespace) {
 
 			fn = "[PS.timerStart] ";
 
-			args = arguments.length;
-			if ( args < 2 )
-			{
-				return _error( fn + "Argument(s) missing" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 2, 2))
+				return PS.ERROR;
 
 			// Prevent arg mutation
 
@@ -9346,11 +9200,8 @@ Start : function (namespace) {
 
 			// PS.debug(fn + "id = " + id + "\n");
 
-			args = arguments.length;
-			if ( args < 1 )
-			{
-				return _error( fn + "Argument missing" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 1, 1))
+				return PS.ERROR;
 
 			// Check id param
 
@@ -9385,10 +9236,8 @@ Start : function (namespace) {
 
 			fn = "[PS.random] ";
 
-			if ( arguments.length < 1 )
-			{
-				return _error( fn + "Argument missing" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 1, 1))
+				return PS.ERROR;
 
 			val = val_p; // prevent arg mutation
 			if ( _typeOf( val ) !== "number" )
@@ -9412,15 +9261,8 @@ Start : function (namespace) {
 
 			fn = "[PS.makeRGB] ";
 
-			args = arguments.length;
-			if ( args < 3 )
-			{
-				return _error( fn + "Argument(s) missing" );
-			}
-			if ( args > 3 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 3, 3))
+				return PS.ERROR;
 
 			// Prevent arg mutation
 
@@ -9479,15 +9321,8 @@ Start : function (namespace) {
 
 			fn = "[PS.unmakeRGB] ";
 
-			args = arguments.length;
-			if ( args < 2 )
-			{
-				return _error( fn + "Missing argument(s)" );
-			}
-			if ( args > 2 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 2, 2))
+				return PS.ERROR;
 
 			// Prevent arg mutation
 
@@ -9566,11 +9401,8 @@ Start : function (namespace) {
 
 			fn = "[PS.applyRect] ";
 
-			args = arguments.length;
-			if ( args < 5 )
-			{
-				return _error( fn + "Argument(s) missing" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 5, 5))
+				return PS.ERROR;
 
 			xmax = _grid.x;
 			ymax = _grid.y;
@@ -9867,15 +9699,8 @@ Start : function (namespace) {
 
 			fn = "[PS.imageLoad] ";
 
-			args = arguments.length;
-			if ( args < 2 )
-			{
-				return _error( fn + "Missing argument(s)" );
-			}
-			if ( args > 3 )
-			{
-				return _error( fn + "Too many argument(s)" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 2, 3))
+				return PS.ERROR;
 
 			// Prevent arg mutation
 
@@ -9963,15 +9788,8 @@ Start : function (namespace) {
 
 			fn = "[PS.imageBlit] ";
 
-			args = arguments.length;
-			if ( args < 3 )
-			{
-				return _error( fn + "Missing argument(s)" );
-			}
-			if ( args > 4 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 3, 4))
+				return PS.ERROR;
 
 			xmax = _grid.x;
 			ymax = _grid.y;
@@ -10311,11 +10129,8 @@ Start : function (namespace) {
 
 			fn = "[PS.imageCapture] ";
 
-			args = arguments.length;
-			if ( args > 2 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 0, 2))
+				return PS.ERROR;
 
 			// Prevent arg mutation
 
@@ -10526,15 +10341,8 @@ Start : function (namespace) {
 
 			fn = "[PS.imageDump] ";
 
-			args = arguments.length;
-			if ( args < 1 )
-			{
-				return _error( fn + "Missing argument(s)" );
-			}
-			if ( args > 5 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 1, 5))
+				return PS.ERROR;
 
 			// Prevent arg mutation
 
@@ -10834,15 +10642,8 @@ Start : function (namespace) {
 
 			fn = "[PS.spriteSolid] ";
 
-			args = arguments.length;
-			if ( args < 2 )
-			{
-				return _error( fn + "Missing argument(s)" );
-			}
-			if ( args > 2 )
-			{
-				return _error( fn + "Too many argument(s)" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 2, 2))
+				return PS.ERROR;
 
 			// Prevent arg mutation
 
@@ -10904,15 +10705,8 @@ Start : function (namespace) {
 
 			fn = "[PS.spriteSolidColor] ";
 
-			args = arguments.length;
-			if ( args < 1 )
-			{
-				return _error( fn + "Missing argument(s)" );
-			}
-			if ( args > 4 )
-			{
-				return _error( fn + "Too many argument(s)" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 1, 4))
+				return PS.ERROR;
 
 			s = _getSprite( sprite, fn );
 			if ( s === PS.ERROR )
@@ -11007,15 +10801,8 @@ Start : function (namespace) {
 
 			fn = "[PS.spriteSolidAlpha] ";
 
-			args = arguments.length;
-			if ( args < 1 )
-			{
-				return _error( fn + "Missing argument(s)" );
-			}
-			if ( args > 2 )
-			{
-				return _error( fn + "Too many argument(s)" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 1, 2))
+				return PS.ERROR;
 
 			// Prevent arg mutation
 
@@ -11081,16 +10868,9 @@ Start : function (namespace) {
 			var fn, args, w, h, format, data, type, top, left, width, height, ndata, wsize, rowptr, ptr, x, y, i, rgb, r, g, b, a, rval, gval, s;
 
 			fn = "[PS.spriteImage] ";
-			args = arguments.length;
 
-			if ( args < 1 )
-			{
-				return _error( fn + "Missing argument(s)" );
-			}
-			if ( args > 2 )
-			{
-				return _error( fn + "Too many argument(s)" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 1, 2))
+				return PS.ERROR;
 
 			// Validate image
 
@@ -11303,15 +11083,8 @@ Start : function (namespace) {
 
 			fn = "[PS.spriteShow] ";
 
-			args = arguments.length;
-			if ( args < 1 )
-			{
-				return _error( fn + "Missing argument(s)" );
-			}
-			if ( args > 2 )
-			{
-				return _error( fn + "Too many argument(s)" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 1, 2))
+				return PS.ERROR;
 
 			// Prevent arg mutation
 
@@ -11365,15 +11138,8 @@ Start : function (namespace) {
 
 			fn = "[PS.spriteAxis] ";
 
-			args = arguments.length;
-			if ( args < 1 )
-			{
-				return _error( fn + "Missing argument(s)" );
-			}
-			if ( args > 3 )
-			{
-				return _error( fn + "Too many argument(s)" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 1, 3))
+				return PS.ERROR;
 
 			// Prevent arg mutation
 
@@ -11455,15 +11221,8 @@ Start : function (namespace) {
 
 			fn = "[PS.spritePlane] ";
 
-			args = arguments.length;
-			if ( args < 1 )
-			{
-				return _error( fn + "Missing argument(s)" );
-			}
-			if ( args > 2 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 1, 2))
+				return PS.ERROR;
 
 			// Prevent arg mutation
 
@@ -11541,15 +11300,8 @@ Start : function (namespace) {
 
 			fn = "[PS.spriteMove] ";
 
-			args = arguments.length;
-			if ( args < 1 )
-			{
-				return _error( fn + "Missing argument(s)" );
-			}
-			if ( args > 3 )
-			{
-				return _error( fn + "Too many argument(s)" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 1, 3))
+				return PS.ERROR;
 
 			// Prevent arg mutation
 
@@ -11735,15 +11487,8 @@ Start : function (namespace) {
 
 			fn = "[PS.spriteCollide] ";
 
-			args = arguments.length;
-			if ( args < 1 )
-			{
-				return _error( fn + "Missing argument(s)" );
-			}
-			if ( args > 2 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 1, 2))
+				return PS.ERROR;
 
 			s = _getSprite( sprite, fn );
 			if ( s === PS.ERROR )
@@ -11786,15 +11531,8 @@ Start : function (namespace) {
 
 			fn = "[PS.spriteDelete] ";
 
-			args = arguments.length;
-			if ( args < 1 )
-			{
-				return _error( fn + "Missing argument" );
-			}
-			if ( args > 1 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 1, 1))
+				return PS.ERROR;
 
 			if ( ( typeof sprite !== "string" ) || ( sprite.length < 1 ) )
 			{
@@ -11844,14 +11582,8 @@ Start : function (namespace) {
 
 			fn = "[PS.audioLoad] ";
 
-			if ( arguments.length < 1 )
-			{
-				return _error( fn + "Missing argument(s)" );
-			}
-			if ( arguments.length > 2 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 1, 2))
+				return PS.ERROR;
 
 			result = AQ.load( filename, params );
 			if ( result === AQ.ERROR )
@@ -11880,15 +11612,8 @@ Start : function (namespace) {
 
 			fn = "[PS.audioPlay] ";
 
-			args = arguments.length;
-			if ( args < 1 )
-			{
-				return _error( fn + "Missing argument(s)" );
-			}
-			if ( args > 2 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 1, 2))
+				return PS.ERROR;
 
 			// Prevent arg mutation
 
@@ -11926,15 +11651,8 @@ Start : function (namespace) {
 
 			fn = "[PS.audioPause] ";
 
-			args = arguments.length;
-			if ( args < 1 )
-			{
-				return _error( fn + "Missing argument(s)" );
-			}
-			if ( args > 1 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 1, 1))
+				return PS.ERROR;
 
 			result = AQ.pause( channel_id );
 			if ( result === AQ.ERROR )
@@ -11955,15 +11673,8 @@ Start : function (namespace) {
 
 			fn = "[PS.audioStop] ";
 
-			args = arguments.length;
-			if ( args < 1 )
-			{
-				return _error( fn + "Missing argument(s)" );
-			}
-			if ( args > 1 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 1, 1))
+				return PS.ERROR;
 
 			result = AQ.stop( channel_id );
 			if ( result === AQ.ERROR )
@@ -12121,10 +11832,8 @@ Start : function (namespace) {
 
 			fn = "[PS.debug] ";
 
-			if ( arguments.length > 1 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 0, 1))
+				return PS.ERROR;
 
 			text = textP; // prevent arg mutation
 			type = _typeOf( text );
@@ -12161,10 +11870,8 @@ Start : function (namespace) {
 
 			fn = "[PS.debugClose] ";
 
-			if ( arguments.length > 0 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 0, 0))
+				return PS.ERROR;
 
 			e = document.getElementById( _DEBUG_ID );
 			e.style.display = "none";
@@ -12182,10 +11889,8 @@ Start : function (namespace) {
 
 			fn = "[PS.debugClear] ";
 
-			if ( arguments.length > 0 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 0, 0))
+				return PS.ERROR;
 
 			e = document.getElementById( _MONITOR_ID );
 			e.value = "";
@@ -12206,15 +11911,8 @@ Start : function (namespace) {
 
 			fn = "[PS.line] ";
 
-			args = arguments.length;
-			if ( args < 4 )
-			{
-				return _error( fn + "Missing argument(s)" );
-			}
-			if ( args > 4 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 4, 4))
+				return PS.ERROR;
 
 			// Prevent arg mutation
 
@@ -12280,15 +11978,8 @@ Start : function (namespace) {
 
 			fn = "[PS.pathMap] ";
 
-			args = arguments.length;
-			if ( args < 1 )
-			{
-				return _error( fn + "Missing argument(s)" );
-			}
-			if ( args > 1 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 1, 1))
+				return PS.ERROR;
 
 			// Check image
 
@@ -12316,15 +12007,8 @@ Start : function (namespace) {
 
 			fn = "[PS.pathFind] ";
 
-			args = arguments.length;
-			if ( args < 5 )
-			{
-				return _error( fn + "Missing argument(s)" );
-			}
-			if ( args > 6 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 5, 6))
+				return PS.ERROR;
 
 			// Prevent arg mutation
 
@@ -12486,15 +12170,8 @@ Start : function (namespace) {
 
 			fn = "[PS.pathData] ";
 
-			args = arguments.length;
-			if ( args < 5 )
-			{
-				return _error( fn + "Missing argument(s)" );
-			}
-			if ( args > 6 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 5, 6))
+				return PS.ERROR;
 
 			// Prevent arg mutation
 
@@ -12638,11 +12315,8 @@ Start : function (namespace) {
 
 			fn = "[PS.pathDelete] ";
 
-			args = arguments.length;
-			if ( args < 1 )
-			{
-				return _error( fn + "Missing argument" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 1, 1))
+				return PS.ERROR;
 
 			// Check pathmap id
 
@@ -12665,15 +12339,8 @@ Start : function (namespace) {
 
 			fn = "[PS.pathNear] ";
 
-			args = arguments.length;
-			if ( args < 5 )
-			{
-				return _error( fn + "Missing argument(s)" );
-			}
-			if ( args > 5 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 5, 5))
+				return PS.ERROR;
 
 			// Check pathmap id
 
