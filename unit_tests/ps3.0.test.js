@@ -1,12 +1,13 @@
 PSTest = TestCase("PSTest");
 
 
-doNothing = function(){} //dummy function for testing function pointers
+doNothing = function(){}; //dummy function for testing function pointers
 
 PSTest.prototype.setUp = function(){
     PS._sys(); //initialize the engine
     PS.gridSize(10, 10); //arbitrary non-default value
     PS.gridColor(100, 100, 100); //arbitrary non-default value
+    PS.fade(0, 0, 5, {onEnd:doNothing}); //arbitrary non-default value
     PS.gridFade(5, {onEnd:doNothing}); //arbitrary non-default value
     PS.gridPlane(1); //arbitrary non-default value
 };
@@ -845,7 +846,7 @@ PSTest.prototype.testColorSingleArg = function(){
 };
 
 PSTest.prototype.testAlphaLocationOnly = function(){
-    assertEquals(255, PS.alpha(0, 0));
+    assertEquals(0, PS.alpha(0, 0));
 };
 
 PSTest.prototype.testAlphaMinX = function(){
@@ -949,7 +950,7 @@ PSTest.prototype.testFadeNumberOnEnd = function(){
 };
 
 PSTest.prototype.testFadeNoArgs = function(){
-    assertEquals(0, PS.fade(0, 0).rate);
+    assertEquals(5, PS.fade(0, 0).rate);
     assertEquals(doNothing, PS.fade(0, 0).onEnd);
 };
 
