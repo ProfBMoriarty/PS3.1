@@ -7,7 +7,7 @@ PSTest.prototype.setUp = function(){
     PS._sys(); //initialize the engine
     PS.gridSize(10, 10); //arbitrary non-default value
     PS.gridColor(100, 100, 100); //arbitrary non-default value
-    PS.gridFade(5, {end:doNothing}); //arbitrary non-default value
+    PS.gridFade(5, {onEnd:doNothing}); //arbitrary non-default value
     PS.gridPlane(1); //arbitrary non-default value
 };
 
@@ -505,7 +505,7 @@ PSTest.prototype.testColorTripletNullRed = function(){
 };
 
 PSTest.prototype.testColorTripletCurrentRed = function(){
-    assertEquals(6553600, PS.color(0, 0, PS.CURRENT, 0, 0));
+    assertEquals(16711680, PS.color(0, 0, PS.CURRENT, 0, 0));
 };
 
 PSTest.prototype.testColorTripletDefaultRed = function(){
@@ -529,7 +529,7 @@ PSTest.prototype.testColorTripletNullGreen = function(){
 };
 
 PSTest.prototype.testColorTripletCurrentGreen = function(){
-    assertEquals(25600, PS.color(0, 0, 0, PS.CURRENT, 0));
+    assertEquals(65280, PS.color(0, 0, 0, PS.CURRENT, 0));
 };
 
 PSTest.prototype.testColorTripletDefaultGreen = function(){
@@ -553,7 +553,7 @@ PSTest.prototype.testColorTripletNullBlue = function(){
 };
 
 PSTest.prototype.testColorTripletCurrentBlue = function(){
-    assertEquals(100, PS.color(0, 0, 0, 0, PS.CURRENT));
+    assertEquals(255, PS.color(0, 0, 0, 0, PS.CURRENT));
 };
 
 PSTest.prototype.testColorTripletDefaultBlue = function(){
@@ -577,7 +577,7 @@ PSTest.prototype.testColorArrayNullRed = function(){
 };
 
 PSTest.prototype.testColorArrayCurrentRed = function(){
-    assertEquals(6553600, PS.color(0, 0, [PS.CURRENT, 0, 0]));
+    assertEquals(16711680, PS.color(0, 0, [PS.CURRENT, 0, 0]));
 };
 
 PSTest.prototype.testColorArrayDefaultRed = function(){
@@ -601,7 +601,7 @@ PSTest.prototype.testColorArrayNullGreen = function(){
 };
 
 PSTest.prototype.testColorArrayCurrentGreen = function(){
-    assertEquals(25600, PS.color(0, 0, [0, PS.CURRENT, 0]));
+    assertEquals(65280, PS.color(0, 0, [0, PS.CURRENT, 0]));
 };
 
 PSTest.prototype.testColorArrayDefaultGreen = function(){
@@ -625,7 +625,7 @@ PSTest.prototype.testColorArrayNullBlue = function(){
 };
 
 PSTest.prototype.testColorArrayCurrentBlue = function(){
-    assertEquals(100, PS.color(0, 0, [0, 0, PS.CURRENT]));
+    assertEquals(255, PS.color(0, 0, [0, 0, PS.CURRENT]));
 };
 
 PSTest.prototype.testColorArrayDefaultBlue = function(){
@@ -665,7 +665,7 @@ PSTest.prototype.testColorObjectNullRed = function(){
 };
 
 PSTest.prototype.testColorObjectCurrentRed = function(){
-    assertEquals(6553600, PS.color(0, 0, {r : PS.CURRENT, g : 0, b: 0}));
+    assertEquals(16711680, PS.color(0, 0, {r : PS.CURRENT, g : 0, b: 0}));
 };
 
 PSTest.prototype.testColorObjectDefaultRed = function(){
@@ -689,7 +689,7 @@ PSTest.prototype.testColorObjectNullGreen = function(){
 };
 
 PSTest.prototype.testColorObjectCurrentGreen = function(){
-    assertEquals(25600, PS.color(0, 0, {r : 0, g : PS.CURRENT, b: 0}));
+    assertEquals(65280, PS.color(0, 0, {r : 0, g : PS.CURRENT, b: 0}));
 };
 
 PSTest.prototype.testColorObjectDefaultGreen = function(){
@@ -713,7 +713,7 @@ PSTest.prototype.testColorObjectNullBlue = function(){
 };
 
 PSTest.prototype.testColorObjectCurrentBlue = function(){
-    assertEquals(100, PS.color(0, 0, {r : 0, g : 0, b: PS.CURRENT}));
+    assertEquals(255, PS.color(0, 0, {r : 0, g : 0, b: PS.CURRENT}));
 };
 
 PSTest.prototype.testColorObjectDefaultBlue = function(){
@@ -737,7 +737,7 @@ PSTest.prototype.testColorObjectNullRGB = function(){
 };
 
 PSTest.prototype.testColorObjectCurrentRGB = function(){
-    assertEquals(6579300, PS.color(0, 0, {rgb: PS.CURRENT}));
+    assertEquals(16777215, PS.color(0, 0, {rgb: PS.CURRENT}));
 };
 
 PSTest.prototype.testColorObjectDefaultRGB = function(){
