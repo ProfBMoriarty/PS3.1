@@ -1121,11 +1121,62 @@ Start : function (namespace) {
 
 		if ( numArgs > max )
 		{
-			return _warning( methodName + "Too many arguments" );
+			return _error( methodName + "Too many arguments" );
 		}
 	}
 
+	// Makes sure that a colors object has all of its properties filled out
 
+	function _checkColors(colors, current, defaults)
+	{
+		var r, g, b;
+		var rgb = colors.rgb;
+		if ( rgb === PS.CURRENT )
+		{
+			return PS.CURRENT;
+		}
+		else if ( rgb === null ) // must inspect r/g/b values
+		{
+			r = colors.r;
+			if ( r === PS.CURRENT )
+			{
+				colors.r = r = current.r;
+			}
+			else if ( r === PS.DEFAULT )
+			{
+				colors.r = r = defaults.r;
+			}
+
+			g = colors.g;
+			if ( g === PS.CURRENT )
+			{
+				colors.g = g = current.g;
+			}
+			else if ( g === PS.DEFAULT )
+			{
+				colors.g = g = defaults.g;
+			}
+
+			b = colors.b;
+			if ( b === PS.CURRENT )
+			{
+				colors.b = b = current.b;
+			}
+			else if ( b === PS.DEFAULT )
+			{
+				colors.b = b = defaults.b;
+			}
+
+			colors.rgb = (r * _RSHIFT) + (g * _GSHIFT) + b;
+		}
+		else if ( rgb === PS.DEFAULT )
+		{
+			// Copy the defaults into the colors object
+			_copy( defaults, colors );
+		}
+		
+		return colors.rgb;
+	}
 
 	// Debugger options
 
@@ -3330,49 +3381,8 @@ Start : function (namespace) {
 		current = _grid.color;
 		fader = _grid.fader;
 
-		rgb = colors.rgb;
-		if ( rgb === PS.CURRENT )
-		{
+		if( PS.CURRENT == _checkColors(colors, current, _DEFAULTS.grid.color) )
 			return current.rgb;
-		}
-		if ( rgb === null ) // must inspect r/g/b values
-		{
-			r = colors.r;
-			if ( r === PS.CURRENT )
-			{
-				colors.r = r = current.r;
-			}
-			else if ( r === PS.DEFAULT )
-			{
-				colors.r = r = _DEFAULTS.grid.color.r;
-			}
-
-			g = colors.g;
-			if ( g === PS.CURRENT )
-			{
-				colors.g = g = current.g;
-			}
-			else if ( g === PS.DEFAULT )
-			{
-				colors.g = g = _DEFAULTS.grid.color.g;
-			}
-
-			b = colors.b;
-			if ( b === PS.CURRENT )
-			{
-				colors.b = b = current.b;
-			}
-			else if ( b === PS.DEFAULT )
-			{
-				colors.b = b = _DEFAULTS.grid.color.b;
-			}
-
-			colors.rgb = (r * _RSHIFT) + (g * _GSHIFT) + b;
-		}
-		else if ( rgb === PS.DEFAULT )
-		{
-			_copy( _DEFAULTS.grid.color, colors );
-		}
 
 		// Only change color if different
 		// But must also change if fader is active, start color is specified and doesn't match
@@ -3424,64 +3434,27 @@ Start : function (namespace) {
 		var current, rgb, r, g, b;
 
 		current = _grid.shadow;
+
+		if( PS.CURRENT == _checkColors(colors, current, _DEFAULTS.grid.shadow) )
+			return current.rgb;
+		
 		rgb = colors.rgb;
-		if ( rgb !== PS.CURRENT )
+
+		// Only change color if different
+
+		if ( current.rgb !== colors.rgb )
 		{
-			if ( rgb === null ) // must inspect r/g/b values
-			{
-				r = colors.r;
-				if ( r === PS.CURRENT )
-				{
-					colors.r = r = current.r;
-				}
-				else if ( r === PS.DEFAULT )
-				{
-					colors.r = r = _DEFAULTS.grid.shadow.r;
-				}
+			current.rgb = colors.rgb;
 
-				g = colors.g;
-				if ( g === PS.CURRENT )
-				{
-					colors.g = g = current.g;
-				}
-				else if ( g === PS.DEFAULT )
-				{
-					colors.g = g = _DEFAULTS.grid.shadow.g;
-				}
+			r = colors.r;
+			g = colors.g;
+			b = colors.b;
 
-				b = colors.b;
-				if ( b === PS.CURRENT )
-				{
-					colors.b = b = current.b;
-				}
-				else if ( b === PS.DEFAULT )
-				{
-					colors.b = b = _DEFAULTS.grid.shadow.b;
-				}
+			current.str = colors.str = _RSTR[r] + _GBSTR[g] + _BASTR[b];
 
-				colors.rgb = (r * _RSHIFT) + (g * _GSHIFT) + b;
-			}
-			else if ( rgb === PS.DEFAULT )
-			{
-				_copy( _DEFAULTS.grid.shadow, colors );
-			}
-
-			// Only change color if different
-
-			if ( current.rgb !== colors.rgb )
-			{
-				current.rgb = colors.rgb;
-
-				r = colors.r;
-				g = colors.g;
-				b = colors.b;
-
-				current.str = colors.str = _RSTR[r] + _GBSTR[g] + _BASTR[b];
-
-				current.r = r;
-				current.g = g;
-				current.b = b;
-			}
+			current.r = r;
+			current.g = g;
+			current.b = b;
 		}
 
 		if ( show !== PS.CURRENT )
@@ -3772,55 +3745,14 @@ Start : function (namespace) {
 		id = ( y * _grid.x ) + x;
 		bead = _beads[ id ];
 
-		def = _DEFAULTS.bead.color;
 		current = _colorPlane( bead, _grid.plane );
 		fader = bead.fader;
 
-		rgb = colors.rgb;
-		if ( !bead.active || ( rgb === PS.CURRENT ) )
-		{
+		if ( !bead.active )
 			return current.rgb;
-		}
-
-		if ( rgb === null ) // must inspect r/g/b values
-		{
-			r = colors.r;
-			if ( r === PS.CURRENT )
-			{
-				colors.r = r = current.r;
-			}
-			else if ( r === PS.DEFAULT )
-			{
-				colors.r = r = def.r;
-			}
-
-			g = colors.g;
-			if ( g === PS.CURRENT )
-			{
-				colors.g = g = current.g;
-			}
-			else if ( g === PS.DEFAULT )
-			{
-				colors.g = g = def.g;
-			}
-
-			b = colors.b;
-			if ( b === PS.CURRENT )
-			{
-				colors.b = b = current.b;
-			}
-			else if ( b === PS.DEFAULT )
-			{
-				colors.b = b = def.b;
-			}
-
-			colors.rgb = ( r * _RSHIFT ) + ( g * _GSHIFT ) + b;
-		}
-
-		else if ( rgb === PS.DEFAULT )
-		{
-			_copy( def, colors );
-		}
+		
+		if( PS.CURRENT == _checkColors(colors, current, _DEFAULTS.bead.color) )
+			return current.rgb;
 
 		// Only change color if different
 		// But must also change if fader is active, start color is specified and doesn't match
@@ -4158,54 +4090,13 @@ Start : function (namespace) {
 		id = ( y * _grid.x ) + x;
 		bead = _beads[ id ];
 
-		def = _DEFAULTS.bead.bgColor;
 		current = bead.bgColor;
 
-		rgb = colors.rgb;
-		if ( !bead.active || ( rgb === PS.CURRENT ) )
-		{
+		if ( !bead.active )
 			return current.rgb;
-		}
-
-		if ( rgb === null ) // must inspect r/g/b values
-		{
-			r = colors.r;
-			if ( r === PS.CURRENT )
-			{
-				colors.r = r = current.r;
-			}
-			else if ( r === PS.DEFAULT )
-			{
-				colors.r = r = def.r;
-			}
-
-			g = colors.g;
-			if ( g === PS.CURRENT )
-			{
-				colors.g = g = current.g;
-			}
-			else if ( g === PS.DEFAULT )
-			{
-				colors.g = g = def.g;
-			}
-
-			b = colors.b;
-			if ( b === PS.CURRENT )
-			{
-				colors.b = b = current.b;
-			}
-			else if ( b === PS.DEFAULT )
-			{
-				colors.b = b = def.b;
-			}
-
-			colors.rgb = ( r * _RSHIFT ) + ( g * _GSHIFT ) + b;
-		}
-
-		else if ( rgb === PS.DEFAULT )
-		{
-			_copy( def, colors );
-		}
+		
+		if( PS.CURRENT == _checkColors(colors, current, _DEFAULTS.bead.bgColor) )
+			return current.rgb;
 
 		// Only change color if different
 
@@ -4510,92 +4401,54 @@ Start : function (namespace) {
 		current = bead.border.color;
 		fader = bead.borderFader;
 
-		rgb = colors.rgb;
-		if ( bead.active && ( rgb !== PS.CURRENT ) )
+		if ( !bead.active )
+			return current.rgb;
+		
+		if( PS.CURRENT == _checkColors(colors, current, _DEFAULTS.bead.border.color) )
+			return current.rgb;
+
+		// Only change color if different
+		// But must also change if fader is active, start color is specified and doesn't match
+
+		if ( ( current.rgb !== colors.rgb ) || ( ( fader.rate > 0 ) && ( fader.rgb !== null ) && ( fader.rgb !== colors.rgb ) ) )
 		{
-			if ( rgb === null ) // must inspect r/g/b values
+			current.rgb = colors.rgb;
+
+			r = colors.r;
+			g = colors.g;
+			b = colors.b;
+
+			colors.a = a = current.a;
+
+			current.str = colors.str = _RSTR[ r ] + _GBSTR[ g ] + _GBSTR[ b ] + _ASTR[ a ];
+
+
+			if ( bead.visible )
 			{
-				r = colors.r;
-				if ( r === PS.CURRENT )
+				if ( fader.rate > 0 ) // must use fader
 				{
-					colors.r = r = current.r;
-				}
-				else if ( r === PS.DEFAULT )
-				{
-					colors.r = r = _DEFAULTS.bead.border.color.r;
-				}
-
-				g = colors.g;
-				if ( g === PS.CURRENT )
-				{
-					colors.g = g = current.g;
-				}
-				else if ( g === PS.DEFAULT )
-				{
-					colors.g = g = _DEFAULTS.bead.border.color.g;
-				}
-
-				b = colors.b;
-				if ( b === PS.CURRENT )
-				{
-					colors.b = b = current.b;
-				}
-				else if ( b === PS.DEFAULT )
-				{
-					colors.b = b = _DEFAULTS.bead.border.color.b;
-				}
-
-				colors.rgb = (r * _RSHIFT) + (g * _GSHIFT) + b;
-			}
-
-			else if ( rgb === PS.DEFAULT )
-			{
-				_copy( _DEFAULTS.bead.border.color, colors );
-			}
-
-			// Only change color if different
-			// But must also change if fader is active, start color is specified and doesn't match
-
-			if ( ( current.rgb !== colors.rgb ) || ( ( fader.rate > 0 ) && ( fader.rgb !== null ) && ( fader.rgb !== colors.rgb ) ) )
-			{
-				current.rgb = colors.rgb;
-
-				r = colors.r;
-				g = colors.g;
-				b = colors.b;
-
-				colors.a = a = current.a;
-
-				current.str = colors.str = _RSTR[ r ] + _GBSTR[ g ] + _GBSTR[ b ] + _ASTR[ a ];
-
-
-				if ( bead.visible )
-				{
-					if ( fader.rate > 0 ) // must use fader
+					if ( fader.rgb !== null ) // use start color if specified
 					{
-						if ( fader.rgb !== null ) // use start color if specified
-						{
-							_startFader( fader, fader.r, fader.g, fader.b, a, r, g, b, a );
-						}
-						else if ( !fader.active )
-						{
-							_startFader( fader, current.r, current.g, current.b, a, r, g, b, a );
-						}
-						else // must recalculate active fader
-						{
-							_recalcFader( fader, r, g, b, a );
-						}
+						_startFader( fader, fader.r, fader.g, fader.b, a, r, g, b, a );
 					}
-					else
+					else if ( !fader.active )
 					{
-						_makeDirty( bead );
+						_startFader( fader, current.r, current.g, current.b, a, r, g, b, a );
+					}
+					else // must recalculate active fader
+					{
+						_recalcFader( fader, r, g, b, a );
 					}
 				}
-
-				current.r = r;
-				current.g = g;
-				current.b = b;
+				else
+				{
+					_makeDirty( bead );
+				}
 			}
+
+			current.r = r;
+			current.g = g;
+			current.b = b;
 		}
 
 		return current.rgb;
@@ -4845,91 +4698,53 @@ Start : function (namespace) {
 		current = bead.glyph.color;
 		fader = bead.glyphFader;
 
-		rgb = colors.rgb;
-		if ( bead.active && ( rgb !== PS.CURRENT ) )
+		if ( !bead.active )
+			return current.rgb;
+		
+		if( PS.CURRENT == _checkColors(colors, current, _DEFAULTS.bead.glyph.color) )
+			return current.rgb;
+
+		// Only change color if different
+		// But must also change if fader is active, start color is specified and doesn't match
+
+		if ( ( current.rgb !== colors.rgb ) || ( ( fader.rate > 0 ) && ( fader.rgb !== null ) && ( fader.rgb !== colors.rgb ) ) )
 		{
-			if ( rgb === null ) // must inspect r/g/b values
+			current.rgb = colors.rgb;
+
+			r = colors.r;
+			g = colors.g;
+			b = colors.b;
+
+			colors.a = a = current.a;
+
+			current.str = colors.str = _RSTR[ r ] + _GBSTR[ g ] + _GBSTR[ b ] + _ASTR[ a ];
+
+			if ( bead.visible )
 			{
-				r = colors.r;
-				if ( r === PS.CURRENT )
+				if ( fader.rate > 0 ) // must use fader
 				{
-					colors.r = r = current.r;
-				}
-				else if ( r === PS.DEFAULT )
-				{
-					colors.r = r = _DEFAULTS.bead.glyph.color.r;
-				}
-
-				g = colors.g;
-				if ( g === PS.CURRENT )
-				{
-					colors.g = g = current.g;
-				}
-				else if ( g === PS.DEFAULT )
-				{
-					colors.g = g = _DEFAULTS.bead.glyph.color.g;
-				}
-
-				b = colors.b;
-				if ( b === PS.CURRENT )
-				{
-					colors.b = b = current.b;
-				}
-				else if ( b === PS.DEFAULT )
-				{
-					colors.b = b = _DEFAULTS.bead.glyph.color.b;
-				}
-
-				colors.rgb = (r * _RSHIFT) + (g * _GSHIFT) + b;
-			}
-
-			else if ( rgb === PS.DEFAULT )
-			{
-				_copy( _DEFAULTS.bead.glyph.color, colors );
-			}
-
-			// Only change color if different
-			// But must also change if fader is active, start color is specified and doesn't match
-
-			if ( ( current.rgb !== colors.rgb ) || ( ( fader.rate > 0 ) && ( fader.rgb !== null ) && ( fader.rgb !== colors.rgb ) ) )
-			{
-				current.rgb = colors.rgb;
-
-				r = colors.r;
-				g = colors.g;
-				b = colors.b;
-
-				colors.a = a = current.a;
-
-				current.str = colors.str = _RSTR[ r ] + _GBSTR[ g ] + _GBSTR[ b ] + _ASTR[ a ];
-
-				if ( bead.visible )
-				{
-					if ( fader.rate > 0 ) // must use fader
+					if ( fader.rgb !== null ) // use start color if specified
 					{
-						if ( fader.rgb !== null ) // use start color if specified
-						{
-							_startFader( fader, fader.r, fader.g, fader.b, a, r, g, b, a );
-						}
-						if ( !fader.active )
-						{
-							_startFader( fader, current.r, current.g, current.b, a, r, g, b, a );
-						}
-						else // must recalculate active fader
-						{
-							_recalcFader( fader, r, g, b, a );
-						}
+						_startFader( fader, fader.r, fader.g, fader.b, a, r, g, b, a );
 					}
-					else
+					if ( !fader.active )
 					{
-						_makeDirty( bead );
+						_startFader( fader, current.r, current.g, current.b, a, r, g, b, a );
+					}
+					else // must recalculate active fader
+					{
+						_recalcFader( fader, r, g, b, a );
 					}
 				}
-
-				current.r = r;
-				current.g = g;
-				current.b = b;
+				else
+				{
+					_makeDirty( bead );
+				}
 			}
+
+			current.r = r;
+			current.g = g;
+			current.b = b;
 		}
 
 		return current.rgb;
@@ -7784,7 +7599,7 @@ Start : function (namespace) {
 
 			fn = "[PS.gridColor] ";
 
-			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 0, 3))
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 0, 3) || arguments.length == 2)
 				return PS.ERROR;
 
 			colors = _decodeColors( fn, p1, p2, p3 );
@@ -8904,85 +8719,45 @@ Start : function (namespace) {
 			current = _status.color;
 			fader = _status.fader;
 
-			rgb = colors.rgb;
-			if ( rgb !== PS.CURRENT )
+			if( PS.CURRENT == _checkColors(colors, current, _DEFAULTS.status.color) )
+				return current.rgb;
+
+			// Only change color if different
+			// But must also change if fader is active, start color is specified and doesn't match
+
+			if ( ( current.rgb !== colors.rgb ) || ( ( fader.rate > 0 ) && ( fader.rgb !== null ) && ( fader.rgb !== colors.rgb ) ) )
 			{
-				if ( rgb === null ) // must inspect r/g/b values
+				current.rgb = colors.rgb;
+
+				r = colors.r;
+				g = colors.g;
+				b = colors.b;
+
+				current.str = colors.str = _RSTR[ r ] + _GBSTR[ g ] + _BASTR[ b ];
+
+				if ( fader.rate > 0 ) // must use fader
 				{
-					r = colors.r;
-					if ( r === PS.CURRENT )
+					if ( fader.rgb !== null ) // use start color if specified
 					{
-						colors.r = r = current.r;
+						_startFader( fader, fader.r, fader.g, fader.b, 255, r, g, b, 255 );
 					}
-					else if ( r === PS.DEFAULT )
+					if ( !fader.active )
 					{
-						colors.r = r = _DEFAULTS.status.color.r;
+						_startFader( fader, current.r, current.g, current.b, 255, r, g, b, 255 );
 					}
-
-					g = colors.g;
-					if ( g === PS.CURRENT )
+					else // must recalculate active fader
 					{
-						colors.g = g = current.g;
+						_recalcFader( fader, r, g, b, 255 );
 					}
-					else if ( g === PS.DEFAULT )
-					{
-						colors.g = g = _DEFAULTS.status.color.g;
-					}
-
-					b = colors.b;
-					if ( b === PS.CURRENT )
-					{
-						colors.b = b = current.b;
-					}
-					else if ( b === PS.DEFAULT )
-					{
-						colors.b = b = _DEFAULTS.status.color.b;
-					}
-
-					colors.rgb = (r * _RSHIFT) + (g * _GSHIFT) + b;
 				}
-				else if ( rgb === PS.DEFAULT )
+				else
 				{
-					_copy( _DEFAULTS.status.color, colors );
+					_statusRGB( current );
 				}
 
-				// Only change color if different
-				// But must also change if fader is active, start color is specified and doesn't match
-
-				if ( ( current.rgb !== colors.rgb ) || ( ( fader.rate > 0 ) && ( fader.rgb !== null ) && ( fader.rgb !== colors.rgb ) ) )
-				{
-					current.rgb = colors.rgb;
-
-					r = colors.r;
-					g = colors.g;
-					b = colors.b;
-
-					current.str = colors.str = _RSTR[ r ] + _GBSTR[ g ] + _BASTR[ b ];
-
-					if ( fader.rate > 0 ) // must use fader
-					{
-						if ( fader.rgb !== null ) // use start color if specified
-						{
-							_startFader( fader, fader.r, fader.g, fader.b, 255, r, g, b, 255 );
-						}
-						if ( !fader.active )
-						{
-							_startFader( fader, current.r, current.g, current.b, 255, r, g, b, 255 );
-						}
-						else // must recalculate active fader
-						{
-							_recalcFader( fader, r, g, b, 255 );
-						}
-					}
-					else
-					{
-						_statusRGB( current );
-					}
-
-					current.r = r;
-					current.g = g;
-					current.b = b;
-				}
+				current.r = r;
+				current.g = g;
+				current.b = b;
 			}
 
 			return current.rgb;
