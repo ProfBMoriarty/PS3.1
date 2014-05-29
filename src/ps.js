@@ -1967,6 +1967,12 @@ Start : function (namespace) {
 
 		type = _typeOf( p1 );
 
+        if (p1 !== undefined && p2 !== undefined && p3 === undefined)
+        {
+            // Looks like part of a multiplex, but not the whole thing
+            return _error( fn + "color arguments invalid" );
+        }
+
 		// If [p2] or [p3] is defined, check for a valid multiplex
 
 		if ( ( p2 !== undefined ) || ( p3 !== undefined ) )

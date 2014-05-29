@@ -757,7 +757,7 @@ PSTest.prototype.testColorNullArg = function(){
 }
 
 PSTest.prototype.testColorTwoNumbers = function(){
-    assertEquals(PS.ERROR, PS.gridColor(0, 0, 0, 0));
+    assertEquals(PS.ERROR, PS.color(0, 0, 0, 0));
 };
 
 PSTest.prototype.testColorFourNumbers = function(){
