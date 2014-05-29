@@ -7,7 +7,7 @@ PSTest.prototype.setUp = function(){
     PS._sys(); //initialize the engine
     PS.gridSize(10, 10); //arbitrary non-default value
     PS.gridColor(100, 100, 100); //arbitrary non-default value
-    PS.gridFade(5, doNothing); //arbitrary non-default value
+    PS.gridFade(5, {end:doNothing}); //arbitrary non-default value
     PS.gridPlane(1); //arbitrary non-default value
 };
 
