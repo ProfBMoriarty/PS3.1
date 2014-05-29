@@ -1,4 +1,13 @@
 #################
+## Webstorm
+#################
+
+workspace.xml
+tasks.xml
+.dictionaries/
+.scopes/
+
+#################
 ## Eclipse
 #################
 
