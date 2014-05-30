@@ -2035,6 +2035,12 @@ Start : function (namespace) {
 
 		type = _typeOf( p1 );
 
+        if (p1 !== undefined && p2 !== undefined && p3 === undefined)
+        {
+            // Looks like part of a multiplex, but not the whole thing
+            return _error( fn + "color arguments invalid" );
+        }
+
 		// If [p2] or [p3] is defined, check for a valid multiplex
 
 		if ( ( p2 !== undefined ) || ( p3 !== undefined ) )
@@ -2094,6 +2100,13 @@ Start : function (namespace) {
 			// .rgb property has priority
 
 			rgb = p1.rgb;
+
+            if (rgb == null && p1.r == undefined && p1.g == undefined && p1.b == undefined )
+            {
+                // There's a color object with no useful information inside
+                return PS.ERROR;
+            }
+
 			type = _typeOf( rgb );
 			if ( ( type === "undefined" ) || ( rgb === null ) )
 			{
