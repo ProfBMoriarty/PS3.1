@@ -1110,6 +1110,74 @@ Start : function (namespace) {
 		PSEngine.debug( "WARNING: " + str + "\n" );
 	}
 
+	// Check the number of arguments that were passed to a function
+	
+	function _checkNumArgs(methodName, numArgs, min, max)
+	{
+		if ( numArgs < min )
+		{
+			return _error( methodName + "Missing argument(s)" );
+		}
+
+		if ( numArgs > max )
+		{
+			return _error( methodName + "Too many arguments" );
+		}
+	}
+
+	// Makes sure that a colors object has all of its properties filled out
+
+	function _checkColors(colors, current, defaults)
+	{
+		var r, g, b;
+		var rgb = colors.rgb;
+		if ( rgb === PS.CURRENT )
+		{
+			return PS.CURRENT;
+		}
+		else if ( rgb === null ) // must inspect r/g/b values
+		{
+			r = colors.r;
+			if ( r === PS.CURRENT )
+			{
+				colors.r = r = current.r;
+			}
+			else if ( r === PS.DEFAULT )
+			{
+				colors.r = r = defaults.r;
+			}
+
+			g = colors.g;
+			if ( g === PS.CURRENT )
+			{
+				colors.g = g = current.g;
+			}
+			else if ( g === PS.DEFAULT )
+			{
+				colors.g = g = defaults.g;
+			}
+
+			b = colors.b;
+			if ( b === PS.CURRENT )
+			{
+				colors.b = b = current.b;
+			}
+			else if ( b === PS.DEFAULT )
+			{
+				colors.b = b = defaults.b;
+			}
+
+			colors.rgb = (r * _RSHIFT) + (g * _GSHIFT) + b;
+		}
+		else if ( rgb === PS.DEFAULT )
+		{
+			// Copy the defaults into the colors object
+			_copy( defaults, colors );
+		}
+		
+		return colors.rgb;
+	}
+
 	// Debugger options
 
 	var _DEBUG_STACK = true; // Show debug stack
@@ -1178,7 +1246,7 @@ Start : function (namespace) {
 		// Stop the clock
 
 		_clockActive = false;
-		if ( _footerTimer )
+		if ( _footerTimer && _timers.length > 0 )
 		{
 			PSEngine.timerStop( _footerTimer );
 		}
@@ -3326,49 +3394,8 @@ Start : function (namespace) {
 		current = _grid.color;
 		fader = _grid.fader;
 
-		rgb = colors.rgb;
-		if ( rgb === PS.CURRENT )
-		{
+		if( PS.CURRENT == _checkColors(colors, current, _DEFAULTS.grid.color) )
 			return current.rgb;
-		}
-		if ( rgb === null ) // must inspect r/g/b values
-		{
-			r = colors.r;
-			if ( r === PS.CURRENT )
-			{
-				colors.r = r = current.r;
-			}
-			else if ( r === PS.DEFAULT )
-			{
-				colors.r = r = _DEFAULTS.grid.color.r;
-			}
-
-			g = colors.g;
-			if ( g === PS.CURRENT )
-			{
-				colors.g = g = current.g;
-			}
-			else if ( g === PS.DEFAULT )
-			{
-				colors.g = g = _DEFAULTS.grid.color.g;
-			}
-
-			b = colors.b;
-			if ( b === PS.CURRENT )
-			{
-				colors.b = b = current.b;
-			}
-			else if ( b === PS.DEFAULT )
-			{
-				colors.b = b = _DEFAULTS.grid.color.b;
-			}
-
-			colors.rgb = (r * _RSHIFT) + (g * _GSHIFT) + b;
-		}
-		else if ( rgb === PS.DEFAULT )
-		{
-			_copy( _DEFAULTS.grid.color, colors );
-		}
 
 		// Only change color if different
 		// But must also change if fader is active, start color is specified and doesn't match
@@ -3420,64 +3447,27 @@ Start : function (namespace) {
 		var current, rgb, r, g, b;
 
 		current = _grid.shadow;
+
+		if( PS.CURRENT == _checkColors(colors, current, _DEFAULTS.grid.shadow) )
+			return current.rgb;
+		
 		rgb = colors.rgb;
-		if ( rgb !== PS.CURRENT )
+
+		// Only change color if different
+
+		if ( current.rgb !== colors.rgb )
 		{
-			if ( rgb === null ) // must inspect r/g/b values
-			{
-				r = colors.r;
-				if ( r === PS.CURRENT )
-				{
-					colors.r = r = current.r;
-				}
-				else if ( r === PS.DEFAULT )
-				{
-					colors.r = r = _DEFAULTS.grid.shadow.r;
-				}
+			current.rgb = colors.rgb;
 
-				g = colors.g;
-				if ( g === PS.CURRENT )
-				{
-					colors.g = g = current.g;
-				}
-				else if ( g === PS.DEFAULT )
-				{
-					colors.g = g = _DEFAULTS.grid.shadow.g;
-				}
+			r = colors.r;
+			g = colors.g;
+			b = colors.b;
 
-				b = colors.b;
-				if ( b === PS.CURRENT )
-				{
-					colors.b = b = current.b;
-				}
-				else if ( b === PS.DEFAULT )
-				{
-					colors.b = b = _DEFAULTS.grid.shadow.b;
-				}
+			current.str = colors.str = _RSTR[r] + _GBSTR[g] + _BASTR[b];
 
-				colors.rgb = (r * _RSHIFT) + (g * _GSHIFT) + b;
-			}
-			else if ( rgb === PS.DEFAULT )
-			{
-				_copy( _DEFAULTS.grid.shadow, colors );
-			}
-
-			// Only change color if different
-
-			if ( current.rgb !== colors.rgb )
-			{
-				current.rgb = colors.rgb;
-
-				r = colors.r;
-				g = colors.g;
-				b = colors.b;
-
-				current.str = colors.str = _RSTR[r] + _GBSTR[g] + _BASTR[b];
-
-				current.r = r;
-				current.g = g;
-				current.b = b;
-			}
+			current.r = r;
+			current.g = g;
+			current.b = b;
 		}
 
 		if ( show !== PS.CURRENT )
@@ -3768,55 +3758,14 @@ Start : function (namespace) {
 		id = ( y * _grid.x ) + x;
 		bead = _beads[ id ];
 
-		def = _DEFAULTS.bead.color;
 		current = _colorPlane( bead, _grid.plane );
 		fader = bead.fader;
 
-		rgb = colors.rgb;
-		if ( !bead.active || ( rgb === PS.CURRENT ) )
-		{
+		if ( !bead.active )
 			return current.rgb;
-		}
-
-		if ( rgb === null ) // must inspect r/g/b values
-		{
-			r = colors.r;
-			if ( r === PS.CURRENT )
-			{
-				colors.r = r = current.r;
-			}
-			else if ( r === PS.DEFAULT )
-			{
-				colors.r = r = def.r;
-			}
-
-			g = colors.g;
-			if ( g === PS.CURRENT )
-			{
-				colors.g = g = current.g;
-			}
-			else if ( g === PS.DEFAULT )
-			{
-				colors.g = g = def.g;
-			}
-
-			b = colors.b;
-			if ( b === PS.CURRENT )
-			{
-				colors.b = b = current.b;
-			}
-			else if ( b === PS.DEFAULT )
-			{
-				colors.b = b = def.b;
-			}
-
-			colors.rgb = ( r * _RSHIFT ) + ( g * _GSHIFT ) + b;
-		}
-
-		else if ( rgb === PS.DEFAULT )
-		{
-			_copy( def, colors );
-		}
+		
+		if( PS.CURRENT == _checkColors(colors, current, _DEFAULTS.bead.color) )
+			return current.rgb;
 
 		// Only change color if different
 		// But must also change if fader is active, start color is specified and doesn't match
@@ -4154,54 +4103,13 @@ Start : function (namespace) {
 		id = ( y * _grid.x ) + x;
 		bead = _beads[ id ];
 
-		def = _DEFAULTS.bead.bgColor;
 		current = bead.bgColor;
 
-		rgb = colors.rgb;
-		if ( !bead.active || ( rgb === PS.CURRENT ) )
-		{
+		if ( !bead.active )
 			return current.rgb;
-		}
-
-		if ( rgb === null ) // must inspect r/g/b values
-		{
-			r = colors.r;
-			if ( r === PS.CURRENT )
-			{
-				colors.r = r = current.r;
-			}
-			else if ( r === PS.DEFAULT )
-			{
-				colors.r = r = def.r;
-			}
-
-			g = colors.g;
-			if ( g === PS.CURRENT )
-			{
-				colors.g = g = current.g;
-			}
-			else if ( g === PS.DEFAULT )
-			{
-				colors.g = g = def.g;
-			}
-
-			b = colors.b;
-			if ( b === PS.CURRENT )
-			{
-				colors.b = b = current.b;
-			}
-			else if ( b === PS.DEFAULT )
-			{
-				colors.b = b = def.b;
-			}
-
-			colors.rgb = ( r * _RSHIFT ) + ( g * _GSHIFT ) + b;
-		}
-
-		else if ( rgb === PS.DEFAULT )
-		{
-			_copy( def, colors );
-		}
+		
+		if( PS.CURRENT == _checkColors(colors, current, _DEFAULTS.bead.bgColor) )
+			return current.rgb;
 
 		// Only change color if different
 
@@ -4506,92 +4414,54 @@ Start : function (namespace) {
 		current = bead.border.color;
 		fader = bead.borderFader;
 
-		rgb = colors.rgb;
-		if ( bead.active && ( rgb !== PS.CURRENT ) )
+		if ( !bead.active )
+			return current.rgb;
+		
+		if( PS.CURRENT == _checkColors(colors, current, _DEFAULTS.bead.border.color) )
+			return current.rgb;
+
+		// Only change color if different
+		// But must also change if fader is active, start color is specified and doesn't match
+
+		if ( ( current.rgb !== colors.rgb ) || ( ( fader.rate > 0 ) && ( fader.rgb !== null ) && ( fader.rgb !== colors.rgb ) ) )
 		{
-			if ( rgb === null ) // must inspect r/g/b values
+			current.rgb = colors.rgb;
+
+			r = colors.r;
+			g = colors.g;
+			b = colors.b;
+
+			colors.a = a = current.a;
+
+			current.str = colors.str = _RSTR[ r ] + _GBSTR[ g ] + _GBSTR[ b ] + _ASTR[ a ];
+
+
+			if ( bead.visible )
 			{
-				r = colors.r;
-				if ( r === PS.CURRENT )
+				if ( fader.rate > 0 ) // must use fader
 				{
-					colors.r = r = current.r;
-				}
-				else if ( r === PS.DEFAULT )
-				{
-					colors.r = r = _DEFAULTS.bead.border.color.r;
-				}
-
-				g = colors.g;
-				if ( g === PS.CURRENT )
-				{
-					colors.g = g = current.g;
-				}
-				else if ( g === PS.DEFAULT )
-				{
-					colors.g = g = _DEFAULTS.bead.border.color.g;
-				}
-
-				b = colors.b;
-				if ( b === PS.CURRENT )
-				{
-					colors.b = b = current.b;
-				}
-				else if ( b === PS.DEFAULT )
-				{
-					colors.b = b = _DEFAULTS.bead.border.color.b;
-				}
-
-				colors.rgb = (r * _RSHIFT) + (g * _GSHIFT) + b;
-			}
-
-			else if ( rgb === PS.DEFAULT )
-			{
-				_copy( _DEFAULTS.bead.border.color, colors );
-			}
-
-			// Only change color if different
-			// But must also change if fader is active, start color is specified and doesn't match
-
-			if ( ( current.rgb !== colors.rgb ) || ( ( fader.rate > 0 ) && ( fader.rgb !== null ) && ( fader.rgb !== colors.rgb ) ) )
-			{
-				current.rgb = colors.rgb;
-
-				r = colors.r;
-				g = colors.g;
-				b = colors.b;
-
-				colors.a = a = current.a;
-
-				current.str = colors.str = _RSTR[ r ] + _GBSTR[ g ] + _GBSTR[ b ] + _ASTR[ a ];
-
-
-				if ( bead.visible )
-				{
-					if ( fader.rate > 0 ) // must use fader
+					if ( fader.rgb !== null ) // use start color if specified
 					{
-						if ( fader.rgb !== null ) // use start color if specified
-						{
-							_startFader( fader, fader.r, fader.g, fader.b, a, r, g, b, a );
-						}
-						else if ( !fader.active )
-						{
-							_startFader( fader, current.r, current.g, current.b, a, r, g, b, a );
-						}
-						else // must recalculate active fader
-						{
-							_recalcFader( fader, r, g, b, a );
-						}
+						_startFader( fader, fader.r, fader.g, fader.b, a, r, g, b, a );
 					}
-					else
+					else if ( !fader.active )
 					{
-						_makeDirty( bead );
+						_startFader( fader, current.r, current.g, current.b, a, r, g, b, a );
+					}
+					else // must recalculate active fader
+					{
+						_recalcFader( fader, r, g, b, a );
 					}
 				}
-
-				current.r = r;
-				current.g = g;
-				current.b = b;
+				else
+				{
+					_makeDirty( bead );
+				}
 			}
+
+			current.r = r;
+			current.g = g;
+			current.b = b;
 		}
 
 		return current.rgb;
@@ -4841,91 +4711,53 @@ Start : function (namespace) {
 		current = bead.glyph.color;
 		fader = bead.glyphFader;
 
-		rgb = colors.rgb;
-		if ( bead.active && ( rgb !== PS.CURRENT ) )
+		if ( !bead.active )
+			return current.rgb;
+		
+		if( PS.CURRENT == _checkColors(colors, current, _DEFAULTS.bead.glyph.color) )
+			return current.rgb;
+
+		// Only change color if different
+		// But must also change if fader is active, start color is specified and doesn't match
+
+		if ( ( current.rgb !== colors.rgb ) || ( ( fader.rate > 0 ) && ( fader.rgb !== null ) && ( fader.rgb !== colors.rgb ) ) )
 		{
-			if ( rgb === null ) // must inspect r/g/b values
+			current.rgb = colors.rgb;
+
+			r = colors.r;
+			g = colors.g;
+			b = colors.b;
+
+			colors.a = a = current.a;
+
+			current.str = colors.str = _RSTR[ r ] + _GBSTR[ g ] + _GBSTR[ b ] + _ASTR[ a ];
+
+			if ( bead.visible )
 			{
-				r = colors.r;
-				if ( r === PS.CURRENT )
+				if ( fader.rate > 0 ) // must use fader
 				{
-					colors.r = r = current.r;
-				}
-				else if ( r === PS.DEFAULT )
-				{
-					colors.r = r = _DEFAULTS.bead.glyph.color.r;
-				}
-
-				g = colors.g;
-				if ( g === PS.CURRENT )
-				{
-					colors.g = g = current.g;
-				}
-				else if ( g === PS.DEFAULT )
-				{
-					colors.g = g = _DEFAULTS.bead.glyph.color.g;
-				}
-
-				b = colors.b;
-				if ( b === PS.CURRENT )
-				{
-					colors.b = b = current.b;
-				}
-				else if ( b === PS.DEFAULT )
-				{
-					colors.b = b = _DEFAULTS.bead.glyph.color.b;
-				}
-
-				colors.rgb = (r * _RSHIFT) + (g * _GSHIFT) + b;
-			}
-
-			else if ( rgb === PS.DEFAULT )
-			{
-				_copy( _DEFAULTS.bead.glyph.color, colors );
-			}
-
-			// Only change color if different
-			// But must also change if fader is active, start color is specified and doesn't match
-
-			if ( ( current.rgb !== colors.rgb ) || ( ( fader.rate > 0 ) && ( fader.rgb !== null ) && ( fader.rgb !== colors.rgb ) ) )
-			{
-				current.rgb = colors.rgb;
-
-				r = colors.r;
-				g = colors.g;
-				b = colors.b;
-
-				colors.a = a = current.a;
-
-				current.str = colors.str = _RSTR[ r ] + _GBSTR[ g ] + _GBSTR[ b ] + _ASTR[ a ];
-
-				if ( bead.visible )
-				{
-					if ( fader.rate > 0 ) // must use fader
+					if ( fader.rgb !== null ) // use start color if specified
 					{
-						if ( fader.rgb !== null ) // use start color if specified
-						{
-							_startFader( fader, fader.r, fader.g, fader.b, a, r, g, b, a );
-						}
-						if ( !fader.active )
-						{
-							_startFader( fader, current.r, current.g, current.b, a, r, g, b, a );
-						}
-						else // must recalculate active fader
-						{
-							_recalcFader( fader, r, g, b, a );
-						}
+						_startFader( fader, fader.r, fader.g, fader.b, a, r, g, b, a );
 					}
-					else
+					if ( !fader.active )
 					{
-						_makeDirty( bead );
+						_startFader( fader, current.r, current.g, current.b, a, r, g, b, a );
+					}
+					else // must recalculate active fader
+					{
+						_recalcFader( fader, r, g, b, a );
 					}
 				}
-
-				current.r = r;
-				current.g = g;
-				current.b = b;
+				else
+				{
+					_makeDirty( bead );
+				}
 			}
+
+			current.r = r;
+			current.g = g;
+			current.b = b;
 		}
 
 		return current.rgb;
@@ -7659,10 +7491,8 @@ Start : function (namespace) {
 
 			fn = "[PS.gridSize] ";
 
-			if ( arguments.length > 2 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 0, 2))
+				return PS.ERROR;
 
 			// prevent arg mutation
 
@@ -7740,10 +7570,8 @@ Start : function (namespace) {
 
 			fn = "[PS.gridPlane] ";
 
-			if ( arguments.length > 1 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 0, 1))
+				return PS.ERROR;
 
 			plane = planeP; // avoid direct mutation of argument
 
@@ -7784,10 +7612,8 @@ Start : function (namespace) {
 
 			fn = "[PS.gridColor] ";
 
-			if ( arguments.length > 3 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 0, 3) || arguments.length == 2)
+				return PS.ERROR;
 
 			colors = _decodeColors( fn, p1, p2, p3 );
 			if ( colors === PS.ERROR )
@@ -7808,10 +7634,8 @@ Start : function (namespace) {
 
 			fn = "[PS.gridFade] ";
 
-			if ( arguments.length > 2 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 0, 2))
+				return PS.ERROR;
 
 			color = _grid.color;
 			fader = _grid.fader;
@@ -7937,10 +7761,8 @@ Start : function (namespace) {
 
 			fn = "[PS.gridShadow] ";
 
-			if ( arguments.length > 4 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 0, 4))
+				return PS.ERROR;
 
 			show = showP; // prevent arg mutation
 			if ( ( show !== true ) && ( show !== false ) && ( show !== PS.CURRENT ) )
@@ -7981,15 +7803,8 @@ Start : function (namespace) {
 
 			fn = "[PS.color] ";
 
-			args = arguments.length;
-			if ( args < 2 )
-			{
-				return _error( fn + "Missing argument(s)" );
-			}
-			if ( args > 5 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 2, 5))
+				return PS.ERROR;
 
 			colors = _decodeColors( fn, p1, p2, p3 );
 			if ( colors === PS.ERROR )
@@ -8008,16 +7823,8 @@ Start : function (namespace) {
 
 			fn = "[PS.alpha] ";
 
-			args = arguments.length;
-			if ( args < 2 )
-			{
-				return _error( fn + "Missing argument(s)" );
-			}
-			if ( args > 3 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
-
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 2, 3))
+				return PS.ERROR;
 			alpha = alpha_p; // prevent direct mutation of args
 
 			if ( alpha !== PS.CURRENT )
@@ -8062,15 +7869,8 @@ Start : function (namespace) {
 
 			fn = "[PS.fade] ";
 
-			args = arguments.length;
-			if ( args < 2 )
-			{
-				return _error( fn + "Missing argument(s)" );
-			}
-			if ( args > 4 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 2, 4))
+				return PS.ERROR;
 
 			rate = rate_p; // prevent arg mutation
 			if ( ( rate !== PS.CURRENT ) && ( rate !== PS.DEFAULT ) )
@@ -8112,15 +7912,9 @@ Start : function (namespace) {
 
 			fn = "[PS.scale] ";
 
-			args = arguments.length;
-			if ( args < 2 )
-			{
-				return _error( fn + "Missing argument(s)" );
-			}
-			if ( args > 3 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 2, 3))
+				return PS.ERROR;
+
 
 			// prevent arg mutation
 
@@ -8167,15 +7961,8 @@ Start : function (namespace) {
 
 			fn = "[PS.radius] ";
 
-			args = arguments.length;
-			if ( args < 2 )
-			{
-				return _error( fn + "Missing argument(s)" );
-			}
-			if ( args > 3 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 2, 3))
+				return PS.ERROR;
 
 			// prevent arg mutation
 
@@ -8222,15 +8009,8 @@ Start : function (namespace) {
 
 			fn = "[PS.bgColor] ";
 
-			args = arguments.length;
-			if ( args < 2 )
-			{
-				return _error( fn + "Missing argument(s)" );
-			}
-			if ( args > 5 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 2, 5))
+				return PS.ERROR;
 
 			colors = _decodeColors( fn, p1, p2, p3 );
 			if ( colors === PS.ERROR )
@@ -8249,15 +8029,8 @@ Start : function (namespace) {
 
 			fn = "[PS.bgAlpha] ";
 
-			args = arguments.length;
-			if ( args < 2 )
-			{
-				return _error( fn + "Missing argument(s)" );
-			}
-			if ( args > 3 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 2, 3))
+				return PS.ERROR;
 
 			alpha = alpha_p; // prevent direct mutation of args
 			if ( alpha !== PS.CURRENT )
@@ -8300,15 +8073,8 @@ Start : function (namespace) {
 
 			fn = "[PS.data] ";
 
-			args = arguments.length;
-			if ( args < 2 )
-			{
-				return _error( fn + "Missing argument(s)" );
-			}
-			if ( args > 3 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 2, 3))
+				return PS.ERROR;
 
 			// Prevent arg mutation
 
@@ -8333,15 +8099,8 @@ Start : function (namespace) {
 
 			fn = "[PS.exec] ";
 
-			args = arguments.length;
-			if ( args < 2 )
-			{
-				return _error( fn + "Missing argument(s)" );
-			}
-			if ( args > 3 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 2, 3))
+				return PS.ERROR;
 
 			exec = exec_p; // prevent arg mutation
 			if ( exec !== PS.CURRENT )
@@ -8372,15 +8131,8 @@ Start : function (namespace) {
 
 			fn = "[PS.visible] ";
 
-			args = arguments.length;
-			if ( args < 2 )
-			{
-				return _error( fn + "Missing argument(s)" );
-			}
-			if ( args > 3 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 2, 3))
+				return PS.ERROR;
 
 			show = _isBoolean( show_p, PS.CURRENT, true, PS.CURRENT );
 			if ( show === PS.ERROR )
@@ -8399,15 +8151,8 @@ Start : function (namespace) {
 
 			fn = "[PS.active] ";
 
-			args = arguments.length;
-			if ( args < 2 )
-			{
-				return _error( fn + "Missing argument(s)" );
-			}
-			if ( args > 3 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 2, 3))
+				return PS.ERROR;
 
 			active = _isBoolean( active_p, PS.CURRENT, true, PS.CURRENT );
 			if ( active === PS.ERROR )
@@ -8431,15 +8176,8 @@ Start : function (namespace) {
 
 			fn = "[PS.border] ";
 
-			args = arguments.length;
-			if ( args < 2 )
-			{
-				return _error( fn + "Missing argument(s)" );
-			}
-			if ( args > 3 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 2, 3))
+				return PS.ERROR;
 
 			def = _DEFAULTS.bead.border;
 
@@ -8602,14 +8340,8 @@ Start : function (namespace) {
 
 			fn = "[PS.borderColor] ";
 
-			if ( arguments.length < 2 )
-			{
-				return _error( fn + "Missing argument(s)" );
-			}
-			if ( arguments.length > 5 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 2, 5))
+				return PS.ERROR;
 
 			colors = _decodeColors( fn, p1, p2, p3 );
 			if ( colors === PS.ERROR )
@@ -8628,15 +8360,8 @@ Start : function (namespace) {
 
 			fn = "[PS.borderAlpha] ";
 
-			args = arguments.length;
-			if ( args < 2 )
-			{
-				return _error( fn + "Missing argument(s)" );
-			}
-			if ( args > 3 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 2, 3))
+				return PS.ERROR;
 
 			alpha = alpha_p; // prevent arg mutation
 			if ( alpha !== PS.CURRENT )
@@ -8681,15 +8406,8 @@ Start : function (namespace) {
 
 			fn = "[PS.borderFade] ";
 
-			args = arguments.length;
-			if ( args < 2 )
-			{
-				return _error( fn + "Missing argument(s)" );
-			}
-			if ( args > 4 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 2, 4))
+				return PS.ERROR;
 
 			rate = rate_p; // prevent arg mutation
 			if ( ( rate !== PS.CURRENT ) && ( rate !== PS.DEFAULT ) )
@@ -8737,15 +8455,8 @@ Start : function (namespace) {
 
 			fn = "[PS.glyph] ";
 
-			args = arguments.length;
-			if ( args < 2 )
-			{
-				return _error( fn + "Missing argument(s)" );
-			}
-			if ( args > 3 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 2, 3))
+				return PS.ERROR;
 
 			glyph = glyph_p; // prevent arg mutation
 			if ( glyph !== PS.CURRENT )
@@ -8795,14 +8506,8 @@ Start : function (namespace) {
 
 			fn = "[PS.glyphColor] ";
 
-			if ( arguments.length < 2 )
-			{
-				return _error( fn + "Missing argument(s)" );
-			}
-			if ( arguments.length > 5 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 2, 5))
+				return PS.ERROR;
 
 			colors = _decodeColors( fn, p1, p2, p3 );
 			if ( colors === PS.ERROR )
@@ -8821,15 +8526,8 @@ Start : function (namespace) {
 
 			fn = "[PS.glyphAlpha] ";
 
-			args = arguments.length;
-			if ( args < 2 )
-			{
-				return _error( fn + "Missing argument(s)" );
-			}
-			if ( args > 3 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 2, 3))
+				return PS.ERROR;
 
 			alpha = alpha_p; // prevent arg mutation
 			if ( alpha !== PS.CURRENT )
@@ -8872,15 +8570,8 @@ Start : function (namespace) {
 
 			fn = "[PS.glyphScale] ";
 
-			args = arguments.length;
-			if ( args < 2 )
-			{
-				return _error( fn + "Missing argument(s)" );
-			}
-			if ( args > 3 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 2, 3))
+				return PS.ERROR;
 
 			scale = scale_p; // prevents arg mutation
 			if ( scale !== PS.CURRENT )
@@ -8925,15 +8616,8 @@ Start : function (namespace) {
 
 			fn = "[PS.glyphFade] ";
 
-			args = arguments.length;
-			if ( args < 2 )
-			{
-				return _error( fn + "Missing argument(s)" );
-			}
-			if ( args > 4 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 2, 4))
+				return PS.ERROR;
 
 			rate = rate_p; // prevent arg mutation
 			if ( ( rate !== PS.CURRENT ) && ( rate !== PS.DEFAULT ) )
@@ -8976,10 +8660,8 @@ Start : function (namespace) {
 
 			fn = "[PS.statusText] ";
 
-			if ( arguments.length > 1 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 0, 1))
+				return PS.ERROR;
 
 			str = strP; // prevent arg mutation
 			type = _typeOf( str );
@@ -9038,10 +8720,8 @@ Start : function (namespace) {
 
 			fn = "[PS.statusColor] ";
 
-			if ( arguments.length > 3 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 0, 3))
+				return PS.ERROR;
 
 			colors = _decodeColors( fn, p1, p2, p3 );
 			if ( colors === PS.ERROR )
@@ -9052,85 +8732,45 @@ Start : function (namespace) {
 			current = _status.color;
 			fader = _status.fader;
 
-			rgb = colors.rgb;
-			if ( rgb !== PS.CURRENT )
+			if( PS.CURRENT == _checkColors(colors, current, _DEFAULTS.status.color) )
+				return current.rgb;
+
+			// Only change color if different
+			// But must also change if fader is active, start color is specified and doesn't match
+
+			if ( ( current.rgb !== colors.rgb ) || ( ( fader.rate > 0 ) && ( fader.rgb !== null ) && ( fader.rgb !== colors.rgb ) ) )
 			{
-				if ( rgb === null ) // must inspect r/g/b values
+				current.rgb = colors.rgb;
+
+				r = colors.r;
+				g = colors.g;
+				b = colors.b;
+
+				current.str = colors.str = _RSTR[ r ] + _GBSTR[ g ] + _BASTR[ b ];
+
+				if ( fader.rate > 0 ) // must use fader
 				{
-					r = colors.r;
-					if ( r === PS.CURRENT )
+					if ( fader.rgb !== null ) // use start color if specified
 					{
-						colors.r = r = current.r;
+						_startFader( fader, fader.r, fader.g, fader.b, 255, r, g, b, 255 );
 					}
-					else if ( r === PS.DEFAULT )
+					if ( !fader.active )
 					{
-						colors.r = r = _DEFAULTS.status.color.r;
+						_startFader( fader, current.r, current.g, current.b, 255, r, g, b, 255 );
 					}
-
-					g = colors.g;
-					if ( g === PS.CURRENT )
+					else // must recalculate active fader
 					{
-						colors.g = g = current.g;
+						_recalcFader( fader, r, g, b, 255 );
 					}
-					else if ( g === PS.DEFAULT )
-					{
-						colors.g = g = _DEFAULTS.status.color.g;
-					}
-
-					b = colors.b;
-					if ( b === PS.CURRENT )
-					{
-						colors.b = b = current.b;
-					}
-					else if ( b === PS.DEFAULT )
-					{
-						colors.b = b = _DEFAULTS.status.color.b;
-					}
-
-					colors.rgb = (r * _RSHIFT) + (g * _GSHIFT) + b;
 				}
-				else if ( rgb === PS.DEFAULT )
+				else
 				{
-					_copy( _DEFAULTS.status.color, colors );
+					_statusRGB( current );
 				}
 
-				// Only change color if different
-				// But must also change if fader is active, start color is specified and doesn't match
-
-				if ( ( current.rgb !== colors.rgb ) || ( ( fader.rate > 0 ) && ( fader.rgb !== null ) && ( fader.rgb !== colors.rgb ) ) )
-				{
-					current.rgb = colors.rgb;
-
-					r = colors.r;
-					g = colors.g;
-					b = colors.b;
-
-					current.str = colors.str = _RSTR[ r ] + _GBSTR[ g ] + _BASTR[ b ];
-
-					if ( fader.rate > 0 ) // must use fader
-					{
-						if ( fader.rgb !== null ) // use start color if specified
-						{
-							_startFader( fader, fader.r, fader.g, fader.b, 255, r, g, b, 255 );
-						}
-						if ( !fader.active )
-						{
-							_startFader( fader, current.r, current.g, current.b, 255, r, g, b, 255 );
-						}
-						else // must recalculate active fader
-						{
-							_recalcFader( fader, r, g, b, 255 );
-						}
-					}
-					else
-					{
-						_statusRGB( current );
-					}
-
-					current.r = r;
-					current.g = g;
-					current.b = b;
-				}
+				current.r = r;
+				current.g = g;
+				current.b = b;
 			}
 
 			return current.rgb;
@@ -9142,10 +8782,8 @@ Start : function (namespace) {
 
 			fn = "[PS.statusFade] ";
 
-			if ( arguments.length > 2 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 0, 2))
+				return PS.ERROR;
 
 			color = _status.color;
 			fader = _status.fader;
@@ -9274,11 +8912,8 @@ Start : function (namespace) {
 
 			fn = "[PS.timerStart] ";
 
-			args = arguments.length;
-			if ( args < 2 )
-			{
-				return _error( fn + "Argument(s) missing" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 2, 2))
+				return PS.ERROR;
 
 			// Prevent arg mutation
 
@@ -9359,11 +8994,8 @@ Start : function (namespace) {
 
 			// PS.debug(fn + "id = " + id + "\n");
 
-			args = arguments.length;
-			if ( args < 1 )
-			{
-				return _error( fn + "Argument missing" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 1, 1))
+				return PS.ERROR;
 
 			// Check id param
 
@@ -9398,10 +9030,8 @@ Start : function (namespace) {
 
 			fn = "[PS.random] ";
 
-			if ( arguments.length < 1 )
-			{
-				return _error( fn + "Argument missing" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 1, 1))
+				return PS.ERROR;
 
 			val = val_p; // prevent arg mutation
 			if ( _typeOf( val ) !== "number" )
@@ -9425,15 +9055,8 @@ Start : function (namespace) {
 
 			fn = "[PS.makeRGB] ";
 
-			args = arguments.length;
-			if ( args < 3 )
-			{
-				return _error( fn + "Argument(s) missing" );
-			}
-			if ( args > 3 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 3, 3))
+				return PS.ERROR;
 
 			// Prevent arg mutation
 
@@ -9492,15 +9115,8 @@ Start : function (namespace) {
 
 			fn = "[PS.unmakeRGB] ";
 
-			args = arguments.length;
-			if ( args < 2 )
-			{
-				return _error( fn + "Missing argument(s)" );
-			}
-			if ( args > 2 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 2, 2))
+				return PS.ERROR;
 
 			// Prevent arg mutation
 
@@ -9579,11 +9195,8 @@ Start : function (namespace) {
 
 			fn = "[PS.applyRect] ";
 
-			args = arguments.length;
-			if ( args < 5 )
-			{
-				return _error( fn + "Argument(s) missing" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 5, 5))
+				return PS.ERROR;
 
 			xmax = _grid.x;
 			ymax = _grid.y;
@@ -9880,15 +9493,8 @@ Start : function (namespace) {
 
 			fn = "[PS.imageLoad] ";
 
-			args = arguments.length;
-			if ( args < 2 )
-			{
-				return _error( fn + "Missing argument(s)" );
-			}
-			if ( args > 3 )
-			{
-				return _error( fn + "Too many argument(s)" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 2, 3))
+				return PS.ERROR;
 
 			// Prevent arg mutation
 
@@ -9976,15 +9582,8 @@ Start : function (namespace) {
 
 			fn = "[PS.imageBlit] ";
 
-			args = arguments.length;
-			if ( args < 3 )
-			{
-				return _error( fn + "Missing argument(s)" );
-			}
-			if ( args > 4 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 3, 4))
+				return PS.ERROR;
 
 			xmax = _grid.x;
 			ymax = _grid.y;
@@ -10324,11 +9923,8 @@ Start : function (namespace) {
 
 			fn = "[PS.imageCapture] ";
 
-			args = arguments.length;
-			if ( args > 2 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 0, 2))
+				return PS.ERROR;
 
 			// Prevent arg mutation
 
@@ -10539,15 +10135,8 @@ Start : function (namespace) {
 
 			fn = "[PS.imageDump] ";
 
-			args = arguments.length;
-			if ( args < 1 )
-			{
-				return _error( fn + "Missing argument(s)" );
-			}
-			if ( args > 5 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 1, 5))
+				return PS.ERROR;
 
 			// Prevent arg mutation
 
@@ -10847,15 +10436,8 @@ Start : function (namespace) {
 
 			fn = "[PS.spriteSolid] ";
 
-			args = arguments.length;
-			if ( args < 2 )
-			{
-				return _error( fn + "Missing argument(s)" );
-			}
-			if ( args > 2 )
-			{
-				return _error( fn + "Too many argument(s)" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 2, 2))
+				return PS.ERROR;
 
 			// Prevent arg mutation
 
@@ -10917,15 +10499,8 @@ Start : function (namespace) {
 
 			fn = "[PS.spriteSolidColor] ";
 
-			args = arguments.length;
-			if ( args < 1 )
-			{
-				return _error( fn + "Missing argument(s)" );
-			}
-			if ( args > 4 )
-			{
-				return _error( fn + "Too many argument(s)" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 1, 4))
+				return PS.ERROR;
 
 			s = _getSprite( sprite, fn );
 			if ( s === PS.ERROR )
@@ -11020,15 +10595,8 @@ Start : function (namespace) {
 
 			fn = "[PS.spriteSolidAlpha] ";
 
-			args = arguments.length;
-			if ( args < 1 )
-			{
-				return _error( fn + "Missing argument(s)" );
-			}
-			if ( args > 2 )
-			{
-				return _error( fn + "Too many argument(s)" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 1, 2))
+				return PS.ERROR;
 
 			// Prevent arg mutation
 
@@ -11094,16 +10662,9 @@ Start : function (namespace) {
 			var fn, args, w, h, format, data, type, top, left, width, height, ndata, wsize, rowptr, ptr, x, y, i, rgb, r, g, b, a, rval, gval, s;
 
 			fn = "[PS.spriteImage] ";
-			args = arguments.length;
 
-			if ( args < 1 )
-			{
-				return _error( fn + "Missing argument(s)" );
-			}
-			if ( args > 2 )
-			{
-				return _error( fn + "Too many argument(s)" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 1, 2))
+				return PS.ERROR;
 
 			// Validate image
 
@@ -11316,15 +10877,8 @@ Start : function (namespace) {
 
 			fn = "[PS.spriteShow] ";
 
-			args = arguments.length;
-			if ( args < 1 )
-			{
-				return _error( fn + "Missing argument(s)" );
-			}
-			if ( args > 2 )
-			{
-				return _error( fn + "Too many argument(s)" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 1, 2))
+				return PS.ERROR;
 
 			// Prevent arg mutation
 
@@ -11378,15 +10932,8 @@ Start : function (namespace) {
 
 			fn = "[PS.spriteAxis] ";
 
-			args = arguments.length;
-			if ( args < 1 )
-			{
-				return _error( fn + "Missing argument(s)" );
-			}
-			if ( args > 3 )
-			{
-				return _error( fn + "Too many argument(s)" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 1, 3))
+				return PS.ERROR;
 
 			// Prevent arg mutation
 
@@ -11468,15 +11015,8 @@ Start : function (namespace) {
 
 			fn = "[PS.spritePlane] ";
 
-			args = arguments.length;
-			if ( args < 1 )
-			{
-				return _error( fn + "Missing argument(s)" );
-			}
-			if ( args > 2 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 1, 2))
+				return PS.ERROR;
 
 			// Prevent arg mutation
 
@@ -11554,15 +11094,8 @@ Start : function (namespace) {
 
 			fn = "[PS.spriteMove] ";
 
-			args = arguments.length;
-			if ( args < 1 )
-			{
-				return _error( fn + "Missing argument(s)" );
-			}
-			if ( args > 3 )
-			{
-				return _error( fn + "Too many argument(s)" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 1, 3))
+				return PS.ERROR;
 
 			// Prevent arg mutation
 
@@ -11748,15 +11281,8 @@ Start : function (namespace) {
 
 			fn = "[PS.spriteCollide] ";
 
-			args = arguments.length;
-			if ( args < 1 )
-			{
-				return _error( fn + "Missing argument(s)" );
-			}
-			if ( args > 2 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 1, 2))
+				return PS.ERROR;
 
 			s = _getSprite( sprite, fn );
 			if ( s === PS.ERROR )
@@ -11799,15 +11325,8 @@ Start : function (namespace) {
 
 			fn = "[PS.spriteDelete] ";
 
-			args = arguments.length;
-			if ( args < 1 )
-			{
-				return _error( fn + "Missing argument" );
-			}
-			if ( args > 1 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 1, 1))
+				return PS.ERROR;
 
 			if ( ( typeof sprite !== "string" ) || ( sprite.length < 1 ) )
 			{
@@ -11857,14 +11376,8 @@ Start : function (namespace) {
 
 			fn = "[PS.audioLoad] ";
 
-			if ( arguments.length < 1 )
-			{
-				return _error( fn + "Missing argument(s)" );
-			}
-			if ( arguments.length > 2 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 1, 2))
+				return PS.ERROR;
 
 			result = AQ.load( filename, params );
 			if ( result === AQ.ERROR )
@@ -11893,15 +11406,8 @@ Start : function (namespace) {
 
 			fn = "[PS.audioPlay] ";
 
-			args = arguments.length;
-			if ( args < 1 )
-			{
-				return _error( fn + "Missing argument(s)" );
-			}
-			if ( args > 2 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 1, 2))
+				return PS.ERROR;
 
 			// Prevent arg mutation
 
@@ -11939,15 +11445,8 @@ Start : function (namespace) {
 
 			fn = "[PS.audioPause] ";
 
-			args = arguments.length;
-			if ( args < 1 )
-			{
-				return _error( fn + "Missing argument(s)" );
-			}
-			if ( args > 1 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 1, 1))
+				return PS.ERROR;
 
 			result = AQ.pause( channel_id );
 			if ( result === AQ.ERROR )
@@ -11968,15 +11467,8 @@ Start : function (namespace) {
 
 			fn = "[PS.audioStop] ";
 
-			args = arguments.length;
-			if ( args < 1 )
-			{
-				return _error( fn + "Missing argument(s)" );
-			}
-			if ( args > 1 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 1, 1))
+				return PS.ERROR;
 
 			result = AQ.stop( channel_id );
 			if ( result === AQ.ERROR )
@@ -12134,10 +11626,8 @@ Start : function (namespace) {
 
 			fn = "[PS.debug] ";
 
-			if ( arguments.length > 1 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 0, 1))
+				return PS.ERROR;
 
 			text = textP; // prevent arg mutation
 			type = _typeOf( text );
@@ -12174,10 +11664,8 @@ Start : function (namespace) {
 
 			fn = "[PS.debugClose] ";
 
-			if ( arguments.length > 0 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 0, 0))
+				return PS.ERROR;
 
 			e = document.getElementById( _DEBUG_ID );
 			e.style.display = "none";
@@ -12195,10 +11683,8 @@ Start : function (namespace) {
 
 			fn = "[PS.debugClear] ";
 
-			if ( arguments.length > 0 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 0, 0))
+				return PS.ERROR;
 
 			e = document.getElementById( _MONITOR_ID );
 			e.value = "";
@@ -12219,15 +11705,8 @@ Start : function (namespace) {
 
 			fn = "[PS.line] ";
 
-			args = arguments.length;
-			if ( args < 4 )
-			{
-				return _error( fn + "Missing argument(s)" );
-			}
-			if ( args > 4 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 4, 4))
+				return PS.ERROR;
 
 			// Prevent arg mutation
 
@@ -12293,15 +11772,8 @@ Start : function (namespace) {
 
 			fn = "[PS.pathMap] ";
 
-			args = arguments.length;
-			if ( args < 1 )
-			{
-				return _error( fn + "Missing argument(s)" );
-			}
-			if ( args > 1 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 1, 1))
+				return PS.ERROR;
 
 			// Check image
 
@@ -12329,15 +11801,8 @@ Start : function (namespace) {
 
 			fn = "[PS.pathFind] ";
 
-			args = arguments.length;
-			if ( args < 5 )
-			{
-				return _error( fn + "Missing argument(s)" );
-			}
-			if ( args > 6 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 5, 6))
+				return PS.ERROR;
 
 			// Prevent arg mutation
 
@@ -12499,15 +11964,8 @@ Start : function (namespace) {
 
 			fn = "[PS.pathData] ";
 
-			args = arguments.length;
-			if ( args < 5 )
-			{
-				return _error( fn + "Missing argument(s)" );
-			}
-			if ( args > 6 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 5, 6))
+				return PS.ERROR;
 
 			// Prevent arg mutation
 
@@ -12651,11 +12109,8 @@ Start : function (namespace) {
 
 			fn = "[PS.pathDelete] ";
 
-			args = arguments.length;
-			if ( args < 1 )
-			{
-				return _error( fn + "Missing argument" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 1, 1))
+				return PS.ERROR;
 
 			// Check pathmap id
 
@@ -12678,15 +12133,8 @@ Start : function (namespace) {
 
 			fn = "[PS.pathNear] ";
 
-			args = arguments.length;
-			if ( args < 5 )
-			{
-				return _error( fn + "Missing argument(s)" );
-			}
-			if ( args > 5 )
-			{
-				return _error( fn + "Too many arguments" );
-			}
+			if (PS.ERROR == _checkNumArgs(fn, arguments.length, 5, 5))
+				return PS.ERROR;
 
 			// Check pathmap id
 
