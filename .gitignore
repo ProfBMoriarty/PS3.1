@@ -235,3 +235,6 @@ pip-log.txt
 .idea/workspace.xml
 .idea/workspace.xml
 .idea/vcs.xml
+.idea/dictionaries/
+.idea/inspectionProfiles/Project_Default.xml
+.idea/inspectionProfiles/profiles_settings.xml
