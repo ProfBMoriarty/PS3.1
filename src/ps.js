@@ -12156,17 +12156,7 @@ Start : function (namespace) {
 
 	// Put the PS constants into the PSEngine object
 	ProvideConstants(PSEngine);
-
-	// Stubs to make it more permissive of errors
-	// PSEngine.touch		= function( x, y, data, options ) {};
-	// PSEngine.release	= function( x, y, data, options ) {};
-	// PSEngine.enter		= function( x, y, data, options ) {};
-	// PSEngine.exit		= function( x, y, data, options ) {};
-	// PSEngine.exitGrid	= function( options ) {};
-	// PSEngine.keyDown	= function( key, shift, ctrl, options ) {};
-	// PSEngine.keyUp		= function( key, shift, ctrl, options ) {};
-	// PSEngine.input		= function( sensors, options ) {};
-
+	
 	return PSEngine;
 }	// End of Perlenspiel.Start
 };	// End of Perlenspiel object
@@ -12174,50 +12164,3 @@ Start : function (namespace) {
 	// Create default Perlenspiel instance in the default namespace
 	PS = Perlenspiel.Start(PS.DEFAULT_NAMESPACE);
 }() );
-
-// requestAnimationFrame polyfill by Erik Möller
-// fixes from Paul Irish and Tino Zijdel
-
-( function ()
-{
-	"use strict";
-	var lt, v, i, prefix;
-
-	lt = 0;
-	v = [ "webkit", "moz", "ms", "o" ];
-
-	for ( i = 0; ( i < v.length ) && !window.requestAnimationFrame; i += 1 )
-	{
-		prefix = v[i];
-		window.requestAnimationFrame = window[ prefix + "RequestAnimationFrame" ];
-		window.cancelAnimationFrame = window[ prefix + "CancelAnimationFrame" ] || window[ prefix + "CancelRequestAnimationFrame" ];
-	}
-
-	if ( !window.requestAnimationFrame )
-	{
-		window.requestAnimationFrame = function ( cb, e )
-		{
-			var ct, ttc, id;
-
-			ct = new Date().getTime();
-			ttc = Math.max( 0, 16 - ( ct - lt ) );
-			id = window.setTimeout( function ()
-			{
-				cb( ct + ttc );
-			}, ttc );
-			lt = ct + ttc;
-			return id;
-		};
-	}
-
-	if ( !window.cancelAnimationFrame )
-	{
-		window.cancelAnimationFrame = function ( id )
-		{
-			window.clearTimeout( id );
-		};
-	}
-}() );
-
-
-

@@ -10,7 +10,7 @@ module.exports = function(grunt) {
         separator: ';'
       },
       dist: {
-        src: ['src/<%= ps.file %>.js'],
+        src: ['src/ps.js', 'src/utils.js'],
         dest: 'tmp/<%= ps.file %>.js'
       }
     },
