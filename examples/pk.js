@@ -5,6 +5,8 @@
 /*jslint nomen: true, white: true, vars: true */
 /*global PS */
 
+var PS = PERLENSPIEL.Create();
+
 var G; // public namespace variable for game
 
 ( function ()
@@ -840,3 +842,6 @@ G.walkmap = {
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 	]
 };
+
+// Start the engine
+PS.start();
