@@ -15,6 +15,10 @@ var PERLENSPIEL = (function (my) {
 			my._unseal = _unseal;
 		};
 
+	// Alias for public state
+	var PSInterface = my;
+
+	// Add new properties to PSInterface here
 
 	return my;
 }(PERLENSPIEL || {}));

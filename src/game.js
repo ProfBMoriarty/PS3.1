@@ -192,4 +192,5 @@ PS.input = function( sensors, options ) {
 	// Add code here for when an input event is detected
 };
 
+// Start the engine
 PS.start();

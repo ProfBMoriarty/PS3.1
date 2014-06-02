@@ -1,9 +1,11 @@
 load:
-  - ../src/ps.js
   - ../src/aq.js
+  - ../src/ps.js
+  - ../src/ps-internal.js
+  - ../src/ps-spawn.js
 test:
   - ps3.0.test.js
 
 serve:
-  - ../src/ps-style.css
+  - ../src/css/ps-style.css
   - ../src/game.html

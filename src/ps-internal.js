@@ -18,9 +18,6 @@ var PERLENSPIEL = (function (my) {
 			my._unseal = _private._unseal;
 		};
 
-	// Alias for private state
-	var PSEngine = _private;
-
 	// Alias for public state
 	var PSInterface = my;
 

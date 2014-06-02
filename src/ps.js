@@ -39,15 +39,12 @@ var PERLENSPIEL = (function (my) {
 			my._unseal = _private._unseal;
 		};
 
-	// Alias for private state
-	var PSEngine = _private;
-
 	// Alias for public state
 	var PSInterface = my;
 
 	// Set engine options
 
-	my.setOptions = function (options) {
+	PSInterface.setOptions = function (options) {
 		// Options
 		_private._options = options || {};
 		_private._NAMESPACE = _private._options.namespace || PS.DEFAULT_NAMESPACE;
@@ -63,11 +60,11 @@ var PERLENSPIEL = (function (my) {
 
 	// Start the engine
 
-	my.start = function ( ) {
+	PSInterface.start = function ( ) {
 
 		// Set default options if they weren't already set
 		if ( !_private._optionsSet ) {
-			my.setOptions({});
+			PSInterface.setOptions({});
 		}
 
 		_private._sys();
@@ -75,7 +72,7 @@ var PERLENSPIEL = (function (my) {
 
 	// Shut down the engine
 
-	my.shutdown = function () {
+	PSInterface.shutdown = function () {
 		console.info("Deactivating " + _private._grid.canvas.id);
 		_private._clockActive = false;
 		_private._gridDeactivate();
@@ -157,10 +154,6 @@ var PERLENSPIEL = (function (my) {
 		outer.appendChild(_private._main);
 
 		// save offset coordinates
-
-		PSEngine._mainLeft = _private._main.offsetLeft;
-		PSEngine._mainTop = _private._main.offsetTop;
-
 		// Create status line paragraph
 
 		sp = document.createElement("p");
