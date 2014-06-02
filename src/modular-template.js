@@ -1,4 +1,8 @@
-var MODULE = (function (my) {
+// filename
+// description
+
+var PERLENSPIEL = (function (my) {
+	// Shared private state
 	var _private = my._private = my._private || {},
 		_seal = my._seal = my._seal || function () {
 			delete my._private;
@@ -11,10 +15,9 @@ var MODULE = (function (my) {
 			my._unseal = _unseal;
 		};
 
-	// permanent access to _private, _seal, and _unseal
 
 	return my;
-}(MODULE || {}));
+}(PERLENSPIEL || {}));
 
 /*	http://www.adequatelygood.com/JavaScript-Module-Pattern-In-Depth.html
 

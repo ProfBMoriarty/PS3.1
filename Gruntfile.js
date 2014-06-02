@@ -10,7 +10,12 @@ module.exports = function(grunt) {
         separator: ';'
       },
       dist: {
-        src: ['src/ps.js', 'src/utils.js'],
+        src: [
+              'src/utils.js',
+              'src/ps.js',
+              'src/ps-internal.js',
+              'src/ps-spawn.js',
+              ],
         dest: 'tmp/<%= ps.file %>.js'
       }
     },
@@ -38,6 +43,6 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-clean');
 
   // Default task(s).
-  grunt.registerTask('default', ['concat', 'uglify', 'clean']);
+  grunt.registerTask('default', ['concat', 'uglify', /*'clean'*/]);
 
 };

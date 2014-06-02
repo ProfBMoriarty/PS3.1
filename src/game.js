@@ -35,7 +35,7 @@ along with Perlenspiel. If not, see <http://www.gnu.org/licenses/>.
 // [system] = an object containing engine and platform information; see documentation for details
 // [options] = an object with optional parameters; see documentation for details
 
-var channel;
+var PS = PERLENSPIEL.Create();
 
 PS.init = function( system, options ) {
 	"use strict";
@@ -191,3 +191,5 @@ PS.input = function( sensors, options ) {
 
 	// Add code here for when an input event is detected
 };
+
+PS.start();
