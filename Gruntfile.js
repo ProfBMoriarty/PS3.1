@@ -12,11 +12,14 @@ module.exports = function(grunt) {
       },
       dist: {
         src:  [
-                'src/utils.js',
-                'src/ps.js',
-                'src/ps-internal.js',
-                'src/ps-spawn.js',
-              ],
+            'src/utils.js',
+            'src/module-loader.js',
+            'src/module-core.js',
+            'src/module-constants.js',
+            'src/module-startup.js',
+            'src/module-interface.js',
+            'src/module-internal.js'
+        ],
         dest: 'tmp/<%= ps.file %>.js'
       }
     },
@@ -38,12 +41,12 @@ module.exports = function(grunt) {
     copy: {
       deploy: {
         files: [
-          {expand: true, src: ['src/css/**'], dest: 'build/css/'},
-          {expand: true, src: ['src/fonts/**'], dest: 'build/fonts/'},
-          {expand: true, src: ['src/img/**'], dest: 'build/img/'},
-          {expand: false, src: ['src/*.html'], dest: 'build/'},
-          {expand: false, src: ['src/game.js'], dest: 'build/'},
-          {expand: false, src: ['src/cover.js'], dest: 'build/'}
+            {expand: true, src: 'src/css/**',   dest: 'build/css/',   flatten: true, filter: 'isFile'},
+            {expand: true, src: 'src/fonts/**', dest: 'build/fonts/', flatten: true, filter: 'isFile'},
+            {expand: true, src: 'src/img/**',   dest: 'build/img/',   flatten: true, filter: 'isFile'},
+            {expand: true, src: 'src/*.html',   dest: 'build/',       flatten: true, filter: 'isFile'},
+            {expand: true, src: 'src/game.js',  dest: 'build/',       flatten: true, filter: 'isFile'},
+            {expand: true, src: 'src/cover.js', dest: 'build/',       flatten: true, filter: 'isFile'}
         ]
       }
     },

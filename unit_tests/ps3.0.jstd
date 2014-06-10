@@ -1,8 +1,13 @@
 load:
   - ../src/aq.js
-  - ../src/ps.js
-  - ../src/ps-internal.js
-  - ../src/ps-spawn.js
+  - ../src/utils.js
+  - ../src/module-loader.js
+  - ../src/module-core.js
+  - ../src/module-constants.js
+  - ../src/module-startup.js
+  - ../src/module-interface.js
+  - ../src/module-internal.js
+
 test:
   - ps3.0.test.js
 
