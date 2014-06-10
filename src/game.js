@@ -9,7 +9,6 @@ Perlenspiel is free software: you can redistribute it and/or modify
 it under the terms of the GNU Lesser General Public License as published
 by the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.
-
 Perlenspiel is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
@@ -28,14 +27,15 @@ along with Perlenspiel. If not, see <http://www.gnu.org/licenses/>.
 
 // All of the functions below MUST exist, or the engine will complain!
 
+// Create default Perlenspiel instance
+var PS = PERLENSPIEL.Create();
+
 // PS.init( system, options )
 // Initializes the game
 // This function should normally begin with a call to PS.gridSize( x, y )
 // where x and y are the desired initial dimensions of the grid
 // [system] = an object containing engine and platform information; see documentation for details
 // [options] = an object with optional parameters; see documentation for details
-
-var PS = PERLENSPIEL.Create();
 
 PS.init = function( system, options ) {
 	"use strict";
