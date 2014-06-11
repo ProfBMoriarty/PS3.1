@@ -28,6 +28,8 @@ along with Perlenspiel. If not, see <http://www.gnu.org/licenses/>.
 
 // All of the functions below MUST exist, or the engine will complain!
 
+var PS = PERLENSPIEL.Create();
+
 // PS.init( system, options )
 // Initializes the game
 // This function should normally begin with a call to PS.gridSize( x, y )
@@ -193,4 +195,4 @@ PS.input = function( sensors, options ) {
 };
 
 // Start the Perlenspiel engine
-PS._sys();
+PS.start();

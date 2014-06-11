@@ -2,7 +2,7 @@
 // Click & Drag the points to make a pretty polygon.
 
 (function() {
-var PS = Perlenspiel.Start("triangulator");
+var PS = PERLENSPIEL.Create({namespace:"triangulator"});
 
 var POINTS = new Array();
 POINTS.push({x:13, y:2, color:PS.COLOR_RED});
@@ -308,5 +308,5 @@ PS.keyUp = function( key, shift, ctrl, options ) {};
 PS.input = function( sensors, options ) {};
 
 // Start the engine!
-PS._sys();
+PS.start();
 })();
