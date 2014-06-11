@@ -52,8 +52,6 @@ var PerlenspielStartup = function (my) {
 	my._sys = function (options) {
 		var fn, i, outer, debug, sp, snode, ip, inode, span, input, grid, footer, monitor, ctx, cnt, bead, aq, result, str;
 
-		console.log("_sys");
-
 		fn = "[PS.sys] ";
 
 		// Precalculate color string tables

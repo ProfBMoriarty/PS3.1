@@ -10,7 +10,6 @@ var PerlenspielConstants = function (my) {
 	// Module initializer
 	
 	my._onInit(function(spec) {
-		console.log("Perlenspiel Constants Module initialized");
 		// Copy perlenspiel constants into global object
 		my.ProvideConstants(PS);
 	});
