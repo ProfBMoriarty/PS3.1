@@ -11,7 +11,7 @@ var PerlenspielConstants = function (my) {
 	
 	my._onInit(function(spec) {
 		// Copy perlenspiel constants into global object
-		my.ProvideConstants(PS);
+		my.provideConstants(PS);
 	});
 
 	//------------------
@@ -19,7 +19,7 @@ var PerlenspielConstants = function (my) {
 	//------------------
 
 	// Places the perlenspiel constants into an object
-	my.ProvideConstants = function (obj) {
+	my.provideConstants = function (obj) {
 		obj.ALL = "PS.ALL";
 		obj.CURRENT = "PS.CURRENT";
 		obj.DONE = "PS.DONE";
@@ -115,6 +115,22 @@ var PerlenspielConstants = function (my) {
 		obj.DEFAULT_NAMESPACE = "game";
 	}
 
+	my._setNamespace = function(namespace) {
+		my._NAMESPACE = namespace;
+		my._OUTER_ID = my._NAMESPACE + "-" + my._OUTER_CLASS;
+		my._MAIN_ID = my._NAMESPACE + "-" + my._MAIN_CLASS;
+		my._INIT_ID = "init";
+		my._DEBUG_ID = my._NAMESPACE + "-" + my._DEBUG_CLASS;
+		my._STATUS_P_ID = my._NAMESPACE + "-" + my._STATUS_P_CLASS;
+		my._INPUT_P_ID = my._NAMESPACE + "-" + my._INPUT_P_CLASS;
+		my._INPUT_LABEL_ID = my._NAMESPACE + "-" + my._INPUT_LABEL_CLASS;
+		my._INPUT_SPAN_ID = my._NAMESPACE + "-" + my._INPUT_SPAN_CLASS;
+		my._INPUT_BOX_ID = my._NAMESPACE + "-" + my._INPUT_BOX_CLASS;
+		my._GRID_ID = my._NAMESPACE + "-" + my._GRID_CLASS;
+		my._FOOTER_ID = my._NAMESPACE + "-" + my._FOOTER_CLASS;
+		my._MONITOR_ID = my._NAMESPACE + "-" + my._MONITOR_CLASS;
+	}
+
 	//------------------
 	// PRIVATE CONSTANTS
 	//------------------
@@ -132,19 +148,6 @@ var PerlenspielConstants = function (my) {
 	my._GRID_CLASS = "grid";
 	my._FOOTER_CLASS = "footer";
 	my._MONITOR_CLASS = "monitor";
-
-	my._OUTER_ID = my._NAMESPACE + "-" + my._OUTER_CLASS;
-	my._MAIN_ID = my._NAMESPACE + "-" + my._MAIN_CLASS;
-	my._INIT_ID = "init";
-	my._DEBUG_ID = my._NAMESPACE + "-" + my._DEBUG_CLASS;
-	my._STATUS_P_ID = my._NAMESPACE + "-" + my._STATUS_P_CLASS;
-	my._INPUT_P_ID = my._NAMESPACE + "-" + my._INPUT_P_CLASS;
-	my._INPUT_LABEL_ID = my._NAMESPACE + "-" + my._INPUT_LABEL_CLASS;
-	my._INPUT_SPAN_ID = my._NAMESPACE + "-" + my._INPUT_SPAN_CLASS;
-	my._INPUT_BOX_ID = my._NAMESPACE + "-" + my._INPUT_BOX_CLASS;
-	my._GRID_ID = my._NAMESPACE + "-" + my._GRID_CLASS;
-	my._FOOTER_ID = my._NAMESPACE + "-" + my._FOOTER_CLASS;
-	my._MONITOR_ID = my._NAMESPACE + "-" + my._MONITOR_CLASS;
 
 	my._LOGIN_ID = "login";
 	my._LOGIN_EMAIL_ID = "login_em";

@@ -16,7 +16,7 @@ var PerlenspielCore = function (my) {
 
 	// Perlenspiel class constructor
 	my.PSInterface = function(spec) {
-		my.ProvideConstants(this);
+		this.setOptions(spec);
 		my.initializeModules(spec);
 	}
 

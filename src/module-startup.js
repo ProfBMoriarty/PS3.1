@@ -11,12 +11,6 @@ var PerlenspielStartup = function (my) {
 	// Start the engine
 
 	my.PSInterface.prototype.start = function ( ) {
-
-		// Set default options if they weren't already set
-		if ( !my._optionsSet ) {
-			my.instance.setOptions({name:PS.DEFAULT_NAMESPACE});
-		}
-
 		my._sys();
 	}
 
@@ -33,13 +27,14 @@ var PerlenspielStartup = function (my) {
 	my.PSInterface.prototype.setOptions = function (options) {
 		// Options
 		my._options = options || {};
-		my._NAMESPACE = my._options.namespace || PS.DEFAULT_NAMESPACE;
+
+		my._setNamespace(my._options.namespace || PS.DEFAULT_NAMESPACE);
 
 		// Instance-specific state
 		my._lastTick = 0;
 
 		// Copy the Perlenspiel constants into this object
-		my.ProvideConstants(this);
+		my.provideConstants(this);
 
 		my._optionsSet = true;
 	}
