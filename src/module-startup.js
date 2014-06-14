@@ -575,3 +575,6 @@ var PerlenspielStartup = function (my) {
 
 	return my;
 };
+
+// Register with global PERLENSPIEL manager
+PERLENSPIEL.RegisterModule(PerlenspielStartup);

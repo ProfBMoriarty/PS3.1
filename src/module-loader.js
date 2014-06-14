@@ -28,17 +28,25 @@
 // Global public constant-holder
 var PS = PS || {};
 
-var PERLENSPIEL = {
+var PERLENSPIEL = (function(PERLENSPIEL) {
+
+	var modules = [];
+
+	PERLENSPIEL.RegisterModule = function(module) {
+		if (typeof module === 'function') {
+			modules.push(module);
+		}
+	}
+
 	// Public constructor
-	Create: function(spec) {
+	PERLENSPIEL.Create = function(spec) {
 		var engine = {};
-		// Load each module
-		PerlenspielCore(engine);
-		PerlenspielConstants(engine);
-		PerlenspielStartup(engine);
-		PerlenspielInterface(engine);
-		PerlenspielInternal(engine);
-		// Return to caller
+		for (var i = 0; i < modules.length; ++i) {
+			modules[i].call(null, engine);
+		}
+		// Create the engine instance and return it to the caller
 		return engine.Create(spec);
 	}
-};
+
+	return PERLENSPIEL;
+}(PERLENSPIEL || {}));

@@ -3807,3 +3807,6 @@ var PerlenspielInterface = function (my) {
 
 	return my;
 };
+
+// Register with global PERLENSPIEL manager
+PERLENSPIEL.RegisterModule(PerlenspielInterface);

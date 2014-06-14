@@ -22,3 +22,6 @@ var ModuleTemplate = function (my) {
 
 	return my;
 };
+
+// Register with global PERLENSPIEL manager
+PERLENSPIEL.RegisterModule(ModuleTemplate);
