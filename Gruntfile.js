@@ -13,7 +13,7 @@ module.exports = function(grunt) {
       dist: {
         src:  [
             'src/utils.js',
-            'src/module-loader.js',
+            'src/perlenspiel-loader.js',
             'src/module-core.js',
             'src/module-constants.js',
             'src/module-startup.js',
