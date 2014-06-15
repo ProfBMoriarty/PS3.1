@@ -3,7 +3,11 @@
 // Includes:
 // + Private engine methods
 
+/*jslint nomen: true, white: true, vars: true */
+/*global document, window, screen, console, Image, AQ, PIXI, PERLENSPIEL, PS */
+
 var PerlenspielInternal = function (my) {
+    "use strict";
 
 	//----------------
 	// Private globals
@@ -28,77 +32,77 @@ var PerlenspielInternal = function (my) {
 	};
 
 	// color strings
-	my._RSTR;
-	my._GBSTR;
-	my._BASTR
-	my._ASTR;
+	my._RSTR = undefined;
+	my._GBSTR = undefined;
+	my._BASTR = undefined;
+	my._ASTR = undefined;
 
 	my._main = null; // main DOM element
 	my._init = null; // font loading div
 
-	my._grid; // master grid object
-	my._beads; // master list of bead objects
-	my._status; // status line object
+	my._grid = undefined; // master grid object
+	my._beads = undefined; // master list of bead objects
+	my._status = undefined; // status line object
 
 	my._anyDirty = false; // dirty bead flag
 
 	// Image support
 
-	my._imageCanvas; // canvas object for image extraction
-	my._imageList; // list of images being loaded
-	my._imageCnt; // counter for image ids
+	my._imageCanvas = undefined; // canvas object for image extraction
+	my._imageList = undefined; // list of images being loaded
+	my._imageCnt = undefined; // counter for image ids
 
 	// Sprite support
 
-	my._sprites; // master sprite list
-	my._spriteCnt; // counter for sprite ids
+	my._sprites = undefined; // master sprite list
+	my._spriteCnt = undefined; // counter for sprite ids
 
 	// Clock support
 
-	my._clockActive; // true if clock should be running
-	my._timers; // master timer list
-	my._timerCnt; // unique timer id
-	my._faders; // master fader list
-	my._faderTick; // fader countdown
+	my._clockActive = undefined; // true if clock should be running
+	my._timers = undefined; // master timer list
+	my._timerCnt = undefined; // unique timer id
+	my._faders = undefined; // master fader list
+	my._faderTick = undefined; // fader countdown
 
 	// Keyboard support
 
-	my._keysActive; // true if keyboard events are active
-	my._transKeys; // regular key translation array
-	my._shiftedKeys; // shifted key translation array
-	my._unshiftedKeys; // unshifted key translation array
-	my._pressed; // array of keys being pressed
-	my._holding; // array of keys being held down
-	my._holdShift; // true if shift is held down
-	my._holdCtrl; // true if ctrl key is held down
+	my._keysActive = undefined; // true if keyboard events are active
+	my._transKeys = undefined; // regular key translation array
+	my._shiftedKeys = undefined; // shifted key translation array
+	my._unshiftedKeys = undefined; // unshifted key translation array
+	my._pressed = undefined; // array of keys being pressed
+	my._holding = undefined; // array of keys being held down
+	my._holdShift = undefined; // true if shift is held down
+	my._holdCtrl = undefined; // true if ctrl key is held down
 
 	// Key delay control
 
-	my._keyRepeat; // true for key repeat
-	my._keyDelay; // delay countdown
-	my._keyDelayRate; // key delay rate
-	my._keyInitRate; // initial key delay rate
+	my._keyRepeat = undefined; // true for key repeat
+	my._keyDelay = undefined; // delay countdown
+	my._keyDelayRate = undefined; // key delay rate
+	my._keyInitRate = undefined; // initial key delay rate
 
 	// Touch support
 
-	my._touchScreen; // true if platform uses touch
-	my._deviceScaling; // needed for annoying mobile browsers with weird scaling
-	my._currentFinger; // index of finger touching screen
-	my._underBead; // bead currently under finger
-	my._overGrid; // true when cursor/finger is over the grid
+	my._touchScreen = undefined; // true if platform uses touch
+	my._deviceScaling = undefined; // needed for annoying mobile browsers with weird scaling
+	my._currentFinger = undefined; // index of finger touching screen
+	my._underBead = undefined; // bead currently under finger
+	my._overGrid = undefined; // true when cursor/finger is over the grid
 	my._lastBead = -1; // index of last bead used
 
 	// Debugger support
 
-	my._debugging; // true if debugger open
-	my._debugFocus; // true if debugger has focus
-	my._footer; // DOM footer element
-	my._errorSound; // error sound available?
+	my._debugging = undefined; // true if debugger open
+	my._debugFocus = undefined; // true if debugger has focus
+	my._footer = undefined; // DOM footer element
+	my._errorSound = undefined; // error sound available?
 
 	// Pathfinder support
 
-	my._pathmaps; // array of pathmaps
-	my._pathmapCnt; // counter for pathmap ids
+	my._pathmaps = undefined; // array of pathmaps
+	my._pathmapCnt = undefined; // counter for pathmap ids
 
 	// Footer fader
 
@@ -118,7 +122,7 @@ var PerlenspielInternal = function (my) {
 			}
 			my._footer.style.opacity = my._footerOpacity;
 		}
-	}
+	};
 
 	//----------------
 	// GENERAL SUPPORT
@@ -145,7 +149,7 @@ var PerlenspielInternal = function (my) {
 		}
 
 		return type;
-	}
+	};
 
 	// my._isBoolean ( val )
 	// Evaluates [val] for a valid boolean: true, false, null, numeric, PS.CURRENT, PS.DEFAULT or undefined
@@ -179,7 +183,7 @@ var PerlenspielInternal = function (my) {
 		}
 
 		return val;
-	}
+	};
 
 	// my._isInteger ( val )
 	// Evaluates [val] for a valid number, PS.CURRENT, PS.DEFAULT or undefined
@@ -246,7 +250,7 @@ var PerlenspielInternal = function (my) {
 				dest[prop] = item;
 			}
 		}
-	}
+	};
 
 	// my._endEvent( event )
 	// Properly terminates a DOM event
@@ -259,7 +263,7 @@ var PerlenspielInternal = function (my) {
 		}
 		event.preventDefault(); // prevents weirdness
 		return false;
-	}
+	};
 
 	//--------------------
 	// GRAPHICS PRIMITIVES
@@ -366,7 +370,7 @@ var PerlenspielInternal = function (my) {
 			ctx.fillStyle = glyphColor;
 			ctx.fillText(bead.glyph.str, bead.left + bead.glyph.x, bead.top + bead.glyph.y);
 		}
-	}
+	};
 
 	// my._colorBlendAlpha( c0, c1 )
 	// Blend color c1 over c0. Color components are in 0-255, alpha is 0-1
@@ -382,7 +386,7 @@ var PerlenspielInternal = function (my) {
 			b: Math.floor((c1.b * c1.a) + (c0.b * alphaCover))
 		};
 		return result;
-	}
+	};
 
 	// my._calcColor ( bead, gridColor )
 	// Calculates effective color of a bead against a background color
@@ -456,7 +460,7 @@ var PerlenspielInternal = function (my) {
 		target.g = g;
 		target.b = b;
 		target.str = my._RSTR[r] + my._GBSTR[g] + my._BASTR[b];
-	}
+	};
 
 	// Fader functions
 
@@ -541,7 +545,7 @@ var PerlenspielInternal = function (my) {
 				my._drawBead(bead, borderColor.str, beadColor, bead.glyph.color.str, bead.bgColor.str, str);
 			}
 		}
-	}
+	};
 
 	// Call when done fading grid
 	// Insures visible color for message line
@@ -570,20 +574,20 @@ var PerlenspielInternal = function (my) {
 		}
 
 		my._footer.style.color = my._RSTR[r] + my._GBSTR[g] + my._BASTR[b];
-	}
+	};
 
 	// Set color of grid shadow
 
 	my._gridShadowRGB = function (data) {
 		my._grid.canvas.style.boxShadow = my._grid.shadow.params + data.str;
-	}
+	};
 
 	// Change status line text color
 
 	my._statusRGB = function (data) {
 		my._status.statusP.style.color = data.str;
 		my._status.inputP.style.color = data.str;
-	}
+	};
 
 	// Change bead color
 
@@ -592,7 +596,7 @@ var PerlenspielInternal = function (my) {
 
 		bead = my._beads[element];
 		my._drawBead(bead, bead.border.color.str, data.str, bead.glyph.color.str, bead.bgColor.str, my._grid.color.str);
-	}
+	};
 
 	// Change border color
 
@@ -601,7 +605,7 @@ var PerlenspielInternal = function (my) {
 
 		bead = my._beads[element];
 		my._drawBead(bead, data.str, bead.color.str, bead.glyph.color.str, bead.bgColor.str, my._grid.color.str);
-	}
+	};
 
 	// Change glyph color
 
@@ -610,14 +614,14 @@ var PerlenspielInternal = function (my) {
 
 		bead = my._beads[element];
 		my._drawBead(bead, bead.border.color.str, bead.color.str, data.str, bead.bgColor.str, my._grid.color.str);
-	}
+	};
 
 	// Mark a bead as dirty
 
 	my._makeDirty = function (bead) {
 		bead.dirty = true;
 		my._anyDirty = true;
-	}
+	};
 
 	// Draw all dirty beads
 
@@ -635,7 +639,7 @@ var PerlenspielInternal = function (my) {
 			}
 			my._anyDirty = false;
 		}
-	}
+	};
 
 	//-------------------------
 	// DEBUGGER & ERROR SUPPORT
@@ -663,7 +667,7 @@ var PerlenspielInternal = function (my) {
 			my._debugging = true;
 			my._debugFocus = false;
 		}
-	}
+	};
 
 	// Send warning message to debugger
 
@@ -673,7 +677,7 @@ var PerlenspielInternal = function (my) {
 		}
 
 		my.instance.debug("WARNING: " + str + "\n");
-	}
+	};
 
 	// Check the number of arguments that were passed to a function
 
@@ -685,7 +689,7 @@ var PerlenspielInternal = function (my) {
 		if (numArgs > max) {
 			return my._error(methodName + "Too many arguments");
 		}
-	}
+	};
 
 	// Makes sure that a colors object has all of its properties filled out
 
@@ -724,7 +728,7 @@ var PerlenspielInternal = function (my) {
 		}
 
 		return colors.rgb;
-	}
+	};
 
 	// Debugger options
 
@@ -755,7 +759,7 @@ var PerlenspielInternal = function (my) {
 		}
 
 		return text;
-	}
+	};
 
 	my._decodeCallstack = function (str) {
 		var lines, len, i, text;
@@ -777,7 +781,7 @@ var PerlenspielInternal = function (my) {
 		}
 
 		return text;
-	}
+	};
 
 	my._errorCatch = function (message, err) {
 		var str;
@@ -814,7 +818,7 @@ var PerlenspielInternal = function (my) {
 		}
 
 		return PS.ERROR;
-	}
+	};
 
 	my._error = function (message) {
 		// Throw error to access callstack
@@ -824,7 +828,7 @@ var PerlenspielInternal = function (my) {
 		} catch (err) {
 			return my._errorCatch(message, err);
 		}
-	}
+	};
 
 	// Keep debugger window scrolled to bottom
 
@@ -833,7 +837,7 @@ var PerlenspielInternal = function (my) {
 
 		e = document.getElementById(my._MAIN_ID);
 		e.scrollTop = e.scrollHeight;
-	}
+	};
 
 	//-------------
 	// FADER ENGINE
@@ -844,14 +848,14 @@ var PerlenspielInternal = function (my) {
 	my._initFaders = function () {
 		my._faders = [];
 		my._faderTick = 0;
-	}
+	};
 
 	// Reset a fader
 
 	my._resetFader = function (fader) {
 		my._copy(my._DEFAULTS.fader, fader);
 		fader.frames.length = 0;
-	}
+	};
 
 	// Return a new fader object
 	// This should be called only once for each element, at system startup
@@ -869,7 +873,7 @@ var PerlenspielInternal = function (my) {
 		my._resetFader(fader);
 
 		return fader;
-	}
+	};
 
 	// Calc fader steps
 	// [r/g/b] are current colors, [tr/tg/tb] target colors
@@ -998,7 +1002,7 @@ var PerlenspielInternal = function (my) {
 			}
 		}
 		while (percent < 100);
-	}
+	};
 
 	// Start a fader
 	// Precalculates all color animation steps
@@ -1011,7 +1015,7 @@ var PerlenspielInternal = function (my) {
 			fader.active = true;
 			my._faders.push(fader);
 		}
-	}
+	};
 
 	// Recalculate color animation steps for a fade in progress
 
@@ -1041,7 +1045,7 @@ var PerlenspielInternal = function (my) {
 		if (fader.frames.length > 0) {
 			fader.active = restart;
 		}
-	}
+	};
 
 	//-------------
 	// SYSTEM CLOCK
@@ -1052,7 +1056,7 @@ var PerlenspielInternal = function (my) {
 	my._initTimers = function () {
 		my._timers = [];
 		my._timerCnt = 0;
-	}
+	};
 
 	/*
 	my._lastTime = 0;
@@ -1250,7 +1254,7 @@ var PerlenspielInternal = function (my) {
 		if (refresh) {
 			my._gridDraw();
 		}
-	}
+	};
 
 	//--------------
 	// COLOR SUPPORT
@@ -1315,7 +1319,7 @@ var PerlenspielInternal = function (my) {
 				my._makeDirty(bead);
 			}
 		}
-	}
+	};
 
 	// Validate & rectify separate color values, return in [colors] object
 
@@ -1379,7 +1383,7 @@ var PerlenspielInternal = function (my) {
 		colors.b = blue;
 
 		return PS.DONE;
-	}
+	};
 
 	// Extract components of an rgb multiplex into [colors] object
 
@@ -1411,7 +1415,7 @@ var PerlenspielInternal = function (my) {
 		colors.r = red;
 		colors.g = green;
 		colors.b = blue;
-	}
+	};
 
 	// my._decodeColors ( fn, p1, p2, p3 )
 	// Takes caller's function name, plus single RGB multiplex integer, integer triplet, RGB array or RGB object
@@ -1493,7 +1497,7 @@ var PerlenspielInternal = function (my) {
 
 			rgb = p1.rgb;
 
-			if (rgb == null && p1.r == undefined && p1.g == undefined && p1.b == undefined) {
+			if (rgb === null && p1.r === undefined && p1.g === undefined && p1.b === undefined) {
 				// There's a color object with no useful information inside
 				return PS.ERROR;
 			}
@@ -1520,7 +1524,7 @@ var PerlenspielInternal = function (my) {
 		}
 
 		return colors;
-	}
+	};
 
 	// Calc font metrics for bead based on glyph scale
 
@@ -1539,7 +1543,7 @@ var PerlenspielInternal = function (my) {
 		bead.glyph.size = height = Math.round(nsize / 2);
 		bead.glyph.font = height + "px 'Droid'";
 		bead.glyph.y = Math.round(((bsize - height) / 2) + (height / 2));
-	}
+	};
 
 	// Reset bead default attributes
 
@@ -1563,7 +1567,7 @@ var PerlenspielInternal = function (my) {
 		my._resetFader(bead.fader);
 		my._resetFader(bead.borderFader);
 		my._resetFader(bead.glyphFader);
-	}
+	};
 
 	// Get color of a bead plane
 
@@ -1624,7 +1628,7 @@ var PerlenspielInternal = function (my) {
 		}
 
 		return color;
-	}
+	};
 
 	// Return current maximum border width
 
@@ -1634,7 +1638,7 @@ var PerlenspielInternal = function (my) {
 		}
 
 		return bead.border.max;
-	}
+	};
 
 	// Set all bead borders to same width
 
@@ -1645,7 +1649,7 @@ var PerlenspielInternal = function (my) {
 		bead.border.left = w;
 		bead.border.bottom = w;
 		bead.border.right = w;
-	}
+	};
 
 	// Rescale a bead according to its .scale property
 
@@ -1723,7 +1727,7 @@ var PerlenspielInternal = function (my) {
 				border.right = max;
 			}
 		}
-	}
+	};
 
 	// Return a bead's data
 
@@ -1736,7 +1740,7 @@ var PerlenspielInternal = function (my) {
 			data = 0;
 		}
 		return data;
-	}
+	};
 
 	//------------------
 	// DOM EVENT SUPPORT
@@ -1783,7 +1787,7 @@ var PerlenspielInternal = function (my) {
 			}
 		}
 		return PS.DONE;
-	}
+	};
 
 	// my._releaseBead ( bead )
 	// Call this when mouse button is released or touch is removed from bead
@@ -1804,7 +1808,7 @@ var PerlenspielInternal = function (my) {
 			}
 		}
 		return PS.DONE;
-	}
+	};
 
 	// my._enterBead ( bead )
 	// Call this when mouse/touch enters a bead
@@ -1827,7 +1831,7 @@ var PerlenspielInternal = function (my) {
 			}
 		}
 		return PS.DONE;
-	}
+	};
 
 	// my._exitBead ( bead )
 	// Call this when mouse/touch leaves a bead
@@ -1849,7 +1853,7 @@ var PerlenspielInternal = function (my) {
 		}
 
 		return PS.DONE;
-	}
+	};
 
 	// my._exitGrid()
 	// Call this when mouse leaves the grid
@@ -1867,7 +1871,7 @@ var PerlenspielInternal = function (my) {
 			}
 		}
 		return PS.DONE;
-	}
+	};
 
 	//--------------------
 	// INPUT EVENT SUPPORT
@@ -1875,7 +1879,7 @@ var PerlenspielInternal = function (my) {
 
 	my._resetCursor = function () {
 		my._lastBead = -1;
-	}
+	};
 
 	my._getBead = function (x, y) {
 		var canvas, bead, i, j;
@@ -1915,7 +1919,7 @@ var PerlenspielInternal = function (my) {
 		}
 
 		return null;
-	}
+	};
 
 	// my._mouseDown ()
 	// Event called when mouse is clicked on a bead
@@ -1945,7 +1949,7 @@ var PerlenspielInternal = function (my) {
 			event.preventDefault();
 		else
 			return my._endEvent(event);
-	}
+	};
 
 	// my._mouseUp ()
 	// Event called when mouse button is released over grid
@@ -1969,7 +1973,7 @@ var PerlenspielInternal = function (my) {
 		}
 
 		return my._endEvent(event);
-	}
+	};
 
 	// Called when cursor moves over grid
 
@@ -2003,7 +2007,7 @@ var PerlenspielInternal = function (my) {
 		}
 
 		return my._endEvent(event);
-	}
+	};
 
 	// my._gridOut()
 	// Event called when mouse enters area outside grid
@@ -2029,7 +2033,7 @@ var PerlenspielInternal = function (my) {
 		}
 
 		return my._endEvent(event);
-	}
+	};
 
 	// my._touchStart ( event )
 	// Event called when screen is touched
@@ -2067,7 +2071,7 @@ var PerlenspielInternal = function (my) {
 		}
 
 		return my._endEvent(event);
-	}
+	};
 
 	// my._touchEnd ( event )
 	// Event called when touch is released or canceled
@@ -2102,7 +2106,7 @@ var PerlenspielInternal = function (my) {
 		}
 
 		return my._endEvent(event);
-	}
+	};
 
 	// my._touchMove ( event )
 	// Event called when touch is moved across screen
@@ -2132,7 +2136,7 @@ var PerlenspielInternal = function (my) {
 						// Previously over a bead?
 
 						if (my._underBead !== my._CLEAR) {
-							obead = my._beads[_underBead]; // get the bead table
+							obead = my._beads[my._underBead]; // get the bead table
 							my._exitBead(obead);
 						}
 
@@ -2145,7 +2149,7 @@ var PerlenspielInternal = function (my) {
 					// Previously over a bead?
 
 					if (my._underBead !== my._CLEAR) {
-						obead = my._beads[_underBead]; // get the bead table
+						obead = my._beads[my._underBead]; // get the bead table
 						my._exitBead(obead);
 					}
 
@@ -2164,7 +2168,7 @@ var PerlenspielInternal = function (my) {
 		}
 
 		return my._endEvent(event);
-	}
+	};
 
 	// my._keyReset ()
 	// Reset all key params when focus is taken off grid
@@ -2178,7 +2182,7 @@ var PerlenspielInternal = function (my) {
 		for (i = 0; i < 256; i += 1) {
 			my._pressed[i] = 0;
 		}
-	}
+	};
 
 	// my._keyFilter ( key, shift )
 	// Translates weird or shifted keycodes to useful values
@@ -2203,7 +2207,7 @@ var PerlenspielInternal = function (my) {
 		}
 
 		return val;
-	}
+	};
 
 	// my._legalKey( key )
 	// Returns true if key is recognized, else false
@@ -2211,7 +2215,7 @@ var PerlenspielInternal = function (my) {
 
 	my._legalKey = function (key) {
 		return ((key >= 32) || (key === 13) || (key === 8) || (key === 9) || (key === 27));
-	}
+	};
 
 	// my._keyDown ( event )
 	// DOM event called when a key is pressed
@@ -2318,7 +2322,7 @@ var PerlenspielInternal = function (my) {
 		}
 
 		return my._endEvent(event);
-	}
+	};
 
 	// my._keyUp ( event )
 	// DOM event called when key is released
@@ -2411,7 +2415,7 @@ var PerlenspielInternal = function (my) {
 		}
 
 		return my._endEvent(event);
-	}
+	};
 
 	// my._wheel ( event )
 	// DOM event called when mouse wheel is moved
@@ -2460,7 +2464,7 @@ var PerlenspielInternal = function (my) {
 		}
 
 		return my._endEvent(event);
-	}
+	};
 
 	//---------------
 	// GRID FUNCTIONS
@@ -2472,7 +2476,7 @@ var PerlenspielInternal = function (my) {
 			document.addEventListener("keyup", my._keyUp, false);
 			my._keysActive = true;
 		}
-	}
+	};
 
 	my._keysDeactivate = function () {
 		my._keyReset(); // reset key status
@@ -2482,7 +2486,7 @@ var PerlenspielInternal = function (my) {
 			document.removeEventListener("keyup", my._keyUp, false);
 			my._keysActive = false;
 		}
-	}
+	};
 
 	// Focus manager - instance received mouse focus
 	my._gridFocus = function (e) {
@@ -2492,7 +2496,7 @@ var PerlenspielInternal = function (my) {
 		}
 		if (e)
 			e.preventDefault();
-	}
+	};
 
 	// Focus manager - instance lost mouse focus
 	my._gridUnfocus = function (e) {
@@ -2509,7 +2513,7 @@ var PerlenspielInternal = function (my) {
 			if (e)
 				e.preventDefault();
 		}
-	}
+	};
 
 	my._gridActivate = function () {
 		var grid;
@@ -2554,7 +2558,7 @@ var PerlenspielInternal = function (my) {
 			document.addEventListener("touchend", my._touchEnd, false);
 			document.addEventListener("touchcancel", my._touchEnd, false);
 		}
-	}
+	};
 
 	my._gridDeactivate = function () {
 		var grid;
@@ -2589,7 +2593,7 @@ var PerlenspielInternal = function (my) {
 			document.removeEventListener("touchend", my._touchEnd, false);
 			document.removeEventListener("touchcancel", my._touchEnd, false);
 		}
-	}
+	};
 
 	// Set grid color
 	// Returns rgb
@@ -2600,7 +2604,7 @@ var PerlenspielInternal = function (my) {
 		current = my._grid.color;
 		fader = my._grid.fader;
 
-		if (PS.CURRENT == my._checkColors(colors, current, my._DEFAULTS.grid.color))
+		if (PS.CURRENT === my._checkColors(colors, current, my._DEFAULTS.grid.color))
 			return current.rgb;
 
 		// Only change color if different
@@ -2637,7 +2641,7 @@ var PerlenspielInternal = function (my) {
 		}
 
 		return current.rgb;
-	}
+	};
 
 	// Set grid shadow color
 	// Returns rgb
@@ -2647,7 +2651,7 @@ var PerlenspielInternal = function (my) {
 
 		current = my._grid.shadow;
 
-		if (PS.CURRENT == my._checkColors(colors, current, my._DEFAULTS.grid.shadow))
+		if (PS.CURRENT === my._checkColors(colors, current, my._DEFAULTS.grid.shadow))
 			return current.rgb;
 
 		rgb = colors.rgb;
@@ -2682,7 +2686,7 @@ var PerlenspielInternal = function (my) {
 			show: my._grid.shadow.show,
 			rgb: current.rgb
 		};
-	}
+	};
 
 	// Resize grid to dimensions x/y
 	// Resets all bead attributes
@@ -2795,7 +2799,7 @@ var PerlenspielInternal = function (my) {
 		my._resetCursor();
 
 		my._grid.ready = true;
-	}
+	};
 
 	//-------------
 	// BEAD SUPPORT
@@ -2819,7 +2823,7 @@ var PerlenspielInternal = function (my) {
 		}
 
 		return x;
-	}
+	};
 
 	// my._checkY ( y, fn )
 	// Returns floored y value if valid, else PS.ERROR
@@ -2839,7 +2843,7 @@ var PerlenspielInternal = function (my) {
 		}
 
 		return y;
-	}
+	};
 
 	// Call a bead function with x/y parameter checking
 	// [fn] = name of calling function
@@ -2917,7 +2921,7 @@ var PerlenspielInternal = function (my) {
 		result = func(x, y, p1, p2, p3, p4);
 
 		return result;
-	}
+	};
 
 	my._color = function (x, y, colors) {
 		var id, bead, def, current, fader, rgb, r, g, b;
@@ -2931,7 +2935,7 @@ var PerlenspielInternal = function (my) {
 		if (!bead.active)
 			return current.rgb;
 
-		if (PS.CURRENT == my._checkColors(colors, current, my._DEFAULTS.bead.color))
+		if (PS.CURRENT === my._checkColors(colors, current, my._DEFAULTS.bead.color))
 			return current.rgb;
 
 		// Only change color if different
@@ -2949,7 +2953,7 @@ var PerlenspielInternal = function (my) {
 		}
 
 		return current.rgb;
-	}
+	};
 
 	my._alpha = function (x, y, alpha) {
 		var id, bead, current;
@@ -2965,7 +2969,7 @@ var PerlenspielInternal = function (my) {
 		}
 
 		return current.a;
-	}
+	};
 
 	// my._validFadeOptions ( fn, options)
 	// Returns validated options object or PS.ERROR
@@ -3086,7 +3090,7 @@ var PerlenspielInternal = function (my) {
 		}
 
 		return options;
-	}
+	};
 
 	my._fade = function (x, y, rate, options) {
 		var id, bead, color, fader, orate, nrate, val;
@@ -3165,7 +3169,7 @@ var PerlenspielInternal = function (my) {
 			onEnd: fader.onEnd,
 			params: fader.params
 		};
-	}
+	};
 
 	my._scale = function (x, y, scale) {
 		var id, bead;
@@ -3180,7 +3184,7 @@ var PerlenspielInternal = function (my) {
 		}
 
 		return bead.scale;
-	}
+	};
 
 	my._radius = function (x, y, radius) {
 		var id, bead, max;
@@ -3202,7 +3206,7 @@ var PerlenspielInternal = function (my) {
 		}
 
 		return bead.radius;
-	}
+	};
 
 	my._bgColor = function (x, y, colors) {
 		var id, bead, def, current, rgb, r, g, b;
@@ -3215,7 +3219,7 @@ var PerlenspielInternal = function (my) {
 		if (!bead.active)
 			return current.rgb;
 
-		if (PS.CURRENT == my._checkColors(colors, current, my._DEFAULTS.bead.bgColor))
+		if (PS.CURRENT === my._checkColors(colors, current, my._DEFAULTS.bead.bgColor))
 			return current.rgb;
 
 		// Only change color if different
@@ -3233,7 +3237,7 @@ var PerlenspielInternal = function (my) {
 		}
 
 		return current.rgb;
-	}
+	};
 
 	my._bgAlpha = function (x, y, alpha) {
 		var id, bead, current;
@@ -3252,7 +3256,7 @@ var PerlenspielInternal = function (my) {
 		}
 
 		return current.a;
-	}
+	};
 
 	my._data = function (x, y, data) {
 		var id, bead;
@@ -3275,7 +3279,7 @@ var PerlenspielInternal = function (my) {
 		}
 
 		return bead.data;
-	}
+	};
 
 	my._exec = function (x, y, exec) {
 		var id, bead;
@@ -3288,7 +3292,7 @@ var PerlenspielInternal = function (my) {
 		}
 
 		return bead.exec;
-	}
+	};
 
 	my._visible = function (x, y, show) {
 		var id, bead;
@@ -3307,7 +3311,7 @@ var PerlenspielInternal = function (my) {
 		}
 
 		return bead.visible;
-	}
+	};
 
 	my._active = function (x, y, active) {
 		var id, bead;
@@ -3320,7 +3324,7 @@ var PerlenspielInternal = function (my) {
 		}
 
 		return bead.active;
-	}
+	};
 
 	//--------------------
 	// BEAD BORDER SUPPORT
@@ -3458,7 +3462,7 @@ var PerlenspielInternal = function (my) {
 		val.width = bead.border.width;
 
 		return val;
-	}
+	};
 
 	my._borderColor = function (x, y, colors) {
 		var id, bead, current, fader, rgb, r, g, b, a;
@@ -3471,7 +3475,7 @@ var PerlenspielInternal = function (my) {
 		if (!bead.active)
 			return current.rgb;
 
-		if (PS.CURRENT == my._checkColors(colors, current, my._DEFAULTS.bead.border.color))
+		if (PS.CURRENT === my._checkColors(colors, current, my._DEFAULTS.bead.border.color))
 			return current.rgb;
 
 		// Only change color if different
@@ -3511,7 +3515,7 @@ var PerlenspielInternal = function (my) {
 		}
 
 		return current.rgb;
-	}
+	};
 
 	my._borderAlpha = function (x, y, alpha) {
 		var id, bead, current, r, g, b, fader;
@@ -3550,7 +3554,7 @@ var PerlenspielInternal = function (my) {
 		}
 
 		return current.a;
-	}
+	};
 
 	my._borderFade = function (x, y, rate, options) {
 		var id, bead, fader, color, orate, nrate, val;
@@ -3629,7 +3633,7 @@ var PerlenspielInternal = function (my) {
 			onEnd: fader.onEnd,
 			params: fader.params
 		};
-	}
+	};
 
 	//--------------
 	// GLYPH SUPPORT
@@ -3654,57 +3658,11 @@ var PerlenspielInternal = function (my) {
 
 			bead.glyph.str = str;
 
-			/*
-			max = my._borderMax( bead );
-
-			if ( bead.border.equal )
-			{
-				if ( bead.border.width > max )
-				{
-					my._equalBorder( bead, max );
-				}
-			}
-
-			// Must set all borders equal
-
-			else
-			{
-				top = bead.border.top;
-				if ( top > max )
-				{
-					top = max;
-				}
-
-				left = bead.border.left;
-				if ( left > max )
-				{
-					left = max;
-				}
-
-				bottom = bead.border.bottom;
-				if ( bottom > max )
-				{
-					bottom = max;
-				}
-
-				right = bead.border.right;
-				if ( right > max )
-				{
-					right = max;
-				}
-
-				// set all borders equal to largest border
-
-				max = Math.max( top, left, bottom, right );
-				my._equalBorder( bead, max );
-			}
-			*/
-
 			my._makeDirty(bead);
 		}
 
 		return bead.glyph.code;
-	}
+	};
 
 	my._glyphColor = function (x, y, colors) {
 		var id, bead, current, fader, rgb, r, g, b, a;
@@ -3717,7 +3675,7 @@ var PerlenspielInternal = function (my) {
 		if (!bead.active)
 			return current.rgb;
 
-		if (PS.CURRENT == my._checkColors(colors, current, my._DEFAULTS.bead.glyph.color))
+		if (PS.CURRENT === my._checkColors(colors, current, my._DEFAULTS.bead.glyph.color))
 			return current.rgb;
 
 		// Only change color if different
@@ -3758,7 +3716,7 @@ var PerlenspielInternal = function (my) {
 		}
 
 		return current.rgb;
-	}
+	};
 
 	my._glyphAlpha = function (x, y, alpha) {
 		var id, bead, current, r, g, b, fader;
@@ -3794,7 +3752,7 @@ var PerlenspielInternal = function (my) {
 		}
 
 		return current.a;
-	}
+	};
 
 	my._glyphScale = function (x, y, scale) {
 		var id, bead, current;
@@ -3814,7 +3772,7 @@ var PerlenspielInternal = function (my) {
 		}
 
 		return bead.glyph.scale;
-	}
+	};
 
 	my._glyphFade = function (x, y, rate, options) {
 		var id, bead, color, fader, orate, nrate, val;
@@ -3893,7 +3851,7 @@ var PerlenspielInternal = function (my) {
 			onEnd: fader.onEnd,
 			params: fader.params
 		};
-	}
+	};
 
 	//--------------
 	// IMAGE SUPPORT
@@ -3926,7 +3884,7 @@ var PerlenspielInternal = function (my) {
 		}
 
 		my._error("[PS.imageLoad] Error loading " + image.src);
-	}
+	};
 
 	// Return an image table from an imageData file
 	// Optional [format] determines pixel format (1, 2, 3, 4)
@@ -4041,7 +3999,7 @@ var PerlenspielInternal = function (my) {
 		destImage.pixelSize = format;
 		destImage.data = dest;
 		return destImage;
-	}
+	};
 
 	// System loader for images
 
@@ -4075,7 +4033,7 @@ var PerlenspielInternal = function (my) {
 				my._errorCatch("[PS.imageLoad] .exec function failed [" + err.message + "]", err);
 			}
 		}
-	}
+	};
 
 	// Validate an image object
 	// Returns true if image structure is valid, else PS.ERROR
@@ -4153,7 +4111,7 @@ var PerlenspielInternal = function (my) {
 		}
 
 		return true;
-	}
+	};
 
 	// Print a value in hex with optional zero padding
 
@@ -4169,7 +4127,7 @@ var PerlenspielInternal = function (my) {
 			}
 		}
 		return ("0x" + str);
-	}
+	};
 
 	my._outputPixel = function (format, hex, rgb, r, g, b, a) {
 		var str;
@@ -4207,7 +4165,7 @@ var PerlenspielInternal = function (my) {
 		}
 
 		return str;
-	}
+	};
 
 	// --------------
 	// SPRITE SUPPORT
@@ -4248,7 +4206,7 @@ var PerlenspielInternal = function (my) {
 		my._spriteCnt += 1;
 		my._sprites.push(s);
 		return s;
-	}
+	};
 
 	// Returns sprite object if [sprite] is a valid sprite reference, else PS.ERROR
 
@@ -4268,7 +4226,7 @@ var PerlenspielInternal = function (my) {
 		}
 
 		return my._error(fn + "sprite id '" + sprite + "' does not exist");
-	}
+	};
 
 	// Erase a sprite, using optional region
 	// Compensate for axis, don't touch anything off grid
@@ -4340,7 +4298,7 @@ var PerlenspielInternal = function (my) {
 				}
 			}
 		}
-	}
+	};
 
 	// Draw a solid or image sprite
 	// Compensate for axis, don't touch anything off grid
@@ -4446,7 +4404,7 @@ var PerlenspielInternal = function (my) {
 				srcTop += 1;
 			}
 		}
-	}
+	};
 
 	// See if sprite [s, id] is touching or overlapping any other sprite
 	// Send collision messages as needed
@@ -4539,7 +4497,7 @@ var PerlenspielInternal = function (my) {
 				}
 			}
 		}
-	}
+	};
 
 	//---------------------------
 	// BINARY HEAP FOR PATHFINDER
@@ -4551,7 +4509,7 @@ var PerlenspielInternal = function (my) {
 	my.BinaryHeap = function (scoreFunction) {
 		this.content = [];
 		this.scoreFunction = scoreFunction;
-	}
+	};
 
 	my.BinaryHeap.prototype = {
 		push: function (element) {
@@ -4768,7 +4726,7 @@ var PerlenspielInternal = function (my) {
 		}
 
 		return line;
-	}
+	};
 
 	//	Returns a straight line between x1|y1 and x2|y2, or null if wall blocks path
 	// If [corner] = true, stops if line will cut across a wall corner
@@ -4833,7 +4791,7 @@ var PerlenspielInternal = function (my) {
 		}
 
 		return line;
-	}
+	};
 
 	// my._heuristic ( x1, y1, x2, y2 )
 
@@ -4858,7 +4816,7 @@ var PerlenspielInternal = function (my) {
 			h = (dx * my._DIAGONAL_COST) + (dy - dx);
 		}
 		return h;
-	}
+	};
 
 	// my._neighbors ( nodes, width, height, current )
 	// Creates an array of all neighbor nodes
@@ -4989,14 +4947,14 @@ var PerlenspielInternal = function (my) {
 		}
 
 		return result;
-	}
+	};
 
 	// my._score ( node )
 	// Scoring function for nodes
 
 	my._score = function (node) {
 		return node.f;
-	}
+	};
 
 	// my._findPath ( pm, x1, y1, x2, y2, no_diagonals, cut_corners )
 	// Returns an array of x/y coordinates
@@ -5115,7 +5073,7 @@ var PerlenspielInternal = function (my) {
 		}
 
 		return path;
-	}
+	};
 
 	// my._pathData ( pm, left, top, width, height, data )
 	// If [data] = PS.CURRENT, no data changed
@@ -5153,7 +5111,7 @@ var PerlenspielInternal = function (my) {
 		}
 
 		return result;
-	}
+	};
 
 	// my._newMap ( width, height, data )
 	// Creates a new pathmap object and returns its id
@@ -5203,7 +5161,7 @@ var PerlenspielInternal = function (my) {
 		my._pathmaps.push(pm);
 
 		return pm;
-	}
+	};
 
 	// my._getMap( id )
 	// Returns pathmap matching [id], null if none found
@@ -5219,7 +5177,7 @@ var PerlenspielInternal = function (my) {
 			}
 		}
 		return null;
-	}
+	};
 
 	// my._deleteMap( id )
 	// Deletes [pathmap], returns true if deleted or false if path not found
@@ -5245,7 +5203,7 @@ var PerlenspielInternal = function (my) {
 			}
 		}
 		return false;
-	}
+	};
 
 	// Find closest walkable point in source direction
 	// [x1|y1] is current, [x2|y2] is clicked location
@@ -5361,7 +5319,7 @@ var PerlenspielInternal = function (my) {
 		}
 
 		return [x1, y1];
-	}
+	};
 
 	// Status line
 
@@ -5370,7 +5328,7 @@ var PerlenspielInternal = function (my) {
 		my._keysActivate(); // turn on key events
 		my._status.statusNode.nodeValue = my._status.text = str; // set status text
 		my._status.statusP.style.display = "block"; // show status paragraph
-	}
+	};
 
 	// my._inputKeyDown ( event )
 	// Input keydown handler
@@ -5398,7 +5356,7 @@ var PerlenspielInternal = function (my) {
 			return my._endEvent(event);
 		}
 		return true; // must return true
-	}
+	};
 
 	my._statusIn = function (strP, exec) {
 		var str;
@@ -5416,7 +5374,7 @@ var PerlenspielInternal = function (my) {
 		my._status.input.addEventListener("keydown", my._inputKeyDown, false); // start input handler
 		my._status.inputP.style.display = "block"; // show input line
 		my._status.input.focus();
-	}
+	};
 
 	//----------------------
 	// ENGINE INITIALIZATION
@@ -5433,7 +5391,7 @@ var PerlenspielInternal = function (my) {
 		} catch (e) {
 			return false;
 		}
-	}
+	};
 
 	// Detect platform and available features
 
@@ -5517,7 +5475,7 @@ var PerlenspielInternal = function (my) {
 		}
 		my._system.host.os = os;
 
-	}
+	};
 
 	return my;
 };

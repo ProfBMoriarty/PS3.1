@@ -3,7 +3,12 @@
 // Includes:
 // + Public engine interface methods
 
+/*jslint nomen: true, white: true, vars: true, unused: false */
+/*jshint nomen: true, white: true, unused: false */
+/*global document, window, screen, console, Image, AQ, PIXI, PERLENSPIEL, PS */
+
 var PerlenspielInterface = function (my) {
+    "use strict";
 
 	//---------------
 	// GRID FUNCTIONS
@@ -18,7 +23,7 @@ var PerlenspielInterface = function (my) {
 
 		fn = "[PS.gridSize] ";
 
-		if (PS.ERROR == my._checkNumArgs(fn, arguments.length, 0, 2))
+		if (PS.ERROR === my._checkNumArgs(fn, arguments.length, 0, 2))
 			return PS.ERROR;
 
 		// prevent arg mutation
@@ -68,7 +73,7 @@ var PerlenspielInterface = function (my) {
 			width: my._grid.x,
 			height: my._grid.y
 		};
-	}
+	};
 
 	// PS.gridPlane ( p )
 	// Sets current color plane of grid
@@ -79,7 +84,7 @@ var PerlenspielInterface = function (my) {
 
 		fn = "[PS.gridPlane] ";
 
-		if (PS.ERROR == my._checkNumArgs(fn, arguments.length, 0, 1))
+		if (PS.ERROR === my._checkNumArgs(fn, arguments.length, 0, 1))
 			return PS.ERROR;
 
 		plane = planeP; // avoid direct mutation of argument
@@ -101,7 +106,7 @@ var PerlenspielInterface = function (my) {
 		}
 
 		return my._grid.plane;
-	}
+	};
 
 	// PS.gridColor( color )
 	// Sets color of grid
@@ -113,7 +118,7 @@ var PerlenspielInterface = function (my) {
 
 		fn = "[PS.gridColor] ";
 
-		if (PS.ERROR == my._checkNumArgs(fn, arguments.length, 0, 3) || arguments.length == 2)
+		if (PS.ERROR === my._checkNumArgs(fn, arguments.length, 0, 3) || arguments.length === 2)
 			return PS.ERROR;
 
 		colors = my._decodeColors(fn, p1, p2, p3);
@@ -122,7 +127,7 @@ var PerlenspielInterface = function (my) {
 		}
 
 		return my._gridColor(colors);
-	}
+	};
 
 	// PS.gridFade( rate, options )
 	// Sets fade rate/options of grid
@@ -133,7 +138,7 @@ var PerlenspielInterface = function (my) {
 
 		fn = "[PS.gridFade] ";
 
-		if (PS.ERROR == my._checkNumArgs(fn, arguments.length, 0, 2))
+		if (PS.ERROR === my._checkNumArgs(fn, arguments.length, 0, 2))
 			return PS.ERROR;
 
 		color = my._grid.color;
@@ -217,7 +222,7 @@ var PerlenspielInterface = function (my) {
 			onEnd: fader.onEnd,
 			params: fader.params
 		};
-	}
+	};
 
 	// PS.gridShadow
 	// Activates/deactivates grid shadow and sets its color
@@ -230,7 +235,7 @@ var PerlenspielInterface = function (my) {
 
 		fn = "[PS.gridShadow] ";
 
-		if (PS.ERROR == my._checkNumArgs(fn, arguments.length, 0, 4))
+		if (PS.ERROR === my._checkNumArgs(fn, arguments.length, 0, 4))
 			return PS.ERROR;
 
 		show = showP; // prevent arg mutation
@@ -250,7 +255,7 @@ var PerlenspielInterface = function (my) {
 		}
 
 		return my._gridShadow(show, colors);
-	}
+	};
 
 	//---------------
 	// BEAD FUNCTIONS
@@ -260,11 +265,11 @@ var PerlenspielInterface = function (my) {
 	// Change/inspect bead color on current grid plane
 
 	my.PSInterface.prototype.color = function (x, y, p1, p2, p3) {
-		var fn, args, colors;
+		var fn, colors;
 
 		fn = "[PS.color] ";
 
-		if (PS.ERROR == my._checkNumArgs(fn, arguments.length, 2, 5))
+		if (PS.ERROR === my._checkNumArgs(fn, arguments.length, 2, 5))
 			return PS.ERROR;
 
 		colors = my._decodeColors(fn, p1, p2, p3);
@@ -273,16 +278,16 @@ var PerlenspielInterface = function (my) {
 		}
 
 		return my._beadExec(fn, my._color, x, y, colors);
-	}
+	};
 
 	// PS.alpha( x, y, a )
 
 	my.PSInterface.prototype.alpha = function (x, y, alpha_p) {
-		var fn, args, alpha, type;
+		var fn, alpha, type;
 
 		fn = "[PS.alpha] ";
 
-		if (PS.ERROR == my._checkNumArgs(fn, arguments.length, 2, 3))
+		if (PS.ERROR === my._checkNumArgs(fn, arguments.length, 2, 3))
 			return PS.ERROR;
 		alpha = alpha_p; // prevent direct mutation of args
 
@@ -305,7 +310,7 @@ var PerlenspielInterface = function (my) {
 		}
 
 		return my._beadExec(fn, my._alpha, x, y, alpha);
-	}
+	};
 
 	// PS.fade( x, y, rate, options )
 	// Sets fade rate/options of bead
@@ -316,7 +321,7 @@ var PerlenspielInterface = function (my) {
 
 		fn = "[PS.fade] ";
 
-		if (PS.ERROR == my._checkNumArgs(fn, arguments.length, 2, 4))
+		if (PS.ERROR === my._checkNumArgs(fn, arguments.length, 2, 4))
 			return PS.ERROR;
 
 		rate = rate_p; // prevent arg mutation
@@ -340,7 +345,7 @@ var PerlenspielInterface = function (my) {
 		}
 
 		return my._beadExec(fn, my._fade, x, y, rate, options);
-	}
+	};
 
 	// PS.scale ( x, y, scale )
 	// Expects a number between 50 and 100
@@ -350,7 +355,7 @@ var PerlenspielInterface = function (my) {
 
 		fn = "[PS.scale] ";
 
-		if (PS.ERROR == my._checkNumArgs(fn, arguments.length, 2, 3))
+		if (PS.ERROR === my._checkNumArgs(fn, arguments.length, 2, 3))
 			return PS.ERROR;
 
 		// prevent arg mutation
@@ -376,7 +381,7 @@ var PerlenspielInterface = function (my) {
 		}
 
 		return my._beadExec(fn, my._scale, x, y, scale);
-	}
+	};
 
 	// PS.radius( x, y, radius )
 	// Expects a radius between 0 and 50
@@ -386,7 +391,7 @@ var PerlenspielInterface = function (my) {
 
 		fn = "[PS.radius] ";
 
-		if (PS.ERROR == my._checkNumArgs(fn, arguments.length, 2, 3))
+		if (PS.ERROR === my._checkNumArgs(fn, arguments.length, 2, 3))
 			return PS.ERROR;
 
 		// prevent arg mutation
@@ -412,7 +417,7 @@ var PerlenspielInterface = function (my) {
 		}
 
 		return my._beadExec(fn, my._radius, x, y, radius);
-	}
+	};
 
 	// PS.bgColor ( x, y, color )
 	// Change/inspect bead background color
@@ -422,7 +427,7 @@ var PerlenspielInterface = function (my) {
 
 		fn = "[PS.bgColor] ";
 
-		if (PS.ERROR == my._checkNumArgs(fn, arguments.length, 2, 5))
+		if (PS.ERROR === my._checkNumArgs(fn, arguments.length, 2, 5))
 			return PS.ERROR;
 
 		colors = my._decodeColors(fn, p1, p2, p3);
@@ -431,7 +436,7 @@ var PerlenspielInterface = function (my) {
 		}
 
 		return my._beadExec(fn, my._bgColor, x, y, colors);
-	}
+	};
 
 	// PS.bgAlpha( x, y, a )
 
@@ -440,7 +445,7 @@ var PerlenspielInterface = function (my) {
 
 		fn = "[PS.bgAlpha] ";
 
-		if (PS.ERROR == my._checkNumArgs(fn, arguments.length, 2, 3))
+		if (PS.ERROR === my._checkNumArgs(fn, arguments.length, 2, 3))
 			return PS.ERROR;
 
 		alpha = alpha_p; // prevent direct mutation of args
@@ -463,7 +468,7 @@ var PerlenspielInterface = function (my) {
 		}
 
 		return my._beadExec(fn, my._bgAlpha, x, y, alpha);
-	}
+	};
 
 	// PS.data( x, y, data )
 
@@ -472,7 +477,7 @@ var PerlenspielInterface = function (my) {
 
 		fn = "[PS.data] ";
 
-		if (PS.ERROR == my._checkNumArgs(fn, arguments.length, 2, 3))
+		if (PS.ERROR === my._checkNumArgs(fn, arguments.length, 2, 3))
 			return PS.ERROR;
 
 		// Prevent arg mutation
@@ -485,7 +490,7 @@ var PerlenspielInterface = function (my) {
 		}
 
 		return my._beadExec(fn, my._data, x, y, data);
-	}
+	};
 
 	// PS.exec( x, y, exec )
 
@@ -494,7 +499,7 @@ var PerlenspielInterface = function (my) {
 
 		fn = "[PS.exec] ";
 
-		if (PS.ERROR == my._checkNumArgs(fn, arguments.length, 2, 3))
+		if (PS.ERROR === my._checkNumArgs(fn, arguments.length, 2, 3))
 			return PS.ERROR;
 
 		exec = exec_p; // prevent arg mutation
@@ -510,7 +515,7 @@ var PerlenspielInterface = function (my) {
 		}
 
 		return my._beadExec(fn, my._exec, x, y, exec);
-	}
+	};
 
 	// PS.visible( x, y, show )
 
@@ -519,7 +524,7 @@ var PerlenspielInterface = function (my) {
 
 		fn = "[PS.visible] ";
 
-		if (PS.ERROR == my._checkNumArgs(fn, arguments.length, 2, 3))
+		if (PS.ERROR === my._checkNumArgs(fn, arguments.length, 2, 3))
 			return PS.ERROR;
 
 		show = my._isBoolean(show_p, PS.CURRENT, true, PS.CURRENT);
@@ -528,7 +533,7 @@ var PerlenspielInterface = function (my) {
 		}
 
 		return my._beadExec(fn, my._visible, x, y, show);
-	}
+	};
 
 	// PS.active( x, y, active )
 
@@ -537,7 +542,7 @@ var PerlenspielInterface = function (my) {
 
 		fn = "[PS.active] ";
 
-		if (PS.ERROR == my._checkNumArgs(fn, arguments.length, 2, 3))
+		if (PS.ERROR === my._checkNumArgs(fn, arguments.length, 2, 3))
 			return PS.ERROR;
 
 		active = my._isBoolean(active_p, PS.CURRENT, true, PS.CURRENT);
@@ -546,7 +551,7 @@ var PerlenspielInterface = function (my) {
 		}
 
 		return my._beadExec(fn, my._active, x, y, active);
-	}
+	};
 
 	//----------------------
 	// BEAD BORDER FUNCTIONS
@@ -560,7 +565,7 @@ var PerlenspielInterface = function (my) {
 
 		fn = "[PS.border] ";
 
-		if (PS.ERROR == my._checkNumArgs(fn, arguments.length, 2, 3))
+		if (PS.ERROR === my._checkNumArgs(fn, arguments.length, 2, 3))
 			return PS.ERROR;
 
 		def = my._DEFAULTS.bead.border;
@@ -667,7 +672,7 @@ var PerlenspielInterface = function (my) {
 		}
 
 		return my._beadExec(fn, my._border, x, y, width);
-	}
+	};
 
 	// PS.borderColor( x, y, p1, p2, p3 )
 
@@ -676,7 +681,7 @@ var PerlenspielInterface = function (my) {
 
 		fn = "[PS.borderColor] ";
 
-		if (PS.ERROR == my._checkNumArgs(fn, arguments.length, 2, 5))
+		if (PS.ERROR === my._checkNumArgs(fn, arguments.length, 2, 5))
 			return PS.ERROR;
 
 		colors = my._decodeColors(fn, p1, p2, p3);
@@ -685,7 +690,7 @@ var PerlenspielInterface = function (my) {
 		}
 
 		return my._beadExec(fn, my._borderColor, x, y, colors);
-	}
+	};
 
 	// PS.borderAlpha( x, y, alpha )
 
@@ -694,7 +699,7 @@ var PerlenspielInterface = function (my) {
 
 		fn = "[PS.borderAlpha] ";
 
-		if (PS.ERROR == my._checkNumArgs(fn, arguments.length, 2, 3))
+		if (PS.ERROR === my._checkNumArgs(fn, arguments.length, 2, 3))
 			return PS.ERROR;
 
 		alpha = alpha_p; // prevent arg mutation
@@ -717,7 +722,7 @@ var PerlenspielInterface = function (my) {
 		}
 
 		return my._beadExec(fn, my._borderAlpha, x, y, alpha);
-	}
+	};
 
 	// PS.borderFade( rate, options )
 	// Sets fade rate/options of border
@@ -728,7 +733,7 @@ var PerlenspielInterface = function (my) {
 
 		fn = "[PS.borderFade] ";
 
-		if (PS.ERROR == my._checkNumArgs(fn, arguments.length, 2, 4))
+		if (PS.ERROR === my._checkNumArgs(fn, arguments.length, 2, 4))
 			return PS.ERROR;
 
 		rate = rate_p; // prevent arg mutation
@@ -752,7 +757,7 @@ var PerlenspielInterface = function (my) {
 		}
 
 		return my._beadExec(fn, my._borderFade, x, y, rate, options);
-	}
+	};
 
 	//---------------------
 	// BEAD GLYPH FUNCTIONS
@@ -768,7 +773,7 @@ var PerlenspielInterface = function (my) {
 
 		fn = "[PS.glyph] ";
 
-		if (PS.ERROR == my._checkNumArgs(fn, arguments.length, 2, 3))
+		if (PS.ERROR === my._checkNumArgs(fn, arguments.length, 2, 3))
 			return PS.ERROR;
 
 		glyph = glyph_p; // prevent arg mutation
@@ -795,7 +800,7 @@ var PerlenspielInterface = function (my) {
 		}
 
 		return my._beadExec(fn, my._glyph, x, y, glyph);
-	}
+	};
 
 	// PS.glyphColor( x, y, p1, p2, p3 )
 
@@ -804,7 +809,7 @@ var PerlenspielInterface = function (my) {
 
 		fn = "[PS.glyphColor] ";
 
-		if (PS.ERROR == my._checkNumArgs(fn, arguments.length, 2, 5))
+		if (PS.ERROR === my._checkNumArgs(fn, arguments.length, 2, 5))
 			return PS.ERROR;
 
 		colors = my._decodeColors(fn, p1, p2, p3);
@@ -813,7 +818,7 @@ var PerlenspielInterface = function (my) {
 		}
 
 		return my._beadExec(fn, my._glyphColor, x, y, colors);
-	}
+	};
 
 	// PS.glyphAlpha( x, y, alpha )
 
@@ -822,7 +827,7 @@ var PerlenspielInterface = function (my) {
 
 		fn = "[PS.glyphAlpha] ";
 
-		if (PS.ERROR == my._checkNumArgs(fn, arguments.length, 2, 3))
+		if (PS.ERROR === my._checkNumArgs(fn, arguments.length, 2, 3))
 			return PS.ERROR;
 
 		alpha = alpha_p; // prevent arg mutation
@@ -845,7 +850,7 @@ var PerlenspielInterface = function (my) {
 		}
 
 		return my._beadExec(fn, my._glyphAlpha, x, y, alpha);
-	}
+	};
 
 	// PS.glyphScale( x, y, scale )
 
@@ -854,7 +859,7 @@ var PerlenspielInterface = function (my) {
 
 		fn = "[PS.glyphScale] ";
 
-		if (PS.ERROR == my._checkNumArgs(fn, arguments.length, 2, 3))
+		if (PS.ERROR === my._checkNumArgs(fn, arguments.length, 2, 3))
 			return PS.ERROR;
 
 		scale = scale_p; // prevents arg mutation
@@ -877,7 +882,7 @@ var PerlenspielInterface = function (my) {
 		}
 
 		return my._beadExec(fn, my._glyphScale, x, y, scale);
-	}
+	};
 
 	// PS.glyphFade( rate, options )
 	// Sets fade rate/options of glyph
@@ -888,7 +893,7 @@ var PerlenspielInterface = function (my) {
 
 		fn = "[PS.glyphFade] ";
 
-		if (PS.ERROR == my._checkNumArgs(fn, arguments.length, 2, 4))
+		if (PS.ERROR === my._checkNumArgs(fn, arguments.length, 2, 4))
 			return PS.ERROR;
 
 		rate = rate_p; // prevent arg mutation
@@ -912,7 +917,7 @@ var PerlenspielInterface = function (my) {
 		}
 
 		return my._beadExec(fn, my._glyphFade, x, y, rate, options);
-	}
+	};
 
 	//----------------------
 	// STATUS LINE FUNCTIONS
@@ -923,7 +928,7 @@ var PerlenspielInterface = function (my) {
 
 		fn = "[PS.statusText] ";
 
-		if (PS.ERROR == my._checkNumArgs(fn, arguments.length, 0, 1))
+		if (PS.ERROR === my._checkNumArgs(fn, arguments.length, 0, 1))
 			return PS.ERROR;
 
 		str = strP; // prevent arg mutation
@@ -939,7 +944,7 @@ var PerlenspielInterface = function (my) {
 		}
 
 		return my._status.text;
-	}
+	};
 
 	my.PSInterface.prototype.statusInput = function (strP, exec) {
 		var fn, type, str, len;
@@ -967,14 +972,14 @@ var PerlenspielInterface = function (my) {
 		my._statusIn(str, exec);
 
 		return my._status.label;
-	}
+	};
 
 	my.PSInterface.prototype.statusColor = function (p1, p2, p3) {
 		var fn, colors, current, fader, rgb, r, g, b;
 
 		fn = "[PS.statusColor] ";
 
-		if (PS.ERROR == my._checkNumArgs(fn, arguments.length, 0, 3))
+		if (PS.ERROR === my._checkNumArgs(fn, arguments.length, 0, 3))
 			return PS.ERROR;
 
 		colors = my._decodeColors(fn, p1, p2, p3);
@@ -985,7 +990,7 @@ var PerlenspielInterface = function (my) {
 		current = my._status.color;
 		fader = my._status.fader;
 
-		if (PS.CURRENT == my._checkColors(colors, current, my._DEFAULTS.status.color))
+		if (PS.CURRENT === my._checkColors(colors, current, my._DEFAULTS.status.color))
 			return current.rgb;
 
 		// Only change color if different
@@ -1022,14 +1027,14 @@ var PerlenspielInterface = function (my) {
 		}
 
 		return current.rgb;
-	}
+	};
 
 	my.PSInterface.prototype.statusFade = function (rate, options_p) {
 		var fn, fader, color, orate, nrate, type, val, options;
 
 		fn = "[PS.statusFade] ";
 
-		if (PS.ERROR == my._checkNumArgs(fn, arguments.length, 0, 2))
+		if (PS.ERROR === my._checkNumArgs(fn, arguments.length, 0, 2))
 			return PS.ERROR;
 
 		color = my._status.color;
@@ -1113,7 +1118,7 @@ var PerlenspielInterface = function (my) {
 			onEnd: fader.onEnd,
 			params: fader.params
 		};
-	}
+	};
 
 	// ---------------
 	// TIMER FUNCTIONS
@@ -1129,7 +1134,7 @@ var PerlenspielInterface = function (my) {
 
 		fn = "[PS.timerStart] ";
 
-		if (PS.ERROR == my._checkNumArgs(fn, arguments.length, 2, 2))
+		if (PS.ERROR === my._checkNumArgs(fn, arguments.length, 2, 2))
 			return PS.ERROR;
 
 		// Prevent arg mutation
@@ -1186,10 +1191,10 @@ var PerlenspielInterface = function (my) {
 
 		my._timers.push(obj);
 
-		// PSInterface.debug(fn + "id = " + id + "\n");
+		//  (fn + "id = " + id + "\n");
 
 		return id;
-	}
+	};
 
 	// PS.timerStop( id )
 	// Stops a timer matching [id]
@@ -1200,9 +1205,9 @@ var PerlenspielInterface = function (my) {
 
 		fn = "[PS.timerStop] ";
 
-		// PS.debug(fn + "id = " + id + "\n");
+		// my.instance.debug(fn + "id = " + id + "\n");
 
-		if (PS.ERROR == my._checkNumArgs(fn, arguments.length, 1, 1))
+		if (PS.ERROR === my._checkNumArgs(fn, arguments.length, 1, 1))
 			return PS.ERROR;
 
 		// Check id param
@@ -1224,7 +1229,7 @@ var PerlenspielInterface = function (my) {
 		}
 
 		return my._error(fn + "timer id '" + id + "' not found");
-	}
+	};
 
 	// -----------------
 	// UTILITY FUNCTIONS
@@ -1235,7 +1240,7 @@ var PerlenspielInterface = function (my) {
 
 		fn = "[PS.random] ";
 
-		if (PS.ERROR == my._checkNumArgs(fn, arguments.length, 1, 1))
+		if (PS.ERROR === my._checkNumArgs(fn, arguments.length, 1, 1))
 			return PS.ERROR;
 
 		val = val_p; // prevent arg mutation
@@ -1250,14 +1255,14 @@ var PerlenspielInterface = function (my) {
 		val = Math.random() * val;
 		val = Math.floor(val) + 1;
 		return val;
-	}
+	};
 
 	my.PSInterface.prototype.makeRGB = function (r_p, g_p, b_p) {
 		var fn, args, r, g, b;
 
 		fn = "[PS.makeRGB] ";
 
-		if (PS.ERROR == my._checkNumArgs(fn, arguments.length, 3, 3))
+		if (PS.ERROR === my._checkNumArgs(fn, arguments.length, 3, 3))
 			return PS.ERROR;
 
 		// Prevent arg mutation
@@ -1297,14 +1302,14 @@ var PerlenspielInterface = function (my) {
 		}
 
 		return ((r * my._RSHIFT) + (g * my._GSHIFT) + b);
-	}
+	};
 
 	my.PSInterface.prototype.unmakeRGB = function (rgb_p, result_p) {
 		var fn, args, rgb, result, red, green, blue, rval, gval, type;
 
 		fn = "[PS.unmakeRGB] ";
 
-		if (PS.ERROR == my._checkNumArgs(fn, arguments.length, 2, 2))
+		if (PS.ERROR === my._checkNumArgs(fn, arguments.length, 2, 2))
 			return PS.ERROR;
 
 		// Prevent arg mutation
@@ -1360,7 +1365,7 @@ var PerlenspielInterface = function (my) {
 		}
 
 		return result;
-	}
+	};
 
 	// PS.applyRect()
 	// Apply a function to a rectangular region of beads
@@ -1373,7 +1378,7 @@ var PerlenspielInterface = function (my) {
 
 		fn = "[PS.applyRect] ";
 
-		if (PS.ERROR == my._checkNumArgs(fn, arguments.length, 5, 5))
+		if (PS.ERROR === my._checkNumArgs(fn, arguments.length, 5, 5))
 			return PS.ERROR;
 
 		xmax = my._grid.x;
@@ -1493,7 +1498,7 @@ var PerlenspielInterface = function (my) {
 		}
 
 		return result;
-	}
+	};
 
 	// PS.hex ( val, padding )
 	// Converts a number to a hex string with optional padding
@@ -1535,7 +1540,7 @@ var PerlenspielInterface = function (my) {
 		}
 
 		return ("0x" + hex);
-	}
+	};
 
 	// PS.keyRepeat ( repeat, init, delay )
 	// Controls keyboard repeat parameters
@@ -1599,7 +1604,7 @@ var PerlenspielInterface = function (my) {
 			init: my._keyInitRate,
 			delay: my._keyDelayRate
 		};
-	}
+	};
 
 	// ---------
 	// IMAGE API
@@ -1610,7 +1615,7 @@ var PerlenspielInterface = function (my) {
 
 		fn = "[PS.imageLoad] ";
 
-		if (PS.ERROR == my._checkNumArgs(fn, arguments.length, 2, 3))
+		if (PS.ERROR === my._checkNumArgs(fn, arguments.length, 2, 3))
 			return PS.ERROR;
 
 		// Prevent arg mutation
@@ -1678,7 +1683,7 @@ var PerlenspielInterface = function (my) {
 		}
 
 		return id;
-	}
+	};
 
 	// Blit an image to the grid at [xpos, ypos]
 	// Optional [region] specifies region of blit
@@ -1690,7 +1695,7 @@ var PerlenspielInterface = function (my) {
 
 		fn = "[PS.imageBlit] ";
 
-		if (PS.ERROR == my._checkNumArgs(fn, arguments.length, 3, 4))
+		if (PS.ERROR === my._checkNumArgs(fn, arguments.length, 3, 4))
 			return PS.ERROR;
 
 		xmax = my._grid.x;
@@ -1959,7 +1964,7 @@ var PerlenspielInterface = function (my) {
 			my._gridDraw();
 		}
 		return true;
-	}
+	};
 
 	// Create an image object from the grid
 	// Optional [format] specifies region
@@ -1970,7 +1975,7 @@ var PerlenspielInterface = function (my) {
 
 		fn = "[PS.imageCapture] ";
 
-		if (PS.ERROR == my._checkNumArgs(fn, arguments.length, 0, 2))
+		if (PS.ERROR === my._checkNumArgs(fn, arguments.length, 0, 2))
 			return PS.ERROR;
 
 		// Prevent arg mutation
@@ -2130,7 +2135,7 @@ var PerlenspielInterface = function (my) {
 		}
 
 		return output;
-	}
+	};
 
 	// Dump a Javascript text representation of an image to the debugger
 	// Optional [coords] specify region of dump
@@ -2141,7 +2146,7 @@ var PerlenspielInterface = function (my) {
 
 		fn = "[PS.imageDump] ";
 
-		if (PS.ERROR == my._checkNumArgs(fn, arguments.length, 1, 5))
+		if (PS.ERROR === my._checkNumArgs(fn, arguments.length, 1, 5))
 			return PS.ERROR;
 
 		// Prevent arg mutation
@@ -2292,7 +2297,7 @@ var PerlenspielInterface = function (my) {
 
 		if (total < 1) {
 			str += "]\n};\n";
-			PSInterface.debug(str);
+			my.instance.debug(str);
 			return PS.DONE;
 		}
 
@@ -2367,10 +2372,10 @@ var PerlenspielInterface = function (my) {
 
 		str += "\n\t]\n};\n"; // end the string
 
-		PSInterface.debug(str);
+		my.instance.debug(str);
 
 		return PS.DONE;
-	}
+	};
 
 	// ----------
 	// SPRITE API
@@ -2384,7 +2389,7 @@ var PerlenspielInterface = function (my) {
 
 		fn = "[PS.spriteSolid] ";
 
-		if (PS.ERROR == my._checkNumArgs(fn, arguments.length, 2, 2))
+		if (PS.ERROR === my._checkNumArgs(fn, arguments.length, 2, 2))
 			return PS.ERROR;
 
 		// Prevent arg mutation
@@ -2430,7 +2435,7 @@ var PerlenspielInterface = function (my) {
 		};
 
 		return s.id;
-	}
+	};
 
 	// PS.spriteSolidColor ( sprite, color )
 	// Sets color of a solid sprite
@@ -2440,7 +2445,7 @@ var PerlenspielInterface = function (my) {
 
 		fn = "[PS.spriteSolidColor] ";
 
-		if (PS.ERROR == my._checkNumArgs(fn, arguments.length, 1, 4))
+		if (PS.ERROR === my._checkNumArgs(fn, arguments.length, 1, 4))
 			return PS.ERROR;
 
 		s = my._getSprite(sprite, fn);
@@ -2507,7 +2512,7 @@ var PerlenspielInterface = function (my) {
 		}
 
 		return current.rgb;
-	}
+	};
 
 	// PS.spriteSolidAlpha ( sprite, alpha )
 	// Sets alpha of a solid sprite
@@ -2517,7 +2522,7 @@ var PerlenspielInterface = function (my) {
 
 		fn = "[PS.spriteSolidAlpha] ";
 
-		if (PS.ERROR == my._checkNumArgs(fn, arguments.length, 1, 2))
+		if (PS.ERROR === my._checkNumArgs(fn, arguments.length, 1, 2))
 			return PS.ERROR;
 
 		// Prevent arg mutation
@@ -2560,7 +2565,7 @@ var PerlenspielInterface = function (my) {
 		}
 
 		return current.a;
-	}
+	};
 
 	// PS.spriteImage( image, region )
 	// Create a sprite from an image with optional subregion
@@ -2571,7 +2576,7 @@ var PerlenspielInterface = function (my) {
 
 		fn = "[PS.spriteImage] ";
 
-		if (PS.ERROR == my._checkNumArgs(fn, arguments.length, 1, 2))
+		if (PS.ERROR === my._checkNumArgs(fn, arguments.length, 1, 2))
 			return PS.ERROR;
 
 		// Validate image
@@ -2737,7 +2742,7 @@ var PerlenspielInterface = function (my) {
 		// PS.imageDump( s.image );
 
 		return s.id;
-	}
+	};
 
 	// PS.spriteShow( sprite, show )
 	// Toggles visibility of a sprite
@@ -2747,7 +2752,7 @@ var PerlenspielInterface = function (my) {
 
 		fn = "[PS.spriteShow] ";
 
-		if (PS.ERROR == my._checkNumArgs(fn, arguments.length, 1, 2))
+		if (PS.ERROR === my._checkNumArgs(fn, arguments.length, 1, 2))
 			return PS.ERROR;
 
 		// Prevent arg mutation
@@ -2783,7 +2788,7 @@ var PerlenspielInterface = function (my) {
 		}
 
 		return s.visible;
-	}
+	};
 
 	// PS.spriteAxis( sprite, x, y )
 	// Sets/inspects positional axis of sprite
@@ -2793,7 +2798,7 @@ var PerlenspielInterface = function (my) {
 
 		fn = "[PS.spriteAxis] ";
 
-		if (PS.ERROR == my._checkNumArgs(fn, arguments.length, 1, 3))
+		if (PS.ERROR === my._checkNumArgs(fn, arguments.length, 1, 3))
 			return PS.ERROR;
 
 		// Prevent arg mutation
@@ -2851,7 +2856,7 @@ var PerlenspielInterface = function (my) {
 			y: s.ay
 		};
 
-	}
+	};
 
 	// PS.spritePlane( sprite, plane )
 	// Sets/inspects sprite plane
@@ -2861,7 +2866,7 @@ var PerlenspielInterface = function (my) {
 
 		fn = "[PS.spritePlane] ";
 
-		if (PS.ERROR == my._checkNumArgs(fn, arguments.length, 1, 2))
+		if (PS.ERROR === my._checkNumArgs(fn, arguments.length, 1, 2))
 			return PS.ERROR;
 
 		// Prevent arg mutation
@@ -2916,7 +2921,7 @@ var PerlenspielInterface = function (my) {
 		}
 
 		return s.plane;
-	}
+	};
 
 	// PS.spriteMove ( sprite, x, y )
 	// Erases sprite at previous location (if any)
@@ -2927,7 +2932,7 @@ var PerlenspielInterface = function (my) {
 
 		fn = "[PS.spriteMove] ";
 
-		if (PS.ERROR == my._checkNumArgs(fn, arguments.length, 1, 3))
+		if (PS.ERROR === my._checkNumArgs(fn, arguments.length, 1, 3))
 			return PS.ERROR;
 
 		// Prevent arg mutation
@@ -3073,7 +3078,7 @@ var PerlenspielInterface = function (my) {
 			x: s.x,
 			y: s.y
 		};
-	}
+	};
 
 	// PS.spriteCollide( sprite, exec )
 	// Sets/inspects collision function
@@ -3083,7 +3088,7 @@ var PerlenspielInterface = function (my) {
 
 		fn = "[PS.spriteCollide] ";
 
-		if (PS.ERROR == my._checkNumArgs(fn, arguments.length, 1, 2))
+		if (PS.ERROR === my._checkNumArgs(fn, arguments.length, 1, 2))
 			return PS.ERROR;
 
 		s = my._getSprite(sprite, fn);
@@ -3109,7 +3114,7 @@ var PerlenspielInterface = function (my) {
 		}
 
 		return s.collide;
-	}
+	};
 
 	// PS.spriteDelete( sprite)
 	// Deletes a sprite
@@ -3119,7 +3124,7 @@ var PerlenspielInterface = function (my) {
 
 		fn = "[PS.spriteDelete] ";
 
-		if (PS.ERROR == my._checkNumArgs(fn, arguments.length, 1, 1))
+		if (PS.ERROR === my._checkNumArgs(fn, arguments.length, 1, 1))
 			return PS.ERROR;
 
 		if ((typeof sprite !== "string") || (sprite.length < 1)) {
@@ -3140,7 +3145,7 @@ var PerlenspielInterface = function (my) {
 		}
 
 		return my._error(fn + "sprite id '" + sprite + "' not found");
-	}
+	};
 
 	//----------------
 	// AUDIO FUNCTIONS
@@ -3166,7 +3171,7 @@ var PerlenspielInterface = function (my) {
 
 		fn = "[PS.audioLoad] ";
 
-		if (PS.ERROR == my._checkNumArgs(fn, arguments.length, 1, 2))
+		if (PS.ERROR === my._checkNumArgs(fn, arguments.length, 1, 2))
 			return PS.ERROR;
 
 		result = AQ.load(filename, params);
@@ -3174,7 +3179,7 @@ var PerlenspielInterface = function (my) {
 			return PS.ERROR;
 		}
 		return result.channel;
-	}
+	};
 
 	// PS.audioPlay()
 	// Loads a library sound, assigns a buffer and plays it
@@ -3194,7 +3199,7 @@ var PerlenspielInterface = function (my) {
 
 		fn = "[PS.audioPlay] ";
 
-		if (PS.ERROR == my._checkNumArgs(fn, arguments.length, 1, 2))
+		if (PS.ERROR === my._checkNumArgs(fn, arguments.length, 1, 2))
 			return PS.ERROR;
 
 		// Prevent arg mutation
@@ -3216,7 +3221,7 @@ var PerlenspielInterface = function (my) {
 			return PS.ERROR;
 		}
 		return result.channel;
-	}
+	};
 
 	// PS.audioPause()
 	// Toggles pause on an audio channel
@@ -3228,7 +3233,7 @@ var PerlenspielInterface = function (my) {
 
 		fn = "[PS.audioPause] ";
 
-		if (PS.ERROR == my._checkNumArgs(fn, arguments.length, 1, 1))
+		if (PS.ERROR === my._checkNumArgs(fn, arguments.length, 1, 1))
 			return PS.ERROR;
 
 		result = AQ.pause(channel_id);
@@ -3236,7 +3241,7 @@ var PerlenspielInterface = function (my) {
 			return PS.ERROR;
 		}
 		return result;
-	}
+	};
 
 	// PS.audioStop()
 	// Stops a playing audio channel
@@ -3248,7 +3253,7 @@ var PerlenspielInterface = function (my) {
 
 		fn = "[PS.audioStop] ";
 
-		if (PS.ERROR == my._checkNumArgs(fn, arguments.length, 1, 1))
+		if (PS.ERROR === my._checkNumArgs(fn, arguments.length, 1, 1))
 			return PS.ERROR;
 
 		result = AQ.stop(channel_id);
@@ -3259,7 +3264,7 @@ var PerlenspielInterface = function (my) {
 			return PS.DONE;
 		}
 		return result;
-	}
+	};
 
 	// PS.piano ( val, flag )
 	// Returns filename of indexed piano note
@@ -3299,7 +3304,7 @@ var PerlenspielInterface = function (my) {
 			str = "l_" + str;
 		}
 		return str;
-	}
+	};
 
 	// PS.harpsichord ( val, flag )
 	// Returns filename of indexed harpsichord note
@@ -3339,7 +3344,7 @@ var PerlenspielInterface = function (my) {
 			str = "l_" + str;
 		}
 		return str;
-	}
+	};
 
 	// PS.xylophone ( val )
 	// Returns filename of indexed xylophone note
@@ -3365,7 +3370,7 @@ var PerlenspielInterface = function (my) {
 
 		str = "xylo_" + my._XYLO_FILES[val - 1];
 		return str;
-	}
+	};
 
 	//-------------------
 	// DEBUGGER FUNCTIONS
@@ -3379,7 +3384,7 @@ var PerlenspielInterface = function (my) {
 
 		fn = "[PS.debug] ";
 
-		if (PS.ERROR == my._checkNumArgs(fn, arguments.length, 0, 1))
+		if (PS.ERROR === my._checkNumArgs(fn, arguments.length, 0, 1))
 			return PS.ERROR;
 
 		text = textP; // prevent arg mutation
@@ -3402,7 +3407,7 @@ var PerlenspielInterface = function (my) {
 		my._scrollDown();
 
 		return PS.DONE;
-	}
+	};
 
 	// Close debugger div
 	// Returns PS.DONE
@@ -3412,7 +3417,7 @@ var PerlenspielInterface = function (my) {
 
 		fn = "[PS.debugClose] ";
 
-		if (PS.ERROR == my._checkNumArgs(fn, arguments.length, 0, 0))
+		if (PS.ERROR === my._checkNumArgs(fn, arguments.length, 0, 0))
 			return PS.ERROR;
 
 		e = document.getElementById(my._DEBUG_ID);
@@ -3420,7 +3425,7 @@ var PerlenspielInterface = function (my) {
 		my._debugging = false;
 
 		return PS.DONE;
-	}
+	};
 
 	// Clear monitor
 	// Returns PS.DONE
@@ -3430,14 +3435,14 @@ var PerlenspielInterface = function (my) {
 
 		fn = "[PS.debugClear] ";
 
-		if (PS.ERROR == my._checkNumArgs(fn, arguments.length, 0, 0))
+		if (PS.ERROR === my._checkNumArgs(fn, arguments.length, 0, 0))
 			return PS.ERROR;
 
 		e = document.getElementById(my._MONITOR_ID);
 		e.value = "";
 
 		return PS.DONE;
-	}
+	};
 
 	//----------------
 	// PATHFINDING API
@@ -3451,7 +3456,7 @@ var PerlenspielInterface = function (my) {
 
 		fn = "[PS.line] ";
 
-		if (PS.ERROR == my._checkNumArgs(fn, arguments.length, 4, 4))
+		if (PS.ERROR === my._checkNumArgs(fn, arguments.length, 4, 4))
 			return PS.ERROR;
 
 		// Prevent arg mutation
@@ -3495,7 +3500,7 @@ var PerlenspielInterface = function (my) {
 
 		path = my._line(x1, y1, x2, y2);
 		return path;
-	}
+	};
 
 	// PS.pathMap ( image )
 	// Takes an image and returns a pathmap id for PS.pathFind()
@@ -3505,7 +3510,7 @@ var PerlenspielInterface = function (my) {
 
 		fn = "[PS.pathMap] ";
 
-		if (PS.ERROR == my._checkNumArgs(fn, arguments.length, 1, 1))
+		if (PS.ERROR === my._checkNumArgs(fn, arguments.length, 1, 1))
 			return PS.ERROR;
 
 		// Check image
@@ -3520,7 +3525,7 @@ var PerlenspielInterface = function (my) {
 		pm = my._newMap(image.width, image.height, image.data);
 
 		return pm.id;
-	}
+	};
 
 	// pathFind = function ( pathmap, x1, y1, x2, y2 )
 	// Takes pathmap id, start and end coordinates
@@ -3531,7 +3536,7 @@ var PerlenspielInterface = function (my) {
 
 		fn = "[PS.pathFind] ";
 
-		if (PS.ERROR == my._checkNumArgs(fn, arguments.length, 5, 6))
+		if (PS.ERROR === my._checkNumArgs(fn, arguments.length, 5, 6))
 			return PS.ERROR;
 
 		// Prevent arg mutation
@@ -3646,7 +3651,7 @@ var PerlenspielInterface = function (my) {
 
 		path = my._findPath(pm, x1, y1, x2, y2, no_diagonals, cut_corners);
 		return path;
-	}
+	};
 
 	// pathData = function ( id, left, top, width, height, data )
 	// Takes pathmap id and region coordinates, sets/inspects using data
@@ -3657,7 +3662,7 @@ var PerlenspielInterface = function (my) {
 
 		fn = "[PS.pathData] ";
 
-		if (PS.ERROR == my._checkNumArgs(fn, arguments.length, 5, 6))
+		if (PS.ERROR === my._checkNumArgs(fn, arguments.length, 5, 6))
 			return PS.ERROR;
 
 		// Prevent arg mutation
@@ -3755,7 +3760,7 @@ var PerlenspielInterface = function (my) {
 
 		result = my._pathData(pm, left, top, width, height, data);
 		return result;
-	}
+	};
 
 	// pathDelete: function ( pathmap )
 	// Deletes pathmap
@@ -3766,7 +3771,7 @@ var PerlenspielInterface = function (my) {
 
 		fn = "[PS.pathDelete] ";
 
-		if (PS.ERROR == my._checkNumArgs(fn, arguments.length, 1, 1))
+		if (PS.ERROR === my._checkNumArgs(fn, arguments.length, 1, 1))
 			return PS.ERROR;
 
 		// Check pathmap id
@@ -3780,14 +3785,14 @@ var PerlenspielInterface = function (my) {
 		}
 
 		return PS.DONE;
-	}
+	};
 
 	my.PSInterface.prototype.pathNear = function (pathmap, x1, y1, x2, y2) {
 		var fn, args, pm, result;
 
 		fn = "[PS.pathNear] ";
 
-		if (PS.ERROR == my._checkNumArgs(fn, arguments.length, 5, 5))
+		if (PS.ERROR === my._checkNumArgs(fn, arguments.length, 5, 5))
 			return PS.ERROR;
 
 		// Check pathmap id
@@ -3803,7 +3808,7 @@ var PerlenspielInterface = function (my) {
 
 		result = my._pathNear(pm, x1, y1, x2, y2);
 		return result;
-	}
+	};
 
 	return my;
 };

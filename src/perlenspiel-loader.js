@@ -29,14 +29,15 @@
 var PS = PS || {};
 
 var PERLENSPIEL = (function(PERLENSPIEL) {
+    "use strict";
 
-	var modules = [];
+    var modules = [];
 
 	PERLENSPIEL.RegisterModule = function(module) {
 		if (typeof module === 'function') {
 			modules.push(module);
 		}
-	}
+	};
 
 	// Public constructor
 	PERLENSPIEL.Create = function(spec) {
@@ -46,7 +47,7 @@ var PERLENSPIEL = (function(PERLENSPIEL) {
 		}
 		// Create the engine instance and return it to the caller
 		return engine.Create(spec);
-	}
+	};
 
 	return PERLENSPIEL;
 }(PERLENSPIEL || {}));

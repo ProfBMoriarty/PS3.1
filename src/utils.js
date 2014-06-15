@@ -1,8 +1,11 @@
 // Utilities
 
+/*jshint bitwise: false*/
+
 // http://javascript.crockford.com/prototypal.html
 if (typeof Object.create !== 'function') {
 	Object.create = function (o) {
+        "use strict";
 		function F() {}
 		F.prototype = o;
 		return new F();
@@ -63,6 +66,6 @@ if (typeof Object.create !== 'function') {
 				chars.push(String.fromCharCode.apply(null, units));
 			}
 			return chars.join("");
-		}
+		};
 	}
 }());

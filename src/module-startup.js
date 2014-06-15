@@ -3,7 +3,11 @@
 // Includes:
 // + Engine startup and shutdown
 
+/*jslint nomen: true, white: true, vars: true */
+/*global document, window, screen, console, Image, AQ, PIXI, PERLENSPIEL, PS */
+
 var PerlenspielStartup = function (my) {
+    "use strict";
 
 	////////////////////////////////////////
 	// Public methods
@@ -12,7 +16,7 @@ var PerlenspielStartup = function (my) {
 
 	my.PSInterface.prototype.start = function ( ) {
 		my._sys();
-	}
+	};
 
 	// Shut down the engine
 
@@ -20,7 +24,7 @@ var PerlenspielStartup = function (my) {
 		console.info("Deactivating " + my._grid.canvas.id);
 		my._clockActive = false;
 		my._gridDeactivate();
-	}
+	};
 
 	// Set engine options
 
@@ -37,14 +41,14 @@ var PerlenspielStartup = function (my) {
 		my.provideConstants(this);
 
 		my._optionsSet = true;
-	}
+	};
 
 	////////////////////////////////////////
 	// Private methods
 
 	// Engine initializer
 
-	my._sys = function (options) {
+	my._sys = function () {
 		var fn, i, outer, debug, sp, snode, ip, inode, span, input, grid, footer, monitor, ctx, cnt, bead, aq, result, str;
 
 		fn = "[PS.sys] ";
@@ -564,14 +568,14 @@ var PerlenspielStartup = function (my) {
 				my._errorCatch("PS.init() failed [" + err.message + "]", err);
 			}
 		}
-	}
+	};
 
 	my._clock = function () {
 		if (my._clockActive) {
 			window.requestAnimationFrame(my._clock);
 			my._tick();
 		}
-	}
+	};
 
 	return my;
 };

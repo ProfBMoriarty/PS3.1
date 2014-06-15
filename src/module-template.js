@@ -1,6 +1,12 @@
-var ModuleTemplate = function (my) {
+// Perlenspiel Module Template
 
-	////////////////////////////////////////
+/*jslint nomen: true, white: true, vars: true */
+/*global document, window, screen, console, Image, AQ, PIXI, PERLENSPIEL, PS */
+
+var ModuleTemplate = function (my) {
+    "use strict";
+
+    ////////////////////////////////////////
 	// Private variables
 	
 	my._secret = "This is a secret!";
@@ -18,7 +24,7 @@ var ModuleTemplate = function (my) {
 	
 	my.PSInterface.prototype.displaySecret = function() {
 		console.log("My secret is " + my._secret);
-	}
+	};
 
 	return my;
 };

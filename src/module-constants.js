@@ -4,13 +4,17 @@
 // + Public constants
 // + Private constants
 
+/*jslint nomen: true, white: true, vars: true */
+/*global document, window, screen, console, Image, AQ, PIXI, PS, PERLENSPIEL */
+
 var PerlenspielConstants = function (my) {
+    "use strict";
 
 	////////////////////////////////////////
 	// Module initializer
-	
+
 	my._onInit(function(spec) {
-		// Copy perlenspiel constants into global object
+		// Copy Perlenspiel constants into global object
 		my.provideConstants(PS);
 	});
 
@@ -18,7 +22,7 @@ var PerlenspielConstants = function (my) {
 	// PUBLIC CONSTANTS
 	//------------------
 
-	// Places the perlenspiel constants into an object
+	// Places the Perlenspiel constants into an object
 	my.provideConstants = function (obj) {
 		obj.ALL = "PS.ALL";
 		obj.CURRENT = "PS.CURRENT";
@@ -60,18 +64,18 @@ var PerlenspielConstants = function (my) {
 		obj.KEY_TAB = 9;
 		obj.KEY_ESCAPE = 27;
 
-		obj.KEY_PAGE_UP = 1001, // 3;
-		obj.KEY_PAGE_DOWN = 1002, // 3;
-		obj.KEY_END = 1003, // 3;
-		obj.KEY_HOME = 1004, // 3;
+		obj.KEY_PAGE_UP = 1001; // 3;
+		obj.KEY_PAGE_DOWN = 1002; // 3;
+		obj.KEY_END = 1003; // 3;
+		obj.KEY_HOME = 1004; // 3;
 
-		obj.KEY_ARROW_LEFT = 1005, // 3;
-		obj.KEY_ARROW_UP = 1006, // 3;
-		obj.KEY_ARROW_RIGHT = 1007, // 3;
-		obj.KEY_ARROW_DOWN = 1008, // 4;
+		obj.KEY_ARROW_LEFT = 1005; // 3;
+		obj.KEY_ARROW_UP = 1006; // 3;
+		obj.KEY_ARROW_RIGHT = 1007; // 3;
+		obj.KEY_ARROW_DOWN = 1008; // 4;
 
-		obj.KEY_INSERT = 1009, // 4;
-		obj.KEY_DELETE = 1010, // 4;
+		obj.KEY_INSERT = 1009; // 4;
+		obj.KEY_DELETE = 1010; // 4;
 
 		obj.KEY_PAD_0 = 96;
 		obj.KEY_PAD_1 = 97;
@@ -113,7 +117,7 @@ var PerlenspielConstants = function (my) {
 
 		// Multispiel support
 		obj.DEFAULT_NAMESPACE = "game";
-	}
+	};
 
 	my._setNamespace = function(namespace) {
 		my._NAMESPACE = namespace;
@@ -129,7 +133,7 @@ var PerlenspielConstants = function (my) {
 		my._GRID_ID = my._NAMESPACE + "-" + my._GRID_CLASS;
 		my._FOOTER_ID = my._NAMESPACE + "-" + my._FOOTER_CLASS;
 		my._MONITOR_ID = my._NAMESPACE + "-" + my._MONITOR_CLASS;
-	}
+	};
 
 	//------------------
 	// PRIVATE CONSTANTS
