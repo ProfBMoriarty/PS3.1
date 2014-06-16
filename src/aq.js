@@ -10,9 +10,8 @@
 
 // Generic HTML5 audio exception handler
 
-var AQ; // Global namespace for public API
-
-( function ()
+// Global namespace for public API
+var AQ = ( function (AQ)
 {
 	"use strict";
 
@@ -2281,8 +2280,9 @@ var AQ; // Global namespace for public API
 			return result;
 		}
 	};
-
-}() );
+	
+	return AQ;
+}(AQ || {}) );
 
 
 

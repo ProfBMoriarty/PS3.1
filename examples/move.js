@@ -5,6 +5,7 @@
 /*jslint nomen: true, white: true */
 /*global PS */
 
+var PS = PERLENSPIEL.Create();
 
 // The GAME object holds all game-specific data and functions
 
@@ -167,4 +168,5 @@ PS.input = function( sensors, options ) {
 	"use strict";
 };
 
-
+// Start the engine
+PS.start();

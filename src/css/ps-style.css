@@ -178,8 +178,8 @@ table {
 
 @font-face {
 	font-family: 'Droid';
-	src: url('./fonts/droid.eot');
-	src: url('./fonts/droid.eot?#iefix') format('embedded-opentype'), url('./fonts/droid.woff') format('woff'), url('./fonts/droid.ttf') format('truetype'), url('./fonts/droid.svg#droid') format('svg');
+	src: url('../fonts/droid.eot');
+	src: url('../fonts/droid.eot?#iefix') format('embedded-opentype'), url('../fonts/droid.woff') format('woff'), url('../fonts/droid.ttf') format('truetype'), url('../fonts/droid.svg#droid') format('svg');
 	font-weight: normal;
 	font-style: normal;
 }

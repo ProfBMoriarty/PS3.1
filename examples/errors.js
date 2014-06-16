@@ -21,8 +21,7 @@ along with Perlenspiel. If not, see <http:*/
 /*jslint nomen: true, white: true */
 /*global PS */
 
-
-
+var PS = PERLENSPIEL.Create();
 
 PS.init = function( system, options ) {
 	"use strict";
@@ -76,3 +75,6 @@ PS.keyUp = function( key, shift, ctrl, options ) {
 PS.input = function( sensors, options ) {
 	"use strict";
 };
+
+// Start the engine
+PS.start();
