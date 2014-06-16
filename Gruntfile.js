@@ -23,7 +23,7 @@ module.exports = function (grunt) {
 			},
             my_target: {
 				src: psSrc,
-				dest: 'tmp/<%= ps.file %>.js'
+				dest: 'build/<%= ps.file %>.js'
 			}
 		},
 
@@ -34,7 +34,7 @@ module.exports = function (grunt) {
 			},
 			my_target: {
 				files: {
-					'build/<%= ps.file %>.min.js': ['tmp/<%= ps.file %>.js'],
+					'build/<%= ps.file %>.min.js': ['build/<%= ps.file %>.js'],
 					'build/<%= aq.file %>.min.js': ['src/<%= aq.file %>.js']
 				}
 			}
@@ -56,7 +56,7 @@ module.exports = function (grunt) {
 
 		// Remove temp folder
 		clean: {
-            my_target: ["tmp"]
+            my_target: ["build"]
         },
 
 		// JS Hint
@@ -76,8 +76,8 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks('grunt-contrib-jshint');
 
 	// Default task(s).
-	grunt.registerTask('default', ['concat', 'uglify', 'clean', 'copy']);
-	grunt.registerTask('build', ['concat', 'uglify', 'clean']);
+	grunt.registerTask('build', ['concat', 'uglify', 'copy']);
+	grunt.registerTask('cleanup', ['clean']);
 	grunt.registerTask('deploy', ['copy']);
 	grunt.registerTask('lint', ['jshint']);
 

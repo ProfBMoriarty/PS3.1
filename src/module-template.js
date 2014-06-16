@@ -6,11 +6,6 @@
 var ModuleTemplate = function (my) {
     "use strict";
 
-    ////////////////////////////////////////
-	// Private variables
-	
-	my._secret = "This is a secret!";
-
 	////////////////////////////////////////
 	// Module initializer
 	
@@ -20,11 +15,17 @@ var ModuleTemplate = function (my) {
 	});
 
 	////////////////////////////////////////
-	// Public methods
+	// Public properties
 	
 	my.PSInterface.prototype.displaySecret = function() {
-		console.log("My secret is " + my._secret);
+		// You can access the current Perlenspiel instance via my.instance
+		my.instance.debug("My secret is " + my._secret);
 	};
+
+    ////////////////////////////////////////
+	// Private properties
+	
+	my._secret = "This is a secret!";
 
 	return my;
 };
