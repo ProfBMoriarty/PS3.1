@@ -20,8 +20,8 @@ var PerlenspielCore = function (my) {
 
 	// Perlenspiel class constructor
 	my.PSInterface = function(spec) {
-		this.setOptions(spec);
 		my.initializeModules(spec);
+		this.setOptions(spec);
 	};
 
 	////////////////////////////////////////
