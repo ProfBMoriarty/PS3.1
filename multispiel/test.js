@@ -1,7 +1,7 @@
 // Test
 
 (function() {
-var PS = Perlenspiel.Start("test");
+var PS = PERLENSPIEL.Create({namespace:"test"});
 
 // Put your global variables after this line
 
@@ -112,5 +112,5 @@ PS.input = function (sensors, options) {
 };
 
 // Start the engine!
-PS._sys();
+PS.start();
 })();

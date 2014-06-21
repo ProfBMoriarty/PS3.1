@@ -38,7 +38,7 @@
 */
 
 (function() {
-var PS = Perlenspiel.Start("snow");
+var PS = PERLENSPIEL.Create({namespace:"snow"});
 
 /////////////////////////////////////////////////////////////////
 // Game definition
@@ -320,5 +320,5 @@ PS.input = function( sensors, options ) {
 };
 
 // Start the engine!
-PS._sys();
+PS.start();
 })();
