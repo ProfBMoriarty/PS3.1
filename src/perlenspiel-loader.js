@@ -32,6 +32,7 @@ var PERLENSPIEL = (function(PERLENSPIEL) {
     "use strict";
 
     var modules = [];
+    var _numInstances = 0;
 
 	PERLENSPIEL.RegisterModule = function(module) {
 		if (typeof module === 'function') {
@@ -45,9 +46,14 @@ var PERLENSPIEL = (function(PERLENSPIEL) {
 		for (var i = 0; i < modules.length; ++i) {
 			modules[i].call(null, engine);
 		}
+        _numInstances++;
 		// Create the engine instance and return it to the caller
 		return engine.Create(spec);
 	};
+
+    PERLENSPIEL.NumInstances = function() {
+        return _numInstances;
+    };
 
 	return PERLENSPIEL;
 }(PERLENSPIEL || {}));
