@@ -8,7 +8,8 @@ module.exports = function (grunt) {
         "src/module-constants.js",
         "src/module-startup.js",
         "src/module-interface.js",
-        "src/module-internal.js"
+        "src/module-internal.js",
+        "src/perlenspiel-start.js"
     ];
 
 	// Project configuration.
