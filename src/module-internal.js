@@ -2491,10 +2491,13 @@ var PerlenspielInternal = function (my) {
 	// Focus manager - instance received mouse focus
 	my._gridFocus = function (e) {
 		if (!my._grid.focused) {
-			my._grid.focused = true;
-			// console.info("Perlenspiel " + my._NAMESPACE + " focused.");
-		}
-		if (e)
+            // Focus the grid so that it can get key events
+            if (my._grid.canvas.focus)
+                my._grid.canvas.focus();
+            my._grid.focused = true;
+            //console.info("Perlenspiel " + my._NAMESPACE + " focused.");
+        }
+        if (e)
 			e.preventDefault();
 	};
 

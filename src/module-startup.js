@@ -186,6 +186,8 @@ var PerlenspielStartup = function (my) {
 		grid.width = my._CLIENT_SIZE;
 		grid.style.backgroundColor = my._DEFAULTS.grid.color.str;
 		grid.style.boxShadow = "none";
+        grid.tabIndex = "1";
+
 		my._overGrid = false;
 		my._resetCursor();
 		my._main.appendChild(grid);
