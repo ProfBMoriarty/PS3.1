@@ -2511,6 +2511,8 @@ var PerlenspielInternal = function (my) {
 			var footer = document.getElementById(my._FOOTER_ID);
 			if (target === grid || target === my._status.div || target === footer || target === main || target === outer)
 				return;
+            if (my._grid.canvas.blur)
+                my._grid.canvas.blur();
 			my._grid.focused = false;
 			// console.warn("Perlenspiel " + my._NAMESPACE + " lost focus.");
 			if (e)
