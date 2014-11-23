@@ -2496,9 +2496,21 @@ var PerlenspielInternal = function (my) {
                 my._grid.canvas.focus();
             my._grid.focused = true;
             //console.info("Perlenspiel " + my._NAMESPACE + " focused.");
+			PERLENSPIEL.Broadcast("Focused", {namespace:my._NAMESPACE});
         }
         if (e)
 			e.preventDefault();
+	};
+
+	my._onBroadcast = function(method, parameters) {
+		console.info(method + " " + parameters);
+		if (method === "Focused") {
+			if (parameters.namespace !== my._NAMESPACE) {
+				if (my._grid.canvas.blur)
+					my._grid.canvas.blur();
+				my._grid.focused = false;
+			}
+		}
 	};
 
 	// Focus manager - instance lost mouse focus

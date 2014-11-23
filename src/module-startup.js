@@ -16,6 +16,8 @@ var PerlenspielStartup = function (my) {
 
 	my.PSInterface.prototype.start = function ( ) {
 		my._sys();
+		my._psObject.started = true;
+		PERLENSPIEL.OnStartInstance(my._psObject);
 	};
 
 	// Shut down the engine
@@ -23,6 +25,8 @@ var PerlenspielStartup = function (my) {
 	my.PSInterface.prototype.shutdown = function () {
 		console.info("Deactivating " + my._grid.canvas.id);
 		my._clockActive = false;
+		my._psObject.started = false;
+		PERLENSPIEL.OnStopInstance(my._psObject);
 		my._gridDeactivate();
 	};
 

@@ -15,7 +15,8 @@ var PerlenspielCore = function (my) {
 
 	my.Create = function(spec) {
 		my.instance = new my.PSInterface(spec);
-		return my.instance;
+		my._psObject = {ps: my.instance, broadcast: my._onBroadcast, started: false};
+		return my._psObject;
 	};
 
 	// Perlenspiel class constructor
