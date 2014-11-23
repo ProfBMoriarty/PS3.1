@@ -1192,7 +1192,7 @@ var PerlenspielInternal = function (my) {
 					key = my._holding[i];
 					if (key) {
 						try {
-							PS.keyDown(key, my._holdShift, my._holdCtrl);
+							my.instance.keyDown(key, my._holdShift, my._holdCtrl);
 							refresh = true;
 						} catch (e5) {
 							my._errorCatch(fn + "Key repeat failed [" + e5.message + "]", e5);
