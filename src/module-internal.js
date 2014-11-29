@@ -1,3 +1,26 @@
+// ps3.1.8.js for Perlenspiel 3.1
+// Remember to update version number in _system!
+
+/*
+ Perlenspiel is a scheme by Professor Moriarty (bmoriarty@wpi.edu).
+ Perlenspiel is Copyright Â© 2009-14 Worcester Polytechnic Institute.
+ This file is part of Perlenspiel.
+
+ Perlenspiel is free software: you can redistribute it and/or modify
+ it under the terms of the GNU Lesser General Public License as published
+ by the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ Perlenspiel is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ GNU Lesser General Public License for more details.
+
+ You may have received a copy of the GNU Lesser General Public License
+ along with Perlenspiel. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+
 // Perlenspiel Internal Module
 
 // Includes:
@@ -19,7 +42,7 @@ var PerlenspielInternal = function (my) {
 		engine: "Perlenspiel",
 		major: 3,
 		minor: 1,
-		revision: 6,
+		revision: 8,
 		audio: null, // populated by PS._sys()
 		host: {
 			app: "",
@@ -45,6 +68,7 @@ var PerlenspielInternal = function (my) {
 	my._status = undefined; // status line object
 
 	my._anyDirty = false; // dirty bead flag
+	my._refreshed = 0; // number of beads refreshed
 
 	// Image support
 
@@ -75,6 +99,7 @@ var PerlenspielInternal = function (my) {
 	my._holding = undefined; // array of keys being held down
 	my._holdShift = undefined; // true if shift is held down
 	my._holdCtrl = undefined; // true if ctrl key is held down
+	my._holdAlt; // true if alt key is held down
 
 	// Key delay control
 
@@ -628,6 +653,8 @@ var PerlenspielInternal = function (my) {
 	my._gridDraw = function () {
 		var len, i, bead;
 
+		my._refreshed = 0;
+
 		if (my._anyDirty) {
 			len = my._grid.count;
 			for (i = 0; i < len; i += 1) {
@@ -635,6 +662,7 @@ var PerlenspielInternal = function (my) {
 				if (bead.dirty) {
 					bead.dirty = false;
 					my._drawBead(bead, bead.border.color.str, bead.color.str, bead.glyph.color.str, bead.bgColor.str, my._grid.color.str);
+					my._refreshed += 1;
 				}
 			}
 			my._anyDirty = false;
@@ -1541,7 +1569,8 @@ var PerlenspielInternal = function (my) {
 			nsize = bsize;
 		}
 		bead.glyph.size = height = Math.round(nsize / 2);
-		bead.glyph.font = height + "px 'Droid'";
+		bead.glyph.font = height + "px sans-serif";
+//		bead.glyph.font = height + "px 'Droid'";
 		bead.glyph.y = Math.round(((bsize - height) / 2) + (height / 2));
 	};
 
@@ -2179,6 +2208,7 @@ var PerlenspielInternal = function (my) {
 		my._holding.length = 0;
 		my._holdShift = false;
 		my._holdCtrl = false;
+		my._holdAlt = false;
 		for (i = 0; i < 256; i += 1) {
 			my._pressed[i] = 0;
 		}
@@ -2240,6 +2270,7 @@ var PerlenspielInternal = function (my) {
 		if (my.instance.keyDown) {
 			my._holdShift = event.shiftKey;
 			my._holdCtrl = event.ctrlKey;
+			my._holdAlt = event.altKey;
 
 			if (!event.which) {
 				hardkey = event.keyCode; // IE
@@ -2248,8 +2279,8 @@ var PerlenspielInternal = function (my) {
 			}
 			key = my._keyFilter(hardkey, my._holdShift);
 
-			//			my.instance.debug( "D: h = " + hardkey + ", k = " + key +
-			//				", s = " + my._holdShift + ", c = " + my._holdCtrl + "\n");
+//			PS.debug( "D: h = " + hardkey + ", k = " + key +
+//				", s = " + _holdShift + ", c = " + _holdCtrl + ", a = " + _holdAlt + "\n");
 
 			if (my._legalKey(key)) {
 				// if not already pressed ...
@@ -2331,7 +2362,7 @@ var PerlenspielInternal = function (my) {
 		if (!my._grid.focused)
 			return;
 
-		var fn, any, shift, ctrl, hardkey, key, i, len;
+		var fn, any, shift, ctrl, alt, hardkey, key, i, len;
 
 		fn = "[_keyUp] ";
 		any = false;
@@ -2347,6 +2378,7 @@ var PerlenspielInternal = function (my) {
 		if (my.instance.keyUp) {
 			shift = my._holdShift = event.shiftKey;
 			ctrl = my._holdCtrl = event.ctrlKey;
+			alt = my._holdAlt = event.altKey;
 
 			if (!event.which) {
 				hardkey = event.keyCode; // IE
@@ -2355,8 +2387,8 @@ var PerlenspielInternal = function (my) {
 			}
 			key = my._keyFilter(hardkey, my._holdShift);
 
-			//			my.instance.debug( "U: h = " + hardkey + ", k = " + key +
-			//				", s = " + my._holdShift + ", c = " + my._holdCtrl + "\n");
+//			PS.debug( "U: h = " + hardkey + ", k = " + key +
+//				", s = " + _holdShift + ", c = " + _holdCtrl + ", a = " + _holdAlt + "\n");
 
 			if (my._legalKey(key)) {
 				// remove from pressed array and held list
@@ -2373,6 +2405,7 @@ var PerlenspielInternal = function (my) {
 					my._keyDelay = 0; // stop repeats
 					my._holdShift = false;
 					my._holdCtrl = false;
+					my._holdAlt = false;
 				}
 
 				try {
@@ -4143,7 +4176,7 @@ var PerlenspielInternal = function (my) {
 				i += 1;
 			}
 		}
-		return ("0x" + str);
+		return ("0x" + str.toUpperCase());
 	};
 
 	my._outputPixel = function (format, hex, rgb, r, g, b, a) {

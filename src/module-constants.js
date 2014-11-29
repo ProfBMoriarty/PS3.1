@@ -64,17 +64,20 @@ var PerlenspielConstants = function (my) {
 		obj.KEY_TAB = 9;
 		obj.KEY_ESCAPE = 27;
 
-		obj.KEY_PAGE_UP = 1001; // 3;
-		obj.KEY_PAGE_DOWN = 1002; // 3;
-		obj.KEY_END = 1003; // 3;
-		obj.KEY_HOME = 1004; // 3;
+		/*
+		KEY_PAGE_UP : 1001, // 33
+		KEY_PAGE_DOWN : 1002, // 34
+		KEY_END : 1003, // 35
+		KEY_HOME : 1004, // 36
+		KEY_INSERT : 1009, // 45
+		*/
 
-		obj.KEY_ARROW_LEFT = 1005; // 3;
-		obj.KEY_ARROW_UP = 1006; // 3;
-		obj.KEY_ARROW_RIGHT = 1007; // 3;
-		obj.KEY_ARROW_DOWN = 1008; // 4;
+		obj.KEY_ARROW_LEFT = 1005; // 37
+		obj.KEY_ARROW_UP = 1006; // 38
+		obj.KEY_ARROW_RIGHT = 1007; // 39
+		obj.KEY_ARROW_DOWN = 1008; // 40
 
-		obj.KEY_INSERT = 1009; // 4;
+		obj.KEY_INSERT = 1009; // 45
 		obj.KEY_DELETE = 1010; // 4;
 
 		obj.KEY_PAD_0 = 96;

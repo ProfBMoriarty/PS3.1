@@ -257,6 +257,20 @@ var PerlenspielInterface = function (my) {
 		return my._gridShadow(show, colors);
 	};
 
+	// PS.gridRefresh
+	// Forces refresh of grid
+	// Returns number of beads drawn or PS.ERROR
+
+	my.PSInterface.prototype.gridRefresh = function () {
+		var fn = "[PS.gridRefresh] ";
+
+		if (PS.ERROR === my._checkNumArgs(fn, arguments.length, 0, 0))
+			return PS.ERROR;
+
+		my._gridDraw();
+		return my._refreshed;
+	};
+
 	//---------------
 	// BEAD FUNCTIONS
 	//---------------
@@ -3178,7 +3192,7 @@ var PerlenspielInterface = function (my) {
 		if (result === AQ.ERROR) {
 			return PS.ERROR;
 		}
-		return result.channel;
+		return result;
 	};
 
 	// PS.audioPlay()
@@ -3220,7 +3234,7 @@ var PerlenspielInterface = function (my) {
 		if (result === AQ.ERROR) {
 			return PS.ERROR;
 		}
-		return result.channel;
+		return result;
 	};
 
 	// PS.audioPause()
