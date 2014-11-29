@@ -262,6 +262,7 @@ var PerlenspielStartup = function (my) {
 		my._holding = [];
 		my._holdShift = false;
 		my._holdCtrl = false;
+		my._holdAlt = false;
 
 		my._keyRepeat = true;
 		my._keyDelayRate = my._DEFAULT_KEY_DELAY;
@@ -279,6 +280,22 @@ var PerlenspielStartup = function (my) {
 		my._transKeys[40] = PS.KEY_ARROW_DOWN;
 		my._transKeys[45] = PS.KEY_INSERT;
 		my._transKeys[46] = PS.KEY_DELETE;
+
+		/*
+		 my._transKeys[ 12 ] = PS.KEY_PAD_5;
+		 my._transKeys[ 33 ] = PS.KEY_PAD_9;
+		 my._transKeys[ 34 ] = PS.KEY_PAD_3;
+		 my._transKeys[ 35 ] = PS.KEY_PAD_1;
+		 my._transKeys[ 36 ] = PS.KEY_PAD_7;
+		 my._transKeys[ 37 ] = PS.KEY_PAD_4;
+		 my._transKeys[ 38 ] = PS.KEY_PAD_8;
+		 my._transKeys[ 39 ] = PS.KEY_PAD_6;
+		 my._transKeys[ 40 ] = PS.KEY_PAD_2;
+		 my._transKeys[ 45 ] = PS.KEY_PAD_0;
+		 my._transKeys[ 46 ] = PS.KEY_DELETE;
+		 my._transKeys[ 110 ] = PS.KEY_DELETE;
+		 */
+
 		my._transKeys[188] = 44; // ,
 		my._transKeys[190] = 46; // .
 		my._transKeys[191] = 47; // /
