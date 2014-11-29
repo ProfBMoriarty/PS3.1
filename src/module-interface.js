@@ -3178,7 +3178,7 @@ var PerlenspielInterface = function (my) {
 		if (result === AQ.ERROR) {
 			return PS.ERROR;
 		}
-		return result.channel;
+		return result;
 	};
 
 	// PS.audioPlay()
@@ -3220,7 +3220,7 @@ var PerlenspielInterface = function (my) {
 		if (result === AQ.ERROR) {
 			return PS.ERROR;
 		}
-		return result.channel;
+		return result;
 	};
 
 	// PS.audioPause()

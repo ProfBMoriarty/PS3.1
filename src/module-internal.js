@@ -1,3 +1,26 @@
+// ps3.1.7.js for Perlenspiel 3.1
+// Remember to update version number in _system!
+
+/*
+ Perlenspiel is a scheme by Professor Moriarty (bmoriarty@wpi.edu).
+ Perlenspiel is Copyright Â© 2009-14 Worcester Polytechnic Institute.
+ This file is part of Perlenspiel.
+
+ Perlenspiel is free software: you can redistribute it and/or modify
+ it under the terms of the GNU Lesser General Public License as published
+ by the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ Perlenspiel is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ GNU Lesser General Public License for more details.
+
+ You may have received a copy of the GNU Lesser General Public License
+ along with Perlenspiel. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+
 // Perlenspiel Internal Module
 
 // Includes:
@@ -19,7 +42,7 @@ var PerlenspielInternal = function (my) {
 		engine: "Perlenspiel",
 		major: 3,
 		minor: 1,
-		revision: 6,
+		revision: 7,
 		audio: null, // populated by PS._sys()
 		host: {
 			app: "",
@@ -1541,7 +1564,8 @@ var PerlenspielInternal = function (my) {
 			nsize = bsize;
 		}
 		bead.glyph.size = height = Math.round(nsize / 2);
-		bead.glyph.font = height + "px 'Droid'";
+		bead.glyph.font = height + "px sans-serif";
+//		bead.glyph.font = height + "px 'Droid'";
 		bead.glyph.y = Math.round(((bsize - height) / 2) + (height / 2));
 	};
 
@@ -4126,7 +4150,7 @@ var PerlenspielInternal = function (my) {
 				i += 1;
 			}
 		}
-		return ("0x" + str);
+		return ("0x" + str.toUpperCase());
 	};
 
 	my._outputPixel = function (format, hex, rgb, r, g, b, a) {
