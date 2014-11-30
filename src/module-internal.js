@@ -2508,6 +2508,7 @@ var PerlenspielInternal = function (my) {
 			document.addEventListener("keydown", my._keyDown, false);
 			document.addEventListener("keyup", my._keyUp, false);
 			my._keysActive = true;
+			my._gridFocus();
 		}
 	};
 
@@ -2518,6 +2519,7 @@ var PerlenspielInternal = function (my) {
 			document.removeEventListener("keydown", my._keyDown, false);
 			document.removeEventListener("keyup", my._keyUp, false);
 			my._keysActive = false;
+			my._gridBlur();
 		}
 	};
 
@@ -2535,13 +2537,16 @@ var PerlenspielInternal = function (my) {
 			e.preventDefault();
 	};
 
+	my._gridBlur = function () {
+		if (my._grid.canvas.blur)
+			my._grid.canvas.blur();
+		my._grid.focused = false;
+	};
+
 	my._onBroadcast = function(method, parameters) {
-		console.info(method + " " + parameters);
 		if (method === "Focused") {
 			if (parameters.namespace !== my._NAMESPACE) {
-				if (my._grid.canvas.blur)
-					my._grid.canvas.blur();
-				my._grid.focused = false;
+				my._gridBlur();
 			}
 		}
 	};
@@ -5375,7 +5380,6 @@ var PerlenspielInternal = function (my) {
 
 	my._statusOut = function (str) {
 		my._status.inputP.style.display = "none"; // hide input paragraph
-		my._keysActivate(); // turn on key events
 		my._status.statusNode.nodeValue = my._status.text = str; // set status text
 		my._status.statusP.style.display = "block"; // show status paragraph
 	};

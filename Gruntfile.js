@@ -81,6 +81,7 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks('grunt-contrib-jshint');
 
 	// Task groupings, for convenience
-	grunt.registerTask('build', ['clean', 'concat', 'uglify', 'copy']);
+	grunt.registerTask('build', ['concat', 'uglify', 'copy']);
+	grunt.registerTask('rebuild', ['clean', 'concat', 'uglify', 'copy']);
 
 };
