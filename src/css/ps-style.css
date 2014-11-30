@@ -176,13 +176,15 @@ table {
 
 /* PS3-SPECIFIC STYLING STARTS HERE */
 
+/*
 @font-face {
 	font-family: 'Droid';
-	src: url('../fonts/droid.eot');
-	src: url('../fonts/droid.eot?#iefix') format('embedded-opentype'), url('../fonts/droid.woff') format('woff'), url('../fonts/droid.ttf') format('truetype'), url('../fonts/droid.svg#droid') format('svg');
+	src: url('./fonts/droid.eot');
+	src: url('./fonts/droid.eot?#iefix') format('embedded-opentype'), url('./fonts/droid.woff') format('woff'), url('./fonts/droid.ttf') format('truetype'), url('./fonts/droid.svg#droid') format('svg');
 	font-weight: normal;
 	font-style: normal;
 }
+*/
 
 html {
 	font-size: 100%; /* new */
@@ -207,7 +209,7 @@ html {
 body {
 	color: #000000;
 	background-color: #FFFFFF;
-	font-family: 'Droid', sans-serif;
+	font-family: sans-serif;
 	font-size: 125%; /* new */
 }
 
@@ -220,35 +222,47 @@ body {
 	margin: 0 auto;
 }
 
-#init {
-	font-family: 'Droid', sans-serif;
-}
-
 .grid, #grid {
 	padding: 0;
 	border: 0;
 	margin-left: auto;
 	margin-right: auto;
 	display: block;
+	position: relative;
+	z-index: 10;
 }
 
 .status, #status, .stsp, #stsp {
+	height: 1.25em;
 	font-size: 1.25em;
 	margin: 1em 0 1em 0; /* trbl */
 	padding: 0;
 	border: 0;
 	text-align: center;
 	overflow: hidden;
-	width: 100%;
+	position: relative;
+	z-index: 1;
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+	-webkit-user-drag: none;
 }
 
 .inp, #inp {
+
+	height: 1.25em;
 	font-size: 1.25em;
 	margin: 1em 0 1em 0; /* trbl */
 	padding: 0;
 	border: 0;
 	text-align: left;
 	display: none;
+	position: relative;
+	z-index: 1;
 }
 
 .inlabel, #inlabel {
@@ -283,6 +297,8 @@ body {
 
 .debug, #debug {
 	display: none;
+	position: relative;
+	z-index: 1;
 }
 
 .monitor, #monitor {
@@ -300,6 +316,16 @@ body {
 	width: 100%;
 	font-size: 0.67em;
 	text-align: center;
+	position: relative;
+	z-index: 1;
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+	-webkit-user-drag: none;
 }
 
 .login, #login {
@@ -308,6 +334,7 @@ body {
 	background-color: #FFFFFF;
 	font-size: 1em;
 	clear: both;
+	position: relative;
 }
 
 .login p, #login p {
@@ -350,4 +377,3 @@ body {
 	margin: 0;
 	padding: 0;
 }
-
