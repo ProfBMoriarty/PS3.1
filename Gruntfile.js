@@ -24,7 +24,7 @@ module.exports = function (grunt) {
 			},
             perlenspiel: {
 				src: psSrc,
-				dest: 'build/<%= ps.file %>.js'
+				dest: 'build/ps/<%= ps.file %>.js'
 			}
 		},
 
@@ -35,8 +35,8 @@ module.exports = function (grunt) {
 			},
 			perlenspiel: {
 				files: {
-					'build/<%= ps.file %>.min.js': ['build/<%= ps.file %>.js'],
-					'build/<%= aq.file %>.min.js': ['src/<%= aq.file %>.js']
+					'build/ps/<%= ps.file %>.min.js': ['build/ps/<%= ps.file %>.js'],
+					'build/ps/<%= aq.file %>.min.js': ['src/<%= aq.file %>.js']
 				}
 			}
 		},
@@ -45,23 +45,18 @@ module.exports = function (grunt) {
 		copy: {
 			perlenspiel: {
 				files: [
-					{ expand: true, flatten: true, filter: 'isFile', src: 'src/css/**',   dest: 'build/css/' },
-					{ expand: true, flatten: true, filter: 'isFile', src: 'src/fonts/**', dest: 'build/fonts/' },
-					{ expand: true, flatten: true, filter: 'isFile', src: 'src/img/**',   dest: 'build/img/' },
 					{ expand: true, flatten: true, filter: 'isFile', src: 'src/cover.html',   dest: 'build/' },
 					{ expand: true, flatten: true, filter: 'isFile', src: 'src/game-min.html',   dest: 'build/',
-						rename: function(dest, src) {
-							return dest + src.replace("-min", "");
-						} },
+						rename: function(dest, src) { return dest + src.replace("-min", ""); } },
 					{ expand: true, flatten: true, filter: 'isFile', src: 'src/game.js',  dest: 'build/' },
-					{ expand: true, flatten: true, filter: 'isFile', src: 'src/cover.js', dest: 'build/' }
+					{ expand: true, cwd: 'src', src:['ps/**'], dest: 'build/' }
 				]
 			}
 		},
 
 		// Remove temp folder
 		clean: {
-			perlenspiel: ["build"]
+			perlenspiel: ['build/ps', 'build']
         },
 
 		// JS Hint
