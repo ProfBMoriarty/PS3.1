@@ -36,9 +36,17 @@ var PERLENSPIEL = (function(PERLENSPIEL) {
     var perlenspielInstancesStarted = [];
 
     PERLENSPIEL.RegisterModule = function(module) {
+        // Log a module to be initialized later
 		if (typeof module === 'function') {
 			modules.push(module);
 		}
+
+        // Register modules to Perlenspiel instances that already started
+        if (perlenspielInstances.length > 0) {
+            for (var i = 0; i < perlenspielInstances.length; ++i) {
+                module.call(null, perlenspielInstances[i].engine);
+            }
+        }
 	};
 
 	// Public constructor
