@@ -13,5 +13,5 @@ test:
   - ps3.0.test.js
 
 serve:
-  - ../src/css/ps-style.css
+  - ../src/ps/css/ps-style.css
   - ../src/game.html
