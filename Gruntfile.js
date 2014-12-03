@@ -41,14 +41,18 @@ module.exports = function (grunt) {
 			}
 		},
 
-		// Copy other files that don't need to be processed
+		// Copy files that don't need to be processed
 		copy: {
 			perlenspiel: {
 				files: [
-					{ expand: true, flatten: true, filter: 'isFile', src: 'src/cover.html',   dest: 'build/' },
+					// cover.html and cover.png
+					{ expand: true, flatten: true, filter: 'isFile', src: 'src/cover.*',   dest: 'build/' },
+					// game.html for minified perlenspiel
 					{ expand: true, flatten: true, filter: 'isFile', src: 'src/game-min.html',   dest: 'build/',
 						rename: function(dest, src) { return dest + src.replace("-min", ""); } },
+					// game.js for perlenspiel devkit
 					{ expand: true, flatten: true, filter: 'isFile', src: 'src/game.js',  dest: 'build/' },
+					// resources for perlenspiel
 					{ expand: true, cwd: 'src', src:['ps/**'], dest: 'build/' }
 				]
 			}
