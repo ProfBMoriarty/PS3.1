@@ -2508,6 +2508,7 @@ var PerlenspielInternal = function (my) {
 			document.addEventListener("keydown", my._keyDown, false);
 			document.addEventListener("keyup", my._keyUp, false);
 			my._keysActive = true;
+			my._gridFocus();
 		}
 	};
 
@@ -2518,17 +2519,36 @@ var PerlenspielInternal = function (my) {
 			document.removeEventListener("keydown", my._keyDown, false);
 			document.removeEventListener("keyup", my._keyUp, false);
 			my._keysActive = false;
+			my._gridBlur();
 		}
 	};
 
 	// Focus manager - instance received mouse focus
 	my._gridFocus = function (e) {
 		if (!my._grid.focused) {
-			my._grid.focused = true;
-			// console.info("Perlenspiel " + my._NAMESPACE + " focused.");
-		}
-		if (e)
+            // Focus the grid so that it can get key events
+            if (my._grid.canvas.focus)
+                my._grid.canvas.focus();
+            my._grid.focused = true;
+            //console.info("Perlenspiel " + my._NAMESPACE + " focused.");
+			PERLENSPIEL.Broadcast("Focused", {namespace:my._NAMESPACE});
+        }
+        if (e)
 			e.preventDefault();
+	};
+
+	my._gridBlur = function () {
+		if (my._grid.canvas.blur)
+			my._grid.canvas.blur();
+		my._grid.focused = false;
+	};
+
+	my._onBroadcast = function(method, parameters) {
+		if (method === "Focused") {
+			if (parameters.namespace !== my._NAMESPACE) {
+				my._gridBlur();
+			}
+		}
 	};
 
 	// Focus manager - instance lost mouse focus
@@ -2541,6 +2561,8 @@ var PerlenspielInternal = function (my) {
 			var footer = document.getElementById(my._FOOTER_ID);
 			if (target === grid || target === my._status.div || target === footer || target === main || target === outer)
 				return;
+            if (my._grid.canvas.blur)
+                my._grid.canvas.blur();
 			my._grid.focused = false;
 			// console.warn("Perlenspiel " + my._NAMESPACE + " lost focus.");
 			if (e)
@@ -5358,7 +5380,6 @@ var PerlenspielInternal = function (my) {
 
 	my._statusOut = function (str) {
 		my._status.inputP.style.display = "none"; // hide input paragraph
-		my._keysActivate(); // turn on key events
 		my._status.statusNode.nodeValue = my._status.text = str; // set status text
 		my._status.statusP.style.display = "block"; // show status paragraph
 	};

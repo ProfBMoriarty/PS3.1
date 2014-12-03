@@ -8,7 +8,8 @@ module.exports = function (grunt) {
         "src/module-constants.js",
         "src/module-startup.js",
         "src/module-interface.js",
-        "src/module-internal.js"
+        "src/module-internal.js",
+        "src/perlenspiel-start.js"
     ];
 
 	// Project configuration.
@@ -21,9 +22,9 @@ module.exports = function (grunt) {
 			options: {
 				separator: ';'
 			},
-            my_target: {
+            perlenspiel: {
 				src: psSrc,
-				dest: 'build/<%= ps.file %>.js'
+				dest: 'build/ps/<%= ps.file %>.js'
 			}
 		},
 
@@ -32,42 +33,45 @@ module.exports = function (grunt) {
 			options: {
 				banner: '/*! <%= ps.name %> <%= ps.version %> <%= grunt.template.today("yyyy-mm-dd") %> */\n'
 			},
-			my_target: {
+			perlenspiel: {
 				files: {
-					'build/<%= ps.file %>.min.js': ['build/<%= ps.file %>.js'],
-					'build/<%= aq.file %>.min.js': ['src/<%= aq.file %>.js']
+					'build/ps/<%= ps.file %>.min.js': ['build/ps/<%= ps.file %>.js'],
+					'build/ps/<%= aq.file %>.min.js': ['src/<%= aq.file %>.js']
 				}
 			}
 		},
 
-		// Copy other files that don't need to be processed
+		// Copy files that don't need to be processed
 		copy: {
-            my_target: {
+			perlenspiel: {
 				files: [
-					{ expand: true, flatten: true, filter: 'isFile', src: 'src/css/**',   dest: 'build/css/' },
-					{ expand: true, flatten: true, filter: 'isFile', src: 'src/fonts/**', dest: 'build/fonts/' },
-					{ expand: true, flatten: true, filter: 'isFile', src: 'src/img/**',   dest: 'build/img/' },
-					{ expand: true, flatten: true, filter: 'isFile', src: 'src/*.html',   dest: 'build/' },
+					// cover.html and cover.png
+					{ expand: true, flatten: true, filter: 'isFile', src: 'src/cover.*',   dest: 'build/' },
+					// game.html for minified perlenspiel
+					{ expand: true, flatten: true, filter: 'isFile', src: 'src/game-min.html',   dest: 'build/',
+						rename: function(dest, src) { return dest + src.replace("-min", ""); } },
+					// game.js for perlenspiel devkit
 					{ expand: true, flatten: true, filter: 'isFile', src: 'src/game.js',  dest: 'build/' },
-					{ expand: true, flatten: true, filter: 'isFile', src: 'src/cover.js', dest: 'build/' }
+					// resources for perlenspiel
+					{ expand: true, cwd: 'src', src:['ps/**'], dest: 'build/' }
 				]
 			}
 		},
 
 		// Remove temp folder
 		clean: {
-            my_target: ["build"]
+			perlenspiel: ['build/ps', 'build']
         },
 
 		// JS Hint
 		jshint: {
-            my_target: {
+			perlenspiel: {
 				src: psSrc
 			}
 		}
 	});
 
-	// Load the plugin that provides the "uglify" task.
+	// Load the plugins that provides the tasks.
 	grunt.loadNpmTasks('grunt-contrib-concat');
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-contrib-clean');
@@ -75,10 +79,8 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks('grunt-contrib-copy');
 	grunt.loadNpmTasks('grunt-contrib-jshint');
 
-	// Default task(s).
+	// Task groupings, for convenience
 	grunt.registerTask('build', ['concat', 'uglify', 'copy']);
-	grunt.registerTask('cleanup', ['clean']);
-	grunt.registerTask('deploy', ['copy']);
-	grunt.registerTask('lint', ['jshint']);
+	grunt.registerTask('rebuild', ['clean', 'concat', 'uglify', 'copy']);
 
 };

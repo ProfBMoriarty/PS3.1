@@ -5,8 +5,6 @@
 /*jslint nomen: true, white: true */
 /*global PS */
 
-var PS = PERLENSPIEL.Create();
-
 // The GAME object holds all game-specific data and functions
 
 var GAME = {
@@ -167,6 +165,3 @@ PS.keyUp = function( key, shift, ctrl, options ) {
 PS.input = function( sensors, options ) {
 	"use strict";
 };
-
-// Start the engine
-PS.start();

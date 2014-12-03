@@ -32,11 +32,21 @@ var PERLENSPIEL = (function(PERLENSPIEL) {
     "use strict";
 
     var modules = [];
+    var perlenspielInstances = [];
+    var perlenspielInstancesStarted = [];
 
-	PERLENSPIEL.RegisterModule = function(module) {
+    PERLENSPIEL.RegisterModule = function(module) {
+        // Log a module to be initialized later
 		if (typeof module === 'function') {
 			modules.push(module);
 		}
+
+        // Register modules to Perlenspiel instances that already started
+        if (perlenspielInstances.length > 0) {
+            for (var i = 0; i < perlenspielInstances.length; ++i) {
+                module.call(null, perlenspielInstances[i].engine);
+            }
+        }
 	};
 
 	// Public constructor
@@ -46,8 +56,30 @@ var PERLENSPIEL = (function(PERLENSPIEL) {
 			modules[i].call(null, engine);
 		}
 		// Create the engine instance and return it to the caller
-		return engine.Create(spec);
+        var psObject = engine.Create(spec);
+        perlenspielInstances.push(psObject);
+		return psObject.ps;
 	};
+
+    PERLENSPIEL.OnStartInstance = function(psObject) {
+        perlenspielInstancesStarted.push(psObject);
+    };
+
+    PERLENSPIEL.OnStopInstance = function(psObject) {
+        var index = perlenspielInstancesStarted.indexOf(psObject);
+        if (index > 0)
+            perlenspielInstancesStarted.splice(index, 1);
+    };
+
+    PERLENSPIEL.Broadcast = function(method, parameters) {
+        for (var i = 0; i < perlenspielInstancesStarted.length; ++i) {
+            perlenspielInstancesStarted[i].broadcast(method, parameters);
+        }
+    };
+
+    PERLENSPIEL.NumInstances = function() {
+        return perlenspielInstances.length;
+    };
 
 	return PERLENSPIEL;
 }(PERLENSPIEL || {}));

@@ -16,6 +16,8 @@ var PerlenspielStartup = function (my) {
 
 	my.PSInterface.prototype.start = function ( ) {
 		my._sys();
+		my._psObject.started = true;
+		PERLENSPIEL.OnStartInstance(my._psObject);
 	};
 
 	// Shut down the engine
@@ -23,6 +25,8 @@ var PerlenspielStartup = function (my) {
 	my.PSInterface.prototype.shutdown = function () {
 		console.info("Deactivating " + my._grid.canvas.id);
 		my._clockActive = false;
+		my._psObject.started = false;
+		PERLENSPIEL.OnStopInstance(my._psObject);
 		my._gridDeactivate();
 	};
 
@@ -186,6 +190,8 @@ var PerlenspielStartup = function (my) {
 		grid.width = my._CLIENT_SIZE;
 		grid.style.backgroundColor = my._DEFAULTS.grid.color.str;
 		grid.style.boxShadow = "none";
+        grid.tabIndex = "1";
+
 		my._overGrid = false;
 		my._resetCursor();
 		my._main.appendChild(grid);
@@ -404,19 +410,17 @@ var PerlenspielStartup = function (my) {
 		}
 
 		// Init grid object
-
 		my._grid = {
 			canvas: grid,
 			context: ctx,
-			fader: my._newFader(my._GRID_ID, my._gridRGB, my._gridRGBEnd)
+			fader: my._newFader(my._GRID_ID, my._gridRGB, my._gridRGBEnd),
+			focused: false
 		};
 
 		// copy default properties
-
 		my._copy(my._DEFAULTS.grid, my._grid);
 
 		// Calculate canvas padding for mouse offset (Mark Diehr)
-
 		var canvasStyle = window.getComputedStyle(my._grid.canvas, null);
 		my._grid.padLeft = parseInt(canvasStyle.getPropertyValue('padding-top').replace("px", ""), 10);
 		my._grid.padRight = parseInt(canvasStyle.getPropertyValue('padding-left').replace("px", ""), 10);
@@ -570,7 +574,7 @@ var PerlenspielStartup = function (my) {
 		my._clock();
 
 		// Init all event listeners
-
+		my._keysActivate();
 		my._gridActivate();
 
 		my._footerTimer = my.instance.timerStart(6, my._footerFade);
