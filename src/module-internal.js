@@ -41,7 +41,7 @@ var PerlenspielInternal = function (my) {
 		engine: "Perlenspiel",
 		major: 3,
 		minor: 2,
-		revision: 0,
+		revision: 1,
 		audio: null, // populated by PS._sys()
 		host: {
 			app: "",
