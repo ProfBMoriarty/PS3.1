@@ -1,4 +1,4 @@
-// perlenspiel-loader.js for Perlenspiel 3.1
+// perlenspiel-loader.js for Perlenspiel 3.2
 // Remember to update version number in _system!
 
 /*

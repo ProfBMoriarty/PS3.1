@@ -1,9 +1,9 @@
-// ps3.1.8.js for Perlenspiel 3.1
+// module-internal.js for Perlenspiel 3.2
 // Remember to update version number in _system!
 
 /*
  Perlenspiel is a scheme by Professor Moriarty (bmoriarty@wpi.edu).
- Perlenspiel is Copyright Â© 2009-14 Worcester Polytechnic Institute.
+ Perlenspiel is Copyright © 2009-14 Worcester Polytechnic Institute.
  This file is part of Perlenspiel.
 
  Perlenspiel is free software: you can redistribute it and/or modify
@@ -19,7 +19,6 @@
  You may have received a copy of the GNU Lesser General Public License
  along with Perlenspiel. If not, see <http://www.gnu.org/licenses/>.
  */
-
 
 // Perlenspiel Internal Module
 
@@ -41,8 +40,8 @@ var PerlenspielInternal = function (my) {
 	my._system = {
 		engine: "Perlenspiel",
 		major: 3,
-		minor: 1,
-		revision: 8,
+		minor: 2,
+		revision: 1,
 		audio: null, // populated by PS._sys()
 		host: {
 			app: "",
@@ -61,7 +60,6 @@ var PerlenspielInternal = function (my) {
 	my._ASTR = undefined;
 
 	my._main = null; // main DOM element
-	my._init = null; // font loading div
 
 	my._grid = undefined; // master grid object
 	my._beads = undefined; // master list of bead objects
@@ -111,7 +109,10 @@ var PerlenspielInternal = function (my) {
 	// Touch support
 
 	my._touchScreen = undefined; // true if platform uses touch
-	my._deviceScaling = undefined; // needed for annoying mobile browsers with weird scaling
+	my._windowWidth = undefined; // width of browser window
+	my._windowHeight = undefined; // height of browser window
+	my._gridMax = undefined; // max width/height of grid
+	my._fontMax = undefined; // max size of status line font
 	my._currentFinger = undefined; // index of finger touching screen
 	my._underBead = undefined; // bead currently under finger
 	my._overGrid = undefined; // true when cursor/finger is over the grid
@@ -2362,7 +2363,7 @@ var PerlenspielInternal = function (my) {
 		if (!my._grid.focused)
 			return;
 
-		var fn, any, shift, ctrl, alt, hardkey, key, i, len;
+		var fn, any, shift, ctrl, hardkey, key, i, len;
 
 		fn = "[_keyUp] ";
 		any = false;
@@ -2378,7 +2379,6 @@ var PerlenspielInternal = function (my) {
 		if (my.instance.keyUp) {
 			shift = my._holdShift = event.shiftKey;
 			ctrl = my._holdCtrl = event.ctrlKey;
-			alt = my._holdAlt = event.altKey;
 
 			if (!event.which) {
 				hardkey = event.keyCode; // IE
@@ -2767,9 +2767,9 @@ var PerlenspielInternal = function (my) {
 			my._grid.top = 0;
 
 			if (x >= y) {
-				size = Math.floor(my._CLIENT_SIZE / x);
+				size = Math.floor(my._gridMax / x);
 			} else {
-				size = Math.floor(my._CLIENT_SIZE / y);
+				size = Math.floor(my._gridMax / y);
 			}
 
 			my._grid.bead_size = size;
@@ -5528,7 +5528,43 @@ var PerlenspielInternal = function (my) {
 			my._system.host.version = version;
 		}
 		my._system.host.os = os;
+	};
 
+	// Calc maximum width/height of grid
+
+	my._sizeDetect = function() {
+		var min, w, h, max, fmax, smax, bmax;
+
+		// calc device dimensions & scaling
+
+		my._windowWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+		my._windowHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+
+		// Reduce size of grid if client width or height is <125% of _MAX_GRID_SIZE (512)
+
+		min = ( my._MAX_GRID_SIZE / 4 ) * 5; // minimum width/height
+		if ( ( my._windowWidth >= min ) && ( my._windowHeight >= min ) )
+		{
+			max = my._MAX_GRID_SIZE;
+			fmax = my._MAX_FONT_SIZE;
+			smax = my._MAX_SHADOW_SIZE;
+			bmax = my._MAX_BLUR_SIZE;
+		}
+		else
+		{
+			w = ( my._windowWidth / 5 ) * 4;
+			h = ( my._windowHeight / 5 ) * 4;
+			max = Math.min( w, h ); // use smallest
+			max = Math.floor( max / 8 ) * 8; // force to multiple of 8
+			fmax = my._MAX_FONT_SIZE * ( max / my._MAX_GRID_SIZE ); // calc percentage
+			fmax = Math.floor( fmax * 100 ) / 100; // round to nearest 100th
+			bmax = my._MAX_BLUR_SIZE * ( max / my._MAX_GRID_SIZE ); // calc percentage
+			bmax = Math.floor( bmax );
+			smax = Math.floor( bmax / 8 );
+		}
+		my._gridMax = max;
+		my._fontMax = fmax + "em";
+		my._DEFAULTS.grid.shadow.params =  "0px 0px " + bmax + "px " + smax + "px ";
 	};
 
 	return my;

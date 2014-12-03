@@ -81,9 +81,7 @@ var PerlenspielStartup = function (my) {
 
 		my._systemDetect();
 
-		// calc device scaling
-
-		my._deviceScaling = screen.width / document.documentElement.clientWidth;
+		my._sizeDetect(); // establishes _gridMax and _fontMax
 
 		// detect touch events
 
@@ -96,13 +94,6 @@ var PerlenspielStartup = function (my) {
 		// set browser background (if not in multispiel mode)
 		if (my._NAMESPACE === my.instance.DEFAULT_NAMESPACE)
 			document.body.style.backgroundColor = my._DEFAULTS.grid.color.str;
-
-		// Remove font loading div if it exists
-
-		my._init = document.getElementById(my._INIT_ID);
-		if (my._init) {
-			my._init.parentNode.removeChild(my._init);
-		}
 
 		// Create outer/main divs
 
@@ -123,6 +114,7 @@ var PerlenspielStartup = function (my) {
 			return console.error("No main div!");
 		my._main.id = my._MAIN_ID;
 		my._main.className = my._MAIN_CLASS;
+		my._main.style.width = my._gridMax + "px";
 		outer.appendChild(my._main);
 
 		// save offset coordinates
@@ -131,6 +123,7 @@ var PerlenspielStartup = function (my) {
 		sp = document.createElement("p");
 		sp.id = my._STATUS_P_ID; // use id for styling
 		sp.className = my._STATUS_P_CLASS; // use class for styling
+		sp.style.fontSize = my._fontMax;
 		sp.style.whiteSpace = "nowrap"; // limits to one line
 		sp.style.display = "block"; // initially visible
 		snode = document.createTextNode(".");
@@ -142,6 +135,7 @@ var PerlenspielStartup = function (my) {
 		ip = document.createElement("p"); // paragraph for input box
 		ip.id = my._INPUT_P_ID; // use id for styling
 		ip.className = my._INPUT_P_CLASS; // use id for styling
+		ip.style.fontSize = my._fontMax;
 		ip.style.display = "none"; // initially hidden
 
 		span = document.createElement("span"); // span for label
@@ -176,7 +170,7 @@ var PerlenspielStartup = function (my) {
 		};
 
 		my._copy(my._DEFAULTS.status, my._status); // copy default properties
-		my._statusOut("Perlenspiel 3.1");
+		my._statusOut("Perlenspiel " + my._system.major + "." + my._system.minor);
 
 		// Create grid canvas
 
@@ -187,7 +181,7 @@ var PerlenspielStartup = function (my) {
 		}
 		grid.id = my._GRID_ID;
 		grid.className = my._GRID_CLASS;
-		grid.width = my._CLIENT_SIZE;
+		grid.width = my._gridMax;
 		grid.style.backgroundColor = my._DEFAULTS.grid.color.str;
 		grid.style.boxShadow = "none";
         grid.tabIndex = "1";
@@ -200,7 +194,7 @@ var PerlenspielStartup = function (my) {
 		// Create grid PIXI stage/renderer
 
 		var stage = new PIXI.Stage( my._DEFAULTS.grid.color.rgb );
-		var renderer = PIXI.autoDetectRenderer( my._CLIENT_SIZE, my._CLIENT_SIZE );
+		var renderer = PIXI.autoDetectRenderer( my._gridMax, my._gridMax );
 		renderer.view.id = my._GRID_ID;
 		renderer.style.boxShadow = "none";
 		my._overGrid = false;
