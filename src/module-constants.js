@@ -126,7 +126,6 @@ var PerlenspielConstants = function (my) {
 		my._NAMESPACE = namespace;
 		my._OUTER_ID = my._NAMESPACE + "-" + my._OUTER_CLASS;
 		my._MAIN_ID = my._NAMESPACE + "-" + my._MAIN_CLASS;
-		my._INIT_ID = "init";
 		my._DEBUG_ID = my._NAMESPACE + "-" + my._DEBUG_CLASS;
 		my._STATUS_P_ID = my._NAMESPACE + "-" + my._STATUS_P_CLASS;
 		my._INPUT_P_ID = my._NAMESPACE + "-" + my._INPUT_P_CLASS;
@@ -173,7 +172,10 @@ var PerlenspielConstants = function (my) {
 
 	// Misc constants
 
-	my._CLIENT_SIZE = 512; // client size in pixels
+	my._MAX_GRID_SIZE = 512; // maximum client size in pixels
+	my._MAX_FONT_SIZE = 1.25; // maximum font size in ems
+	my._MAX_SHADOW_SIZE = 8; // max grid shadow size in pixels
+	my._MAX_BLUR_SIZE = 64; // maximum grid shadow blur in pixels
 	my._ALPHOID = 1.0 / 255; // alpha step constant
 	my._RSHIFT = 256 * 256;
 	my._GSHIFT = 256;
@@ -226,6 +228,7 @@ var PerlenspielConstants = function (my) {
 		// Grid defaults
 
 		grid: {
+			width: 512,
 			x: 8,
 			y: 8,
 			max: 32,

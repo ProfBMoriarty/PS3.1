@@ -1,4 +1,4 @@
-// perlenspiel-start.js for Perlenspiel 3.1
+// perlenspiel-start.js for Perlenspiel 3.2
 // Creates a default Perlenspiel instance, then starts it when window is loaded
 
 // Public so that game.js can access it. This acts as a default instance.
