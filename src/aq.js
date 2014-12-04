@@ -1883,7 +1883,7 @@ var AQ = ( function (AQ)
 				{
 					codec = _codecs[ item ]; // get codec table
 					canplay = e.canPlayType( codec.type );
-					if ( canplay === "probably" ) // instead of "probably"
+					if ( canplay === "probably" || canplay === "maybe" ) // If the browser can't play it, it returns ""
 					{
 						codec.ok = true; // mark as available
 						_defaultFileTypes.push( item ); // add to list of defaults
