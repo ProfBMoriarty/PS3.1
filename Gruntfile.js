@@ -53,15 +53,26 @@ module.exports = function (grunt) {
 					// game.js for perlenspiel devkit
 					{ expand: true, flatten: true, filter: 'isFile', src: 'src/game.js',  dest: 'build/' },
 					// resources for perlenspiel
-					{ expand: true, cwd: 'src', src:['ps/**'], dest: 'build/' }
+					{ expand: true, cwd: 'src', src:['ps/**'], dest: 'build/' },
+					// copy the production favicon
+					{ expand: true, flatten: true, src: 'devkit/favicon.*',  dest: 'build/ps/img/' }
 				]
 			}
 		},
 
-		// Remove temp folder
+		compress: {
+			perlenspiel: {
+				options: { archive: 'build/PS<%= ps.version %>.zip'},
+				files: [{expand: true, cwd: 'build', src: ['**'], dest: 'PS<%= ps.version %>/'}]
+			}
+		},
+
+		// Remove temporary folders/files
 		clean: {
-			perlenspiel: ['build/ps', 'build']
-        },
+			postBuild: ['build/ps/fonts', 'build/ps/ps.js'],
+			perlenspiel: ['build/ps', 'build'],
+			zips: ['build/*.zip']
+		},
 
 		// JS Hint
 		jshint: {
@@ -78,9 +89,10 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks('grunt-contrib-copy');
 	grunt.loadNpmTasks('grunt-contrib-copy');
 	grunt.loadNpmTasks('grunt-contrib-jshint');
+	grunt.loadNpmTasks('grunt-contrib-compress');
 
 	// Task groupings, for convenience
-	grunt.registerTask('build', ['concat', 'uglify', 'copy']);
-	grunt.registerTask('rebuild', ['clean', 'concat', 'uglify', 'copy']);
+	grunt.registerTask('build', ['clean:perlenspiel', 'concat', 'uglify', 'copy:perlenspiel', 'clean:postBuild']);
+	grunt.registerTask('deploy', ['clean:zips', 'compress']);
 
 };
