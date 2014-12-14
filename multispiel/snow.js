@@ -11,7 +11,7 @@
 
 	Later, I discovered that I could make a Perlenspiel timer self-
 	destruct by including a reference to the timer's identifying string in
-	the closuer of the function being passed in. I used this to create a
+	the closure of the function being passed in. I used this to create a
 	simple "TweenTo" function that adjusts a bead property over time to
 	meet a target value. Once there, the timer clears. This system doesn't
 	account for more complicated tweens, or using multiple tweens on the
