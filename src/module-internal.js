@@ -886,8 +886,23 @@ var PerlenspielInternal = function (my) {
 	// Reset a fader
 
 	my._resetFader = function (fader) {
-		my._copy(my._DEFAULTS.fader, fader);
-		fader.frames.length = 0;
+		fader.active = false;
+		fader.kill = false;
+		fader.r = 0;
+		fader.g = 0;
+		fader.b = 0;
+		fader.rgb = null;
+		fader.tr = 0;
+		fader.tg = 0;
+		fader.tb = 0;
+		fader.trgb = 0;
+		fader.tstr = null;
+		fader.step = 0;
+		fader.rate = 0;
+		fader.onStep = null;
+		fader.onEnd = null;
+		fader.params = null;
+		fader.frames = [];
 	};
 
 	// Return a new fader object
@@ -1582,18 +1597,60 @@ var PerlenspielInternal = function (my) {
 	// Reset bead default attributes
 
 	my._resetBead = function (bead) {
-		var color;
+		bead.dirty = true;
+		bead.active = true;
+		bead.visible = true;
+		bead.planes = null;
+		bead.color = {
+			r: 255, g: 255, b: 255, a: 255,
+			rgb: 0xFFFFFF,
+			str: "rgba(255,255,255,1)"
+		};
+		bead.bgColor = {
+			r: 255, g: 255, b: 255, a: 0,
+			rgb: 0xFFFFFF,
+			str: "rgba(255,255,255,0)"
+		};
+		bead.radius = 0;
+		bead.scale = 100;
+		bead.data = 0;
+		bead.exec = null;
 
-		my._copy(my._DEFAULTS.bead, bead); // copy default properties
+		// bead border
+		bead.border = {
+			width: 1,
+			equal: true,
+			top: 1, left: 1, bottom: 1, right: 1,
+			color: {
+				r: 128, g: 128, b: 128, a: 255,
+				rgb: 0x808080,
+				str: "rgba(128,128,128,1)"
+			}
+		};
 
-		// Make a copy of default colors
-
-		color = {};
-		my._copy(my._DEFAULTS.bead.color, color);
+		// bead glyph
+		bead.glyph = {
+			str: "",
+			code: 0,
+			scale: 100,
+			size: 0,
+			x: 0,
+			y: 0,
+			font: null,
+			color: {
+				r: 0, g: 0, b: 0, a: 255,
+				rgb: 0x000000,
+				str: "rgba(0,0,0,1)"
+			}
+		};
 
 		bead.planes = [{
 			height: 0,
-			color: color
+			color: {
+				r: 255, g: 255, b: 255, a: 255,
+				rgb: 0xFFFFFF,
+				str: "rgba(255,255,255,1)"
+			}
 		}]; // init planes array
 
 		my._rescaleGlyph(bead);
