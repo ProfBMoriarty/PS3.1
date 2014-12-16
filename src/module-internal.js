@@ -1975,7 +1975,7 @@ var PerlenspielInternal = function (my) {
 		if (bead) {
 			my._touchBead(bead);
 		} else {
-			my._gridUnfocus();
+			my._gridUnfocus(event);
 		}
 
 		// Only stop event propogation if not in Multispiel mode
