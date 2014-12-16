@@ -18,12 +18,12 @@ var PerlenspielStartup = function (my) {
 		my._sys();
 		my._psObject.started = true;
 		PERLENSPIEL.OnStartInstance(my._psObject);
+		my._startModules();
 	};
 
 	// Shut down the engine
 
 	my.PSInterface.prototype.shutdown = function () {
-		console.info("Deactivating " + my._grid.canvas.id);
 		my._clockActive = false;
 		my._psObject.started = false;
 		PERLENSPIEL.OnStopInstance(my._psObject);
@@ -34,7 +34,7 @@ var PerlenspielStartup = function (my) {
 
 	my.PSInterface.prototype.setOptions = function (options) {
 		// Options
-		my._options = options || {};
+		my._options = options || {namespace : PS.DEFAULT_NAMESPACE, requireEvents : true, forceMulti : false};
 
 		my._setNamespace(my._options.namespace || PS.DEFAULT_NAMESPACE);
 
@@ -92,7 +92,7 @@ var PerlenspielStartup = function (my) {
 
 		document.body.id = "body";
 		// set browser background (if not in multispiel mode)
-		if (my._NAMESPACE === my.instance.DEFAULT_NAMESPACE)
+		if (!my._isMultiMode())
 			document.body.style.backgroundColor = my._DEFAULTS.grid.color.str;
 
 		// Create outer/main divs
@@ -501,44 +501,56 @@ var PerlenspielStartup = function (my) {
 			my._warning("PS.init" + str);
 		}
 
-		if (typeof my.instance.touch !== "function") {
-			my.instance.touch = null;
-			my._warning("PS.touch" + str);
-		}
+		if (my._options.requireEvents === true) {
+			if (typeof my.instance.touch !== "function") {
+				my.instance.touch = null;
+				my._warning("PS.touch" + str);
+			}
 
-		if (typeof my.instance.release !== "function") {
-			my.instance.release = null;
-			my._warning("PS.release" + str);
-		}
+			if (typeof my.instance.release !== "function") {
+				my.instance.release = null;
+				my._warning("PS.release" + str);
+			}
 
-		if (typeof my.instance.enter !== "function") {
-			my.instance.enter = null;
-			my._warning("PS.enter" + str);
-		}
+			if (typeof my.instance.enter !== "function") {
+				my.instance.enter = null;
+				my._warning("PS.enter" + str);
+			}
 
-		if (typeof my.instance.exit !== "function") {
-			my.instance.exit = null;
-			my._warning("PS.exit()" + str);
-		}
+			if (typeof my.instance.exit !== "function") {
+				my.instance.exit = null;
+				my._warning("PS.exit()" + str);
+			}
 
-		if (typeof my.instance.exitGrid !== "function") {
-			my.instance.exitGrid = null;
-			my._warning("PS.exitGrid" + str);
-		}
+			if (typeof my.instance.exitGrid !== "function") {
+				my.instance.exitGrid = null;
+				my._warning("PS.exitGrid" + str);
+			}
 
-		if (typeof my.instance.keyDown !== "function") {
-			my.instance.keyDown = null;
-			my._warning("PS.keyDown" + str);
-		}
+			if (typeof my.instance.keyDown !== "function") {
+				my.instance.keyDown = null;
+				my._warning("PS.keyDown" + str);
+			}
 
-		if (typeof my.instance.keyUp !== "function") {
-			my.instance.keyUp = null;
-			my._warning("PS.keyUp" + str);
-		}
+			if (typeof my.instance.keyUp !== "function") {
+				my.instance.keyUp = null;
+				my._warning("PS.keyUp" + str);
+			}
 
-		if (typeof my.instance.input !== "function") {
-			my.instance.input = null;
-			my._warning("PS.input" + str);
+			if (typeof my.instance.input !== "function") {
+				my.instance.input = null;
+				my._warning("PS.input" + str);
+			}
+		} else {
+			// Default implementations for the careless
+			my.instance.touch = my.instance.touch || function(){};
+			my.instance.release = my.instance.release || function(){};
+			my.instance.enter = my.instance.enter || function(){};
+			my.instance.exit = my.instance.exit || function(){};
+			my.instance.exitGrid = my.instance.exitGrid || function(){};
+			my.instance.keyDown = my.instance.keyDown || function(){};
+			my.instance.keyUp = my.instance.keyUp || function(){};
+			my.instance.input = my.instance.input || function(){};
 		}
 
 		// set up footer

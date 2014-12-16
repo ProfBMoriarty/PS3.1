@@ -154,6 +154,10 @@ var PerlenspielInternal = function (my) {
 	// GENERAL SUPPORT
 	//----------------
 
+	my._isMultiMode = function() {
+		return my._options.forceMulti || my._NAMESPACE !== PS.DEFAULT_NAMESPACE;
+	};
+
 	// Improved typeof by Doug Crockford, with NaN detection by me
 
 	my._typeOf = function (value) {
@@ -532,7 +536,7 @@ var PerlenspielInternal = function (my) {
 		*/
 
 		// set browser background (if not in multispiel mode)
-		if (my._NAMESPACE === PS.DEFAULT_NAMESPACE)
+		if (!my._isMultiMode())
 			document.body.style.backgroundColor = str;
 
 		// Set outer div background
@@ -1975,7 +1979,7 @@ var PerlenspielInternal = function (my) {
 		}
 
 		// Only stop event propogation if not in Multispiel mode
-		if (my._NAMESPACE === PS.DEFAULT_NAMESPACE)
+		if (!my._isMultiMode())
 			event.preventDefault();
 		else
 			return my._endEvent(event);
@@ -2577,7 +2581,7 @@ var PerlenspielInternal = function (my) {
 		grid.style.display = "block";
 
 		// If not in multispiel mode, the grid is always considered focused
-		if (my._NAMESPACE === PS.DEFAULT_NAMESPACE)
+		if (!my._isMultiMode())
 			grid.focused = true;
 		else
 			grid.focused = false;
@@ -2590,7 +2594,7 @@ var PerlenspielInternal = function (my) {
 		my._keysActivate();
 
 		// Add the focus manager events if in multispiel mode
-		if (my._NAMESPACE !== PS.DEFAULT_NAMESPACE) {
+		if (my._isMultiMode()) {
 			var outer = document.getElementById(my._OUTER_ID);
 			outer.addEventListener("mousedown", my._gridFocus, true);
 			document.addEventListener("mousedown", my._gridUnfocus, false);
@@ -2629,7 +2633,7 @@ var PerlenspielInternal = function (my) {
 		my._keysDeactivate();
 
 		// Remove the focus manager if in multispiel mode
-		if (my._NAMESPACE !== PS.DEFAULT_NAMESPACE) {
+		if (my._isMultiMode()) {
 			var outer = document.getElementById(my._OUTER_ID);
 			if (outer)
 				outer.removeEventListener("mousedown", my._gridFocus, true);

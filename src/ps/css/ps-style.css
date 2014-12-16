@@ -233,6 +233,7 @@ body {
 }
 
 .stsp, #stsp {
+	color: #000000;
 	height: 1.25em;
 	/*
 	font-size: 1.25em;

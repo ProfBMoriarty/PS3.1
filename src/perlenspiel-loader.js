@@ -34,6 +34,7 @@ var PERLENSPIEL = (function(PERLENSPIEL) {
     var modules = [];
     var perlenspielInstances = [];
     var perlenspielInstancesStarted = [];
+    var enableAutoStart = true;
 
     PERLENSPIEL.RegisterModule = function(module) {
         // Log a module to be initialized later
@@ -60,6 +61,15 @@ var PERLENSPIEL = (function(PERLENSPIEL) {
         perlenspielInstances.push(psObject);
 		return psObject.ps;
 	};
+
+    // Auto-start an instance?
+    PERLENSPIEL.AutoStartEnabled = function() {
+        return enableAutoStart;
+    };
+
+    PERLENSPIEL.EnableAutoStart = function(enable) {
+        enableAutoStart = enable;
+    };
 
     PERLENSPIEL.OnStartInstance = function(psObject) {
         perlenspielInstancesStarted.push(psObject);

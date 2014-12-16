@@ -29,10 +29,11 @@ var PerlenspielCore = function (my) {
 	// Module Initialization Queue
 
 	my._initQueue = [];
+	my._startQueue = [];
 	my._spec = {};
 	my._isInitialized = false;
 
-	// Registers a module to be initialized with the spec (not all modules need this)
+	// Registers a function to be invoked with the spec (options) object when the modules are all loaded
 	my._onInit = function(func) {
 		if (typeof func === 'function') {
 			if (!my._isInitialized) {
@@ -54,6 +55,22 @@ var PerlenspielCore = function (my) {
 			my._initQueue[i].call(null, my._spec);
 		}
 		my._isInitialized = true;
+	};
+
+	// Registers a function to be invoked when a perlenspiel instance is started
+	my._onStart = function(func) {
+		if (typeof func === 'function') {
+			my._startQueue.push(func);
+		} else {
+			console.error("_onStart func was type " + (typeof func) + " instead of a function.");
+		}
+	};
+
+	// Call start functions and pass them the spec
+	my._startModules = function() {
+		for (var i = 0; i < my._startQueue.length; ++i) {
+			my._startQueue[i].call(null, my._spec, my.instance);
+		}
 	};
 
 	return my;
