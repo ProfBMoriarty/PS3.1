@@ -587,15 +587,19 @@ var PerlenspielStartup = function (my) {
 
 		if (my.instance.init) {
 			// Call user initializer
-
-			try {
-				my.instance.init(my._system, my._EMPTY);
-				my._gridDraw();
-			} catch (err) {
-				my._errorCatch("PS.init() failed [" + err.message + "]", err);
-			}
+			my._tryInit();
 		}
 	};
+
+	// Call PS.init and catch errors
+	my._tryInit = function() {
+		try {
+			my.instance.init(my._system, my._EMPTY);
+			my._gridDraw();
+		} catch (err) {
+			my._errorCatch("PS.init() failed [" + err.message + "]", err);
+		}
+	}
 
 	my._clock = function () {
 		if (my._clockActive) {
