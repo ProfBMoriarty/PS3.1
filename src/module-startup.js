@@ -580,7 +580,6 @@ var PerlenspielStartup = function (my) {
 		my._clock();
 
 		// Init all event listeners
-		my._keysActivate();
 		my._gridActivate();
 
 		my._footerTimer = my.instance.timerStart(6, my._footerFade);

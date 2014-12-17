@@ -2569,7 +2569,9 @@ var PerlenspielInternal = function (my) {
 			document.addEventListener("keydown", my._keyDown, false);
 			document.addEventListener("keyup", my._keyUp, false);
 			my._keysActive = true;
-			my._gridFocus();
+			if (!my._isMultiMode()) {
+				my._gridFocus();
+			}
 		}
 	};
 
@@ -2638,10 +2640,7 @@ var PerlenspielInternal = function (my) {
 		grid.style.display = "block";
 
 		// If not in multispiel mode, the grid is always considered focused
-		if (!my._isMultiMode())
-			grid.focused = true;
-		else
-			grid.focused = false;
+		grid.focused = !my._isMultiMode();
 
 		grid.addEventListener("mousedown", my._mouseDown, false);
 		grid.addEventListener("mouseup", my._mouseUp, false);
