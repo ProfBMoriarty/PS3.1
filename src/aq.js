@@ -69,6 +69,8 @@ var AQ = ( function (AQ)
 	var _usingWebAudio = false; // true if using Web Audio API
 	var _forceHTML5 = false; // true to force HTML5 audio
 	var _defaultFileTypes = null; // default list of audio file types available
+	var _initialized = false; // true after being initialized once
+	var _aqInstance = undefined; // true after being initialized once
 
 	// list of audio codecs and types
 
@@ -1848,6 +1850,11 @@ var AQ = ( function (AQ)
 
 			fn = "[AQ.init] ";
 
+			// Check for an existing instance
+			if (_initialized) {
+				return _aqInstance;
+			}
+
 			result = {
 				engine : _VERSION_NAME,
 				major : _VERSION_MAJOR,
@@ -2064,6 +2071,10 @@ var AQ = ( function (AQ)
 
 			result.status = AQ.DONE;
 			result.fileTypes = _defaultFileTypes;
+
+			_initialized = true;
+			_aqInstance = result;
+
 			return result;
 		},
 
