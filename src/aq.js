@@ -10,8 +10,9 @@
 
 // Generic HTML5 audio exception handler
 
-// Global namespace for public API
-var AQ = ( function (AQ)
+var AQ; // Global namespace for public API
+
+( function ()
 {
 	"use strict";
 
@@ -27,7 +28,7 @@ var AQ = ( function (AQ)
 
 	var _DEFAULT = {
 		path : "",
-		fileTypes : [ "ogg", "mp3", "wav" ],
+		fileTypes : ["ogg", "mp3", "wav"],
 		autoplay : false,
 		volume : 0.5,
 		start : 0,
@@ -69,18 +70,16 @@ var AQ = ( function (AQ)
 	var _usingWebAudio = false; // true if using Web Audio API
 	var _forceHTML5 = false; // true to force HTML5 audio
 	var _defaultFileTypes = null; // default list of audio file types available
-	var _initialized = false; // true after being initialized once
-	var _aqInstance = undefined; // true after being initialized once
 
 	// list of audio codecs and types
 
 	var _codecs = {
-		ogg : { ok : false, type : 'audio/ogg; codecs="vorbis"' },
-		mp3 : { ok : false, type : 'audio/mpeg; codecs="mp3"' },
-		wav : { ok : false, type : 'audio/wav; codecs="1"' },
-		aac : { ok : false, type : 'audio/mp4; codecs="mp4a.40.2"' },
-		webm : { ok : false, type : 'audio/webm; codecs="vorbis"' },
-		opus : { ok : false, type : 'audio/ogg; codecs="opus"' }
+		ogg : {ok : false, type : 'audio/ogg; codecs="vorbis"'},
+		mp3 : {ok : false, type : 'audio/mpeg; codecs="mp3"'},
+		wav : {ok : false, type : 'audio/wav; codecs="1"'},
+		aac : {ok : false, type : 'audio/mp4; codecs="mp4a.40.2"'},
+		webm : {ok : false, type : 'audio/webm; codecs="vorbis"'},
+		opus : {ok : false, type : 'audio/ogg; codecs="opus"'}
 	};
 
 	var _channels = []; // active channel list
@@ -302,7 +301,7 @@ var AQ = ( function (AQ)
 		playable = []; // start new list
 		for ( i = 0; i < len; i += 1 )
 		{
-			str = ft [ i ];
+			str = ft [i];
 			if ( !str || ( typeof str !== "string" ) || ( str.length < 1 ) )
 			{
 				return _error( fn + "Invalid .fileType entry @ " + i );
@@ -775,7 +774,7 @@ var AQ = ( function (AQ)
 					len = _channels.length;
 					for ( i = 0; i < len; i += 1 )
 					{
-						channel = _channels[ i ];
+						channel = _channels[i];
 						if ( channel.id === id ) // id obtained from the closure
 						{
 							if ( _MONITOR )
@@ -891,7 +890,7 @@ var AQ = ( function (AQ)
 			len = _web.buffers.length;
 			for ( i = 0; i < len; i += 1 )
 			{
-				buffer = _web.buffers[ i ];
+				buffer = _web.buffers[i];
 				if ( buffer.params.pathname === params.pathname ) // already loaded
 				{
 					if ( _MONITOR )
@@ -945,7 +944,7 @@ var AQ = ( function (AQ)
 					                              if ( _MONITOR )
 					                              {
 						                              _debug( fn + "Decoded " + params.pathname + " in " + buffer.id +
-							                                      " (" + buffer.duration + " ms)" );
+						                                      " (" + buffer.duration + " ms)" );
 					                              }
 
 					                              // Call .onLoad function if present
@@ -971,7 +970,7 @@ var AQ = ( function (AQ)
 						                              catch ( err )
 						                              {
 							                              _errorCatch( fn + "User .onLoad failed on " + buffer.channel_id + ": " +
-								                                           params.pathname + " [" + err.message + "]", err );
+							                                           params.pathname + " [" + err.message + "]", err );
 						                              }
 					                              }
 
@@ -1023,7 +1022,7 @@ var AQ = ( function (AQ)
 			len = _web.buffers.length;
 			for ( i = 0; i < len; i += 1 )
 			{
-				buffer = _web.buffers[ i ];
+				buffer = _web.buffers[i];
 				if ( buffer.params.pathname === params.pathname ) // found it!
 				{
 					if ( _MONITOR )
@@ -1060,7 +1059,7 @@ var AQ = ( function (AQ)
 			len = _web.buffers.length;
 			for ( i = 0; i < len; i += 1 )
 			{
-				buffer = _web.buffers[ i ];
+				buffer = _web.buffers[i];
 				if ( buffer.channel_id === id ) // found it!
 				{
 					return _web.playBuffer( buffer );
@@ -1155,7 +1154,7 @@ var AQ = ( function (AQ)
 			len = _channels.length;
 			for ( i = 0; i < len; i += 1 )
 			{
-				channel = _channels[ i ];
+				channel = _channels[i];
 				if ( channel.id === id )
 				{
 					_web.stopChannel( channel );
@@ -1204,7 +1203,7 @@ var AQ = ( function (AQ)
 			e = event.currentTarget;
 			i = e.getAttribute( "data-channel" );
 			i = parseInt( i, 10 );
-			channel = _channels[ i ];
+			channel = _channels[i];
 
 			c = event.target.error.code;
 			switch ( c )
@@ -1249,7 +1248,7 @@ var AQ = ( function (AQ)
 				e = event.currentTarget;
 				i = e.getAttribute( "data-channel" );
 				i = parseInt( i, 10 );
-				channel = _channels[ i ];
+				channel = _channels[i];
 				_debug( fn + channel.id + ": " + channel.params.pathname );
 			}
 			return _endEvent( event );
@@ -1335,7 +1334,7 @@ var AQ = ( function (AQ)
 			e = event.currentTarget;
 			i = e.getAttribute( "data-channel" );
 			i = parseInt( i, 10 );
-			channel = _channels[ i ];
+			channel = _channels[i];
 			channel.status = _CHANNEL_READY;
 			params = channel.params;
 
@@ -1404,7 +1403,7 @@ var AQ = ( function (AQ)
 			e = event.currentTarget;
 			i = e.getAttribute( "data-channel" );
 			i = parseInt( i, 10 );
-			channel = _channels[ i ];
+			channel = _channels[i];
 			params = channel.params;
 
 			if ( _MONITOR )
@@ -1452,7 +1451,7 @@ var AQ = ( function (AQ)
 			e = event.currentTarget;
 			i = e.getAttribute( "data-channel" );
 			i = parseInt( i, 10 );
-			channel = _channels[ i ];
+			channel = _channels[i];
 			params = channel.params;
 
 			if ( _MONITOR )
@@ -1516,7 +1515,7 @@ var AQ = ( function (AQ)
 
 			if ( _MONITOR )
 			{
-				_debug( fn + channel.id + ": " + params.pathname);
+				_debug( fn + channel.id + ": " + params.pathname );
 			}
 
 			audio.setAttribute( "src", params.pathname ); // actually starts the load
@@ -1542,7 +1541,7 @@ var AQ = ( function (AQ)
 
 			for ( i = 0; i < _channelCnt; i += 1 )
 			{
-				channel = _channels[ i ];
+				channel = _channels[i];
 				if ( ( channel.params.pathname === params.pathname ) && ( channel.status === _CHANNEL_READY ) )
 				{
 					if ( _MONITOR )
@@ -1562,7 +1561,7 @@ var AQ = ( function (AQ)
 
 			for ( i = 0; i < _MAX_CHANNELS; i += 1 ) // search all channels
 			{
-				channel = _channels[ i ];
+				channel = _channels[i];
 				if ( channel.status === _CHANNEL_EMPTY )
 				{
 					if ( _MONITOR )
@@ -1583,7 +1582,7 @@ var AQ = ( function (AQ)
 
 			for ( i = 0; i < _channelCnt; i += 1 )
 			{
-				channel = _channels[ i ];
+				channel = _channels[i];
 				if ( !channel.params.lock && ( channel.status === _CHANNEL_READY ) )
 				{
 					if ( _MONITOR )
@@ -1705,7 +1704,7 @@ var AQ = ( function (AQ)
 
 			for ( i = 0; i < _channelCnt; i += 1 )
 			{
-				channel = _channels[ i ];
+				channel = _channels[i];
 				if ( channel.id === id )
 				{
 					if ( channel.status === _CHANNEL_PAUSED )
@@ -1747,7 +1746,7 @@ var AQ = ( function (AQ)
 
 			for ( i = 0; i < _channelCnt; i += 1 )
 			{
-				channel = _channels[ i ];
+				channel = _channels[i];
 				if ( channel.id === id )
 				{
 					channel.params.autoplay = false; // prevents autoplay if still loading
@@ -1807,7 +1806,7 @@ var AQ = ( function (AQ)
 				audio.addEventListener( "ended", _html.onEnd, false ); // establish onEnd listener
 				document.body.appendChild( audio );
 
-				_channels[ i ] = {
+				_channels[i] = {
 					id : _PREFIX_CHANNEL + ( i + 1 ),
 					audio : audio,
 					duration : 0, // set later when audio loaded, we hope
@@ -1850,11 +1849,6 @@ var AQ = ( function (AQ)
 
 			fn = "[AQ.init] ";
 
-			// Check for an existing instance
-			if (_initialized) {
-				return _aqInstance;
-			}
-
 			result = {
 				engine : _VERSION_NAME,
 				major : _VERSION_MAJOR,
@@ -1888,9 +1882,9 @@ var AQ = ( function (AQ)
 			{
 				if ( _codecs.hasOwnProperty( item ) )
 				{
-					codec = _codecs[ item ]; // get codec table
+					codec = _codecs[item]; // get codec table
 					canplay = e.canPlayType( codec.type );
-					if ( canplay === "probably" || canplay === "maybe" ) // If the browser can't play it, it returns ""
+					if ( ( canplay === "probably" ) || ( canplay === "maybe" ) )
 					{
 						codec.ok = true; // mark as available
 						_defaultFileTypes.push( item ); // add to list of defaults
@@ -2071,10 +2065,6 @@ var AQ = ( function (AQ)
 
 			result.status = AQ.DONE;
 			result.fileTypes = _defaultFileTypes;
-
-			_initialized = true;
-			_aqInstance = result;
-
 			return result;
 		},
 
@@ -2124,7 +2114,7 @@ var AQ = ( function (AQ)
 
 			// form the complete pathname, using the first playable file type
 
-			params.pathname = params.path + params.name + "." + params.fileTypes[ 0 ];
+			params.pathname = params.path + params.name + "." + params.fileTypes[0];
 
 			// dispatch to loader
 
@@ -2178,7 +2168,7 @@ var AQ = ( function (AQ)
 
 			// form the complete pathname, using the first playable file type
 
-			params.pathname = params.path + params.name + "." + params.fileTypes[ 0 ];
+			params.pathname = params.path + params.name + "." + params.fileTypes[0];
 
 			// dispatch to appropriate API
 
@@ -2291,9 +2281,8 @@ var AQ = ( function (AQ)
 			return result;
 		}
 	};
-	
-	return AQ;
-}(AQ || {}) );
+
+}() );
 
 
 
