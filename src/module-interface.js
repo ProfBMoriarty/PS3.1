@@ -1519,7 +1519,7 @@ var PerlenspielInterface = function (my) {
 	// Returns string or PS.ERROR
 
 	my.PSInterface.prototype.hex = function (val_p, padding_p) {
-		var fn, val, type, padding, hex;
+		var fn, val, type, padding;
 
 		fn = "[PS.hex] ";
 
@@ -1547,13 +1547,7 @@ var PerlenspielInterface = function (my) {
 			return my._error(fn + "padding argument invalid");
 		}
 
-		hex = Number(val).toString(16);
-
-		while (hex.length < padding) {
-			hex = "0" + hex;
-		}
-
-		return ("0x" + hex);
+		return my._hex( val, padding );
 	};
 
 	// PS.keyRepeat ( repeat, init, delay )

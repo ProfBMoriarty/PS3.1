@@ -41,7 +41,7 @@ var PerlenspielInternal = function (my) {
 		engine: "Perlenspiel",
 		major: 3,
 		minor: 2,
-		revision: 1,
+		revision: 2,
 		audio: null, // populated by PS._sys()
 		host: {
 			app: "",
@@ -1589,8 +1589,8 @@ var PerlenspielInternal = function (my) {
 			nsize = bsize;
 		}
 		bead.glyph.size = height = Math.round(nsize / 2);
-		bead.glyph.font = height + "px sans-serif";
-//		bead.glyph.font = height + "px 'Droid'";
+		//bead.glyph.font = height + "px sans-serif";
+		bead.glyph.font = height + "px 'droid'";
 		bead.glyph.y = Math.round(((bsize - height) / 2) + (height / 2));
 	};
 
@@ -2846,10 +2846,6 @@ var PerlenspielInternal = function (my) {
 
 			my._grid.context.textAlign = "center";
 			my._grid.context.textBaseline = "middle";
-
-			// my._grid.font_size = font_size = Math.floor( ( size / 11 ) * 5 ); // adjusted for Google Droid font
-			// font_size_px = font_size + "px";
-			// my._grid.font_margin = Math.floor( font_size / 2 );
 
 			cnt = 0;
 			ypos = my._grid.top;
