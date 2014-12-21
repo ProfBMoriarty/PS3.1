@@ -1,0 +1,55 @@
+<!DOCTYPE HTML>
+
+<!--
+Perlenspiel is a scheme by Professor Moriarty (bmoriarty@wpi.edu).
+Perlenspiel is Copyright © 2009-14 Worcester Polytechnic Institute.
+This file is part of Perlenspiel.
+
+Perlenspiel is free software: you can redistribute it and/or modify
+it under the terms of the GNU Lesser General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Perlenspiel is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Lesser General Public License for more details.
+
+You may have received a copy of the GNU Lesser General Public License
+along with Perlenspiel. If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<html lang="en">
+<head>
+	<title>Perlenspiel 3.2</title>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+	<meta name="description" content="Perlenspiel 3.2" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="mobile-web-app-capable" content="yes" />
+	<link rel="manifest" href="http://users.wpi.edu/~bmoriarty/ps/manifest.json" />
+	<link rel="icon" sizes="192x192" href="http://users.wpi.edu/~bmoriarty/ps/icons/icon192.png" />
+	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+	<link rel="shortcut icon" href="http://users.wpi.edu/~bmoriarty/ps/icons/favicon.png" />
+	<link rel="apple-touch-icon" href="http://users.wpi.edu/~bmoriarty/ps/icons/apple-touch-icon.png" />
+	<link rel="apple-touch-icon-precomposed" href="http://users.wpi.edu/~bmoriarty/ps/icons/apple-touch-icon.png" />
+	<link rel="stylesheet" type="text/css" href="http://users.wpi.edu/~bmoriarty/ps/cover3.2.css" />
+	<script type="text/javascript" src="http://users.wpi.edu/~bmoriarty/ps/cover3.2.js"></script>
+</head>
+<body onload="init();">
+	<div id="main">
+		<!--
+		IMPORTANT! Your cover.png file should be exactly 512 x 512 pixels for best quality
+		The following optional mods to this file are permitted:
+		Change the "Touch image to play" string in the <input> element below to alter the top line of text
+		Change the "game.html" string in the <a> element below to specify a different game file
+		Change the "cover.png" string in the <img> element below to specify a different cover image file
+		Change the "Game" string in the <img> element to match the name of your game
+		Modding this file in any other way can result in breakage, and is a violation of The Rules.
+		-->
+		<input id="sts" type="text" readonly="readonly" value="Touch image to play" />
+		<a id="cvr" href="game.html"><img id="pic" src="cover.png" alt="Game"></a>
+	</div>
+</body>
+</html>
