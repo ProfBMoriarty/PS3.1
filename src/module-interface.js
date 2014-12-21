@@ -1614,6 +1614,26 @@ var PerlenspielInterface = function (my) {
 		};
 	};
 
+	// PS.date()
+	// Returns formatted date object
+
+	my.PSInterface.prototype.date = function ()
+	{
+		return my._getDate();
+	};
+
+	// PS.elapsed()
+	// Returns milliseconds elapsed since engine start
+
+	my.PSInterface.prototype.elapsed = function ()
+	{
+		var d, t;
+
+		d = new Date();
+		t = d.getTime();
+		return ( t - my._startTime );
+	};
+
 	// ---------
 	// IMAGE API
 	// ---------

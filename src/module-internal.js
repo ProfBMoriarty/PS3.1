@@ -41,7 +41,7 @@ var PerlenspielInternal = function (my) {
 		engine: "Perlenspiel",
 		major: 3,
 		minor: 2,
-		revision: 2,
+		revision: 3,
 		audio: null, // populated by PS._sys()
 		host: {
 			app: "",
@@ -50,7 +50,8 @@ var PerlenspielInternal = function (my) {
 		},
 		inputs: {
 			touch: false
-		}
+		},
+		date : null // populated by init
 	};
 
 	// color strings
@@ -86,6 +87,8 @@ var PerlenspielInternal = function (my) {
 	my._timerCnt = undefined; // unique timer id
 	my._faders = undefined; // master fader list
 	my._faderTick = undefined; // fader countdown
+	my._startTime = undefined; // engine start time in milliseconds
+
 
 	// Keyboard support
 
@@ -5484,6 +5487,120 @@ var PerlenspielInternal = function (my) {
 		my._status.input.addEventListener("keydown", my._inputKeyDown, false); // start input handler
 		my._status.inputP.style.display = "block"; // show input line
 		my._status.input.focus();
+	};
+
+	// Return formatted date object
+
+	my._getDate = function ()
+	{
+		var months, months3, days, days3, d, obj, dt, h, m, s, ms;
+
+		months = [
+			"January", "February", "March", "April", "May", "June",
+			"July", "August", "September", "October", "November", "December"
+		];
+
+		months3 = [
+			"JAN", "FEB", "MAR", "APR", "MAY", "JUN",
+			"JUL", "AUG", "SEP", "OCT", "NOV", "DEC"
+		];
+
+		days = [
+			"Sunday", "Monday", "Tuesday", "Wednesday",
+			"Thursday", "Friday", "Saturday"
+		];
+
+		days3 = [
+			"SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"
+		];
+
+		d = new Date();
+
+		obj = {
+			year : d.getFullYear(),
+			month : d.getMonth(),
+			date : d.getDate(),
+			day : d.getDay(),
+			hours24 : d.getHours(),
+			minutes : d.getMinutes(),
+			seconds : d.getSeconds(),
+			milliseconds : d.getMilliseconds(),
+			zone : d.getTimezoneOffset()
+		};
+
+		obj.monthName = months[obj.month];
+		obj.monthShort = months3[obj.month];
+
+		obj.dayName = days[obj.day];
+		obj.dayShort = days3[obj.day];
+
+		obj.hours = obj.hours24 + 1;
+		if ( obj.hours24 > 11 )
+		{
+			obj.am_pm = "PM";
+			if ( obj.hours24 > 12 )
+			{
+				obj.hours = obj.hours24 - 12;
+			}
+		}
+		else
+		{
+			obj.am_pm = "AM";
+		}
+
+		if ( obj.date < 10 )
+		{
+			dt = " 0" + obj.date;
+		}
+		else
+		{
+			dt = " " + obj.date;
+		}
+
+		if ( obj.hours < 10 )
+		{
+			h = " 0" + obj.hours;
+		}
+		else
+		{
+			h = " " + obj.hours;
+		}
+
+		if ( obj.minutes < 10 )
+		{
+			m = ":0" + obj.minutes;
+		}
+		else
+		{
+			m = ":" + obj.minutes;
+		}
+
+		if ( obj.seconds < 10 )
+		{
+			s = ":0" + obj.seconds;
+		}
+		else
+		{
+			s = ":" + obj.seconds;
+		}
+
+		if ( obj.milliseconds < 10 )
+		{
+			ms = ".00" + obj.milliseconds;
+		}
+		else if ( obj.milliseconds < 100 )
+		{
+			ms = ".0" + obj.milliseconds;
+		}
+		else
+		{
+			ms = "." + obj.milliseconds;
+		}
+
+		obj.string = obj.dayShort + dt + " " + obj.monthShort + " " + obj.year +
+		h + m + s + ms + " " + obj.am_pm;
+
+		return obj;
 	};
 
 	//----------------------

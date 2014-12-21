@@ -585,6 +585,12 @@ var PerlenspielStartup = function (my) {
 		my._footerTimer = my.instance.timerStart(6, my._footerFade);
 
 		if (my.instance.init) {
+			// Init time/date, call user initializer
+
+			var date = new Date();
+			my._startTime = date.getTime();
+			my._system.date = my._getDate();
+
 			// Call user initializer
 			my._tryInit();
 		}
