@@ -237,3 +237,4 @@ pip-log.txt
 .idea/dictionaries/
 .idea/inspectionProfiles/Project_Default.xml
 .idea/inspectionProfiles/profiles_settings.xml
+node_modules/
