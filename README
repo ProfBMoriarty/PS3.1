@@ -1,1 +1,12 @@
 PS3.1 Repository
+
+Perlenspiel requires Node.js to build & deploy.
+Once node is installed, you can run the 'npm install' command in the repository root to set up the required Node modules:
+
+	npm install
+
+This will allow you to use the following commands:
+
+	grunt build
+	grunt deploy
+	grunt clean

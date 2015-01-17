@@ -14,8 +14,7 @@ module.exports = function (grunt) {
 
 	// Project configuration.
 	grunt.initConfig({
-		ps: grunt.file.readJSON('packagePS.json'),
-		aq: grunt.file.readJSON('packageAQ.json'),
+		ps: grunt.file.readJSON('package.json'),
 
 		// Combine into one file
 		concat: {
@@ -35,8 +34,8 @@ module.exports = function (grunt) {
 			},
 			perlenspiel: {
 				files: {
-					'build/ps/<%= ps.file %>.min.js': ['build/ps/<%= ps.file %>.js'],
-					'build/ps/<%= aq.file %>.min.js': ['src/<%= aq.file %>.js']
+					'build/ps/ps.min.js': ['build/ps/ps.js'],
+					'build/ps/aq.min.js': ['src/aq.js']
 				}
 			}
 		},
@@ -94,5 +93,4 @@ module.exports = function (grunt) {
 	// Task groupings, for convenience
 	grunt.registerTask('build', ['clean:perlenspiel', 'concat', 'uglify', 'copy:perlenspiel', 'clean:postBuild']);
 	grunt.registerTask('deploy', ['clean:zips', 'compress']);
-
 };

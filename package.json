@@ -1,0 +1,15 @@
+{
+	"name": "Perlenspiel",
+	"file": "ps",
+	"version": "3.2.2",
+	"devDependencies": {
+		"grunt": "*",
+		"grunt-contrib-jshint": "*",
+		"grunt-contrib-nodeunit": "*",
+		"grunt-contrib-concat": "*",
+		"grunt-contrib-uglify": "*",
+		"grunt-contrib-clean": "*",
+		"grunt-contrib-copy": "*",
+		"grunt-contrib-compress": "*"
+	}
+}
