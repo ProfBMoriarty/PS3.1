@@ -166,13 +166,29 @@ var PerlenspielStartup = function (my) {
 			inputP: ip,
 			inputNode: inode,
 			input: input,
-			fader: my._newFader(my._STATUS_P_ID, my._statusRGB, null)
-		};
+			fader: my._newFader(my._STATUS_P_ID, my._statusRGB, null),
+            // Default props
+            text: "",
+            label: "",
+            exec: null,
+            color: {
+                r: 0, g: 0, b: 0, a: 255,
+                rgb: 0x000000,
+                str: "rgba(0,0,0,1)"
+            }
+        };
 
-		my._copy(my._DEFAULTS.status, my._status); // copy default properties
 		my._statusOut("Perlenspiel " + my._system.major + "." + my._system.minor);
 
-		// Create grid canvas
+        // Create graph div
+
+        my._graphing = null;
+        my._graph = document.createElement( "div" );
+        my._graph.style.display = "none";
+        my._graph.style.marginBottom = "1.0em";
+        my._main.appendChild( my._graph );
+
+        // Create grid canvas
 
 		grid = document.createElement("canvas");
 		if (!grid) {
@@ -225,21 +241,24 @@ var PerlenspielStartup = function (my) {
 
 		// Monitor, append to debug
 
-		monitor = document.createElement("textarea");
-		if (!monitor)
+        my._monitor = document.createElement("textarea");
+		if (!my._monitor)
 			return console.error("No monitor textarea!");
-		monitor.id = my._MONITOR_ID;
-		monitor.className = my._MONITOR_CLASS;
-		monitor.rows = 8;
-		monitor.wrap = "soft";
-		monitor.readonly = "readonly";
-		monitor.onfocus = function () {
+        my._monitor.id = my._MONITOR_ID;
+        my._monitor.className = my._MONITOR_CLASS;
+        my._monitor.rows = 8;
+        my._monitor.wrap = "soft";
+        my._monitor.readonly = "readonly";
+        my._monitor.onfocus = function () {
 			my._debugFocus = true;
 		};
-		monitor.onblur = function () {
+        my._monitor.onblur = function () {
 			my._debugFocus = false;
 		};
-		debug.appendChild(monitor);
+        my._monitor.addEventListener( "mousedown", my._bugDown, false );
+        my._monitor.addEventListener( "mouseup", my._bugUp, false );
+
+        debug.appendChild(my._monitor);
 
 		my._debugging = false;
 		my._debugFocus = false;
@@ -366,11 +385,11 @@ var PerlenspielStartup = function (my) {
 
 		// Add fillRoundedRect method to canvas
 
-		if (!ctx.constructor.prototype.fillRoundedRect) {
-			ctx.constructor.prototype.fillRoundedRect = function (xx, yy, ww, hh, rad, fill, stroke) {
-				if (rad === undefined) {
-					rad = 5;
-				}
+        if (!ctx.constructor.prototype.fillRoundedRect) {
+            ctx.constructor.prototype.fillRoundedRect = function (xx, yy, ww, hh, rad, fill, stroke) {
+                if (rad === undefined) {
+                    rad = 5;
+                }
 
 				this.beginPath();
 
@@ -408,11 +427,31 @@ var PerlenspielStartup = function (my) {
 			canvas: grid,
 			context: ctx,
 			fader: my._newFader(my._GRID_ID, my._gridRGB, my._gridRGBEnd),
-			focused: false
-		};
+			focused: false,
 
-		// copy default properties
-		my._copy(my._DEFAULTS.grid, my._grid);
+            // default props
+            width: 512,
+            x: 8,
+            y: 8,
+            max: 32,
+            plane: 0,
+            color: {
+                r: 255, g: 255, b: 255, a: 255,
+                rgb: 0xFFFFFF,
+                str: "rgba(255,255,255,1)"
+            },
+            shadow: {
+                show: false,
+                r: 0xC0, g: 0xC0, b: 0xC0, a: 255,
+                rgb: 0xC0C0C0,
+                str: "rgba(192,192,192,1)",
+                params: "0px 0px 64px 8px "
+            },
+            padLeft: 0,
+            padRight: 0,
+            ready: false,
+            timeExit : 0
+        };
 
 		// Calculate canvas padding for mouse offset (Mark Diehr)
 		var canvasStyle = window.getComputedStyle(my._grid.canvas, null);
@@ -541,7 +580,13 @@ var PerlenspielStartup = function (my) {
 				my.instance.input = null;
 				my._warning("PS.input" + str);
 			}
-		} else {
+
+            if (typeof my.instance.swipe !== "function") {
+                my.instance.swipe = null;
+                my._warning("PS.swipe" + str);
+            }
+
+        } else {
 			// Default implementations for the careless
 			my.instance.touch = my.instance.touch || function(){};
 			my.instance.release = my.instance.release || function(){};
@@ -577,6 +622,7 @@ var PerlenspielStartup = function (my) {
 		my._initTimers();
 
 		my._clockActive = true;
+        my._tickCount = 0;
 		my._clock();
 
 		// Init all event listeners
@@ -599,7 +645,7 @@ var PerlenspielStartup = function (my) {
 	// Call PS.init and catch errors
 	my._tryInit = function() {
 		try {
-			my.instance.init(my._system, my._EMPTY);
+			my.instance.init(my._system, { time : my._tickCount });
 			my._gridDraw();
 		} catch (err) {
 			my._errorCatch("PS.init() failed [" + err.message + "]", err);

@@ -131,7 +131,8 @@ var PerlenspielConstants = function (my) {
 		my._INPUT_P_ID = my._NAMESPACE + "-" + my._INPUT_P_CLASS;
 		my._INPUT_LABEL_ID = my._NAMESPACE + "-" + my._INPUT_LABEL_CLASS;
 		my._INPUT_SPAN_ID = my._NAMESPACE + "-" + my._INPUT_SPAN_CLASS;
-		my._INPUT_BOX_ID = my._NAMESPACE + "-" + my._INPUT_BOX_CLASS;
+        my._INPUT_BOX_ID = my._NAMESPACE + "-" + my._INPUT_BOX_CLASS;
+        my._GRAPH_ID = my._NAMESPACE + "-" + my._GRAPH_CLASS;
 		my._GRID_ID = my._NAMESPACE + "-" + my._GRID_CLASS;
 		my._FOOTER_ID = my._NAMESPACE + "-" + my._FOOTER_CLASS;
 		my._MONITOR_ID = my._NAMESPACE + "-" + my._MONITOR_CLASS;
@@ -150,7 +151,8 @@ var PerlenspielConstants = function (my) {
 	my._INPUT_P_CLASS = "inp";
 	my._INPUT_LABEL_CLASS = "inlabel";
 	my._INPUT_SPAN_CLASS = "inspan";
-	my._INPUT_BOX_CLASS = "inbox";
+    my._INPUT_BOX_CLASS = "inbox";
+    my._GRAPH_CLASS = "graph";
 	my._GRID_CLASS = "grid";
 	my._FOOTER_CLASS = "footer";
 	my._MONITOR_CLASS = "monitor";
@@ -253,7 +255,8 @@ var PerlenspielConstants = function (my) {
 			},
 			padLeft: 0,
 			padRight: 0,
-			ready: false
+			ready: false,
+            timeExit : 0
 		},
 
 		// Status line defaults
@@ -320,6 +323,10 @@ var PerlenspielConstants = function (my) {
 			scale: 100,
 			data: 0,
 			exec: null,
+            timeTouch : 0,
+            timeRelease : 0,
+            timeEnter : 0,
+            timeExit : 0,
 
 			// bead border
 

@@ -41,7 +41,7 @@ var PerlenspielInternal = function (my) {
 		engine: "Perlenspiel",
 		major: 3,
 		minor: 2,
-		revision: 3,
+		revision: 4,
 		audio: null, // populated by PS._sys()
 		host: {
 			app: "",
@@ -61,6 +61,8 @@ var PerlenspielInternal = function (my) {
 	my._ASTR = undefined;
 
 	my._main = null; // main DOM element
+    my._graph = null; // graph DOM element
+    my._graphing = null; // id of database if graph is visible
 
 	my._grid = undefined; // master grid object
 	my._beads = undefined; // master list of bead objects
@@ -68,6 +70,8 @@ var PerlenspielInternal = function (my) {
 
 	my._anyDirty = false; // dirty bead flag
 	my._refreshed = 0; // number of beads refreshed
+    my._seed = 1; // random number seed
+    my._swiping = null; // collects current swipe data
 
 	// Image support
 
@@ -83,11 +87,11 @@ var PerlenspielInternal = function (my) {
 	// Clock support
 
 	my._clockActive = undefined; // true if clock should be running
-	my._timers = undefined; // master timer list
+    my._tickCount = undefined; // clock tick counter
+    my._timers = undefined; // master timer list
 	my._timerCnt = undefined; // unique timer id
 	my._faders = undefined; // master fader list
 	my._faderTick = undefined; // fader countdown
-	my._startTime = undefined; // engine start time in milliseconds
 
 
 	// Keyboard support
@@ -116,13 +120,15 @@ var PerlenspielInternal = function (my) {
 	my._windowHeight = undefined; // height of browser window
 	my._gridMax = undefined; // max width/height of grid
 	my._fontMax = undefined; // max size of status line font
-	my._currentFinger = undefined; // index of finger touching screen
+    my._touchDown = false; // true when mouse/finger is pressed
+    my._overGrid = undefined; // true when cursor/finger is over the grid
+    my._lastBead = -1; // index of last bead used
+    my._currentFinger = undefined; // index of finger touching screen
 	my._underBead = undefined; // bead currently under finger
-	my._overGrid = undefined; // true when cursor/finger is over the grid
-	my._lastBead = -1; // index of last bead used
 
 	// Debugger support
 
+    my._monitor = undefined; // monitor DOM element
 	my._debugging = undefined; // true if debugger open
 	my._debugFocus = undefined; // true if debugger has focus
 	my._footer = undefined; // DOM footer element
@@ -696,9 +702,7 @@ var PerlenspielInternal = function (my) {
 			e.style.display = "inline";
 
 			// clear the monitor
-
-			e = document.getElementById(my._MONITOR_ID);
-			e.value = "";
+            my._monitor.value = "";
 
 			my._debugging = true;
 			my._debugFocus = false;
@@ -887,6 +891,7 @@ var PerlenspielInternal = function (my) {
 	};
 
 	// Reset a fader
+    // Hardcoded for speed
 
 	my._resetFader = function (fader) {
 		fader.active = false;
@@ -1123,13 +1128,19 @@ var PerlenspielInternal = function (my) {
 	}
 	*/
 
-	my._tick = function () {
+    // Used by all calls to PS.keyDown()
+
+    my._keyDownOptions = { // static for efficiency
+        time : 0
+    };
+
+    my._tick = function () {
 		var fn, refresh, len, i, fader, frame, flen, key, timer, result, exec, id, params;
 
 		// my._reportTime();
 
 		fn = "[_tick] ";
-
+        my._tickCount += 1;
 		refresh = false;
 
 		// Fader support
@@ -1243,9 +1254,11 @@ var PerlenspielInternal = function (my) {
 					key = my._holding[i];
 					if (key) {
 						try {
-							my.instance.keyDown(key, my._holdShift, my._holdCtrl);
 							refresh = true;
-						} catch (e5) {
+                            my._keyDownOptions.time = my._tickCount;
+                            my.instance.keyDown( key, my._holdShift, my._holdCtrl, my._keyDownOptions );
+
+                        } catch (e5) {
 							my._errorCatch(fn + "Key repeat failed [" + e5.message + "]", e5);
 							return;
 						}
@@ -1840,25 +1853,130 @@ var PerlenspielInternal = function (my) {
 	// DOM EVENT SUPPORT
 	//------------------
 
-	// my._touchBead ( bead )
+    // Start a new swipe
+
+    my._initSwipe = function( time ) {
+        my._swiping = {
+            start : time,
+            end : 0,
+            duration : 0,
+            events : []
+        };
+    };
+
+    // Add bead to current swipe event
+    // Offgrid if x|y = -1
+
+    my._addSwipe = function( x, y, time ) {
+        my._swiping.events.push( {
+            x : x,
+            y : y,
+            start : time,
+            end : 0,
+            duration : 0
+        } );
+    };
+
+    // Update latest bead in current swipe event
+
+    my._updateSwipe = function( time ) {
+        var len, event;
+
+        len = my._swiping.events.length;
+        if ( len > 0 )
+        {
+            event = my._swiping.events[ len - 1 ]; // get this event's swipe record
+            my._swiping.end = time;
+            event.end = time; // set end time
+            event.duration = ( time - event.start ); // update total duration
+            my._swiping.duration += event.duration;
+        }
+    };
+
+    // Return copy of current swipe record
+
+    my._copySwipe = function() {
+        var obj, len, i, event;
+
+        obj = {
+            start : my._swiping.start,
+            end : my._swiping.end,
+            duration : my._swiping.duration,
+            events : []
+        };
+
+        len = my._swiping.events.length;
+        for ( i = 0; i < len; i += 1 ) {
+            event = _swiping.events[ i ];
+            obj.events.push( {
+                x : event.x,
+                y : event.y,
+                start : event.start,
+                end : event.end,
+                duration : event.duration
+            } );
+        }
+
+        return obj;
+    };
+
+    my._emitSwipe = function( time )  {
+        var any, swipe;
+
+        any = false;
+        if ( my._swiping.events.length > 1 ) // At least 1 event in swipe?
+        {
+            my._updateSwipe( time );
+
+            // Calculate direction here
+
+            if ( my.instance.swipe ) {
+                try {
+                    swipe = my._copySwipe();
+                    my.instance.swipe( swipe, { time : time } );
+                    any = true;
+                }
+                catch ( err ) {
+                    return my._errorCatch( "PS.swipe() failed [" + err.message + "]", err );
+                }
+            }
+        }
+        my._swiping = null; // nuke global swipe record
+        return any;
+    };
+
+    // my._touchBead ( bead )
 	// Call this when mouse is clicked on bead or when bead is touched
 	// Returns PS.DONE or PS.ERROR
 
+    my._touchBeadOptions = { // static for efficiency
+        time : 0
+    };
+
 	my._touchBead = function (bead) {
-		var data, any;
+		var data, any, time;
 
 		// Set grid to focused
 		my._gridFocus();
 
 		if (bead.active) {
 			any = false;
-			data = my._getData(bead);
 
-			// Call user's touch function if defined
+            time = my._tickCount; // get this only once
+            bead.timeTouch = time;
+            my._touchBeadOptions.time = time;
+
+            // Touch always starts a new swipe
+
+            my._initSwipe( time );
+            my._addSwipe( bead.x, bead.y, time );
+
+            // Call user's touch function if defined
 
 			if (bead.exec) {
 				try {
-					bead.exec(bead.x, bead.y, data, my._EMPTY);
+                    data = my._getData( bead );
+                    bead.exec(bead.x, bead.y, data, my._touchBeadOptions);
 					any = true;
 				} catch (e1) {
 					return my._errorCatch("Bead " + bead.x + ", " + bead.y + " function failed [" + e1.message + "]", e1);
@@ -1869,7 +1987,8 @@ var PerlenspielInternal = function (my) {
 
 			if (my.instance.touch) {
 				try {
-					my.instance.touch(bead.x, bead.y, data, my._EMPTY);
+                    data = my._getData( bead ); // in case previous call changed it
+                    my.instance.touch(bead.x, bead.y, data, my._touchBeadOptions);
 					any = true;
 				} catch (e2) {
 					return my._errorCatch("PS.touch() failed [" + e2.message + "]", e2);
@@ -1887,20 +2006,36 @@ var PerlenspielInternal = function (my) {
 	// Call this when mouse button is released or touch is removed from bead
 	// Returns PS.DONE or PS.ERROR
 
-	my._releaseBead = function (bead) {
-		var data;
+    my._releaseBeadOptions = { // static for efficiency
+        time : 0
+    };
+
+    my._releaseBead = function (bead) {
+		var data, any, time;
 
 		if (bead.active) {
-			if (my.instance.release) {
+            any = false;
+            time = my._tickCount; // get only once
+            my._releaseBeadOptions.time = bead.timeRelease = time;
+
+            if (my.instance.release) {
 				data = my._getData(bead);
 				try {
 					my.instance.release(bead.x, bead.y, data, my._EMPTY);
 					my._gridDraw();
-				} catch (err) {
-					return my._errorCatch("PS.release() failed [" + err.message + "]", err);
+				} catch (e1) {
+					return my._errorCatch("PS.release() failed [" + e1.message + "]", e1);
 				}
 			}
-		}
+
+            // Release always ends a swipe
+
+            if ( my._emitSwipe( time ) || any )
+            {
+                my._gridDraw();
+            }
+
+        }
 		return PS.DONE;
 	};
 
@@ -1908,16 +2043,30 @@ var PerlenspielInternal = function (my) {
 	// Call this when mouse/touch enters a bead
 	// Returns PS.DONE or PS.ERROR
 
-	my._enterBead = function (bead) {
-		var data;
+    my._enterBeadOptions = { // static for efficiency
+        time : 0
+    };
+
+    my._enterBead = function (bead) {
+		var time, data;
 
 		my._overGrid = true;
 
 		if (bead.active) {
 			if (my.instance.enter) {
-				data = my._getData(bead);
+                time = my._tickCount; // get this once
+                my._enterBeadOptions.time = bead.timeEnter = time;
+
+                // If mouse/finger is down, register swipe event
+
+                if ( my._touchDown && my._swiping )
+                {
+                    my._addSwipe( bead.x, bead.y, time );
+                }
+
 				try {
-					my.instance.enter(bead.x, bead.y, data, my._EMPTY);
+                    data = my._getData(bead);
+                    my.instance.enter( bead.x, bead.y, data, my._enterBeadOptions );
 					my._gridDraw();
 				} catch (err) {
 					return my._errorCatch("PS.enter() failed [" + err.message + "]", err);
@@ -1931,13 +2080,24 @@ var PerlenspielInternal = function (my) {
 	// Call this when mouse/touch leaves a bead
 	// Returns PS.DONE or PS.ERROR
 
-	my._exitBead = function (bead) {
-		var data;
+    my._exitBeadOptions = { // static for efficiency
+        time : 0
+    };
+
+    my._exitBead = function (bead) {
+		var time, data;
 
 		if (bead.active) {
 			if (my.instance.exit) {
-				data = my._getData(bead);
+                time = my._tickCount;
+                my._exitBeadOptions.time = bead.timeExit = time;
+                if ( my._touchDown && my._swiping )
+                {
+                    my._updateSwipe( time );
+                }
+
 				try {
+                    data = my._getData(bead);
 					my.instance.exit(bead.x, bead.y, data, my._EMPTY);
 					my._gridDraw();
 				} catch (err) {
@@ -1953,16 +2113,33 @@ var PerlenspielInternal = function (my) {
 	// Call this when mouse leaves the grid
 	// Returns PS.DONE or PS.ERROR
 
-	my._exitGrid = function () {
+    my._exitGridOptions = { // static for efficiency
+        time : 0
+    };
+
+    my._exitGrid = function () {
+        var time;
+
 		my._overGrid = false;
 
 		if (my.instance.exitGrid) {
-			try {
-				my.instance.exitGrid(my._EMPTY);
-				my._gridDraw();
-			} catch (err) {
-				return my._errorCatch("PS.exitGrid() failed [" + err.message + "]", err);
-			}
+            time = my._tickCount;
+            my._exitGridOptions.time = my._grid.timeExit = time;
+            try {
+                my.instance.exitGrid( my._exitGridOptions );
+                my._gridDraw();
+            }
+            catch ( err ) {
+                return my._errorCatch( "PS.exitGrid() failed [" + err.message + "]", err );
+            }
+
+            // exitGrid always ends swipe if mouse/finger is down
+
+            if ( my._touchDown && my._swiping ) // At least 1 bead in swipe?
+            {
+                my._addSwipe( -1, -1, time ); // add offgrid event
+            }
+
 		}
 		return PS.DONE;
 	};
@@ -2015,23 +2192,77 @@ var PerlenspielInternal = function (my) {
 		return null;
 	};
 
-	// my._mouseDown ()
+    // my._docDown ()
+    // Event called when mouse is clicked anywhere
+
+    my._docDown = function ( event )
+    {
+        var time;
+
+//		PS.debug("_docDown()\n");
+
+        if ( my._debugging )
+        {
+            my._monitor.blur();
+        }
+
+        time = my._tickCount;
+        my._touchDown = true;
+        my._initSwipe( time );
+        my._addSwipe( -1, -1, time );
+        return my._endEvent( event );
+    };
+
+    // _docUp ()
+    // Event called when mouse button is released anywhere
+
+    my._docUp  = function( event )
+    {
+//		PS.debug("_docUp()\n");
+        if ( my._swiping  )
+        {
+            my._emitSwipe( my._tickCount );
+        }
+        my._touchDown = false;
+        return my._endEvent( event );
+    };
+
+    // _bugDown ()
+    // Event called when debugger is clicked
+
+    my._bugDown = function ( event )
+    {
+//		PS.debug("_bugDown()\n");
+        my._monitor.focus();
+        return my._endEvent( event );
+    };
+
+    // _bugUp ()
+    // Event called when debugger is released
+
+    my._bugUp = function( event )
+    {
+//		PS.debug("_bugUp()\n");
+        return my._endEvent( event );
+    };
+
+    // my._mouseDown ()
 	// Event called when mouse is clicked on a bead
 
 	my._mouseDown = function (event) {
 		var x, y, bead;
 
-		if (event.x && event.y) // Webkit, IE
-		{
-			x = event.x;
-			y = event.y;
-		} else // Firefox method to get the position
-		{
-			x = event.clientX;
-			y = event.clientY;
-		}
+        if ( my._debugging )
+        {
+            my._monitor.blur();
+        }
+
+        x = event.clientX;
+        y = event.clientY;
+        my._touchDown = true;
 
 		bead = my._getBead(x, y);
+
 		if (bead) {
 			my._touchBead(bead);
 		} else {
@@ -2051,20 +2282,14 @@ var PerlenspielInternal = function (my) {
 	my._mouseUp = function (event) {
 		var x, y, bead;
 
-		if (event.x && event.y) // Webkit, IE
-		{
-			x = event.x;
-			y = event.y;
-		} else // Firefox method to get the position
-		{
-			x = event.clientX;
-			y = event.clientY;
-		}
+        x = event.clientX;
+        y = event.clientY;
 
 		bead = my._getBead(x, y);
 		if (bead) {
 			my._releaseBead(bead);
 		}
+        my._touchDown = false;
 
 		return my._endEvent(event);
 	};
@@ -2137,7 +2362,12 @@ var PerlenspielInternal = function (my) {
 
 		// PSInterface.debug("_touchStart called\n");
 
-		// If a finger already down
+        if ( my._debugging )
+        {
+            my._monitor.blur();
+        }
+
+        // If a finger already down
 
 		if (my._currentFinger !== my._CLEAR) {
 			// PSInterface.debug( "Finger already down\n" );
@@ -2146,6 +2376,7 @@ var PerlenspielInternal = function (my) {
 
 		touch = event.changedTouches[0];
 		my._currentFinger = touch.identifier; // get the identifier for this finger
+        my._touchDown = true;
 
 		// PSInterface.debug( "_touchStart finger = " + my._currentFinger + "\n" );
 
@@ -2195,6 +2426,7 @@ var PerlenspielInternal = function (my) {
 				if (bead) {
 					my._releaseBead(bead);
 				}
+                my._touchDown = false;
 				break;
 			}
 		}
@@ -2375,8 +2607,9 @@ var PerlenspielInternal = function (my) {
 					}
 
 					try {
-						my.instance.keyDown(key, my._holdShift, my._holdCtrl, my._EMPTY);
-						any = true;
+                        my._keyDownOptions.time = my._tickCount;
+                        my.instance.keyDown( key, my._holdShift, my._holdCtrl, my._keyDownOptions );
+                        any = true;
 					} catch (err) {
 						my._errorCatch(fn + "PS.keyDown failed [" + err.message + "]", err);
 					}
@@ -2403,6 +2636,8 @@ var PerlenspielInternal = function (my) {
 						my._holding[i] = key; // replace unshifted key with shifted
 						try {
 							my.instance.keyDown(key, true, my._holdCtrl, my._EMPTY);
+                            my._keyDownOptions.time = my._tickCount;
+                            my.instance.keyDown( key, true, my._holdCtrl, my._keyDownOptions );
 							any = true;
 						} catch (err2) {
 							my._errorCatch(fn + "PS.keyDown failed [" + err2.message + "]", err2);
@@ -2423,7 +2658,11 @@ var PerlenspielInternal = function (my) {
 	// my._keyUp ( event )
 	// DOM event called when key is released
 
-	my._keyUp = function (event) {
+    my._keyUpOptions = { // static for efficiency
+        time : 0
+    };
+
+    my._keyUp = function (event) {
 		if (!my._grid.focused)
 			return;
 
@@ -2473,7 +2712,8 @@ var PerlenspielInternal = function (my) {
 				}
 
 				try {
-					my.instance.keyUp(key, shift, ctrl, my._EMPTY);
+                    my._keyUpOptions.time = my._tickCount;
+                    my.instance.keyUp(key, shift, ctrl, my._keyUpOptions);
 					any = true;
 				} catch (err) {
 					my._errorCatch(fn + "PS.keyUp failed [" + err.message + "]", err);
@@ -2496,7 +2736,8 @@ var PerlenspielInternal = function (my) {
 						my._pressed[key] = 1;
 						my._holding[i] = key; // replace shifted key with unshifted
 						try {
-							my.instance.keyDown(key, false, ctrl, my._EMPTY);
+                            my._keyUpOptions.time = my._tickCount;
+                            my.instance.keyDown(key, false, ctrl, my._keyUpOptions);
 							any = true;
 						} catch (err2) {
 							my._errorCatch(fn + "PS.keyDown failed [" + err2.message + "]", err2);
@@ -2517,7 +2758,15 @@ var PerlenspielInternal = function (my) {
 	// my._wheel ( event )
 	// DOM event called when mouse wheel is moved
 
-	my._wheel = function (event) {
+    my._wheelData = { // static for efficiency
+        wheel : 0
+    };
+
+    my._wheelOptions = { // static for efficiency
+        time : 0
+    };
+
+    my._wheel = function (event) {
 		if (!my._grid.focused)
 			return;
 
@@ -2551,10 +2800,10 @@ var PerlenspielInternal = function (my) {
 			// Send delta to user
 
 			try {
-				my.instance.input({
-					wheel: delta
-				}, my._EMPTY);
-				my._gridDraw();
+                my._wheelData.wheel = delta;
+                my._wheelOptions.time = my._tickCount;
+                my.instance.input( my._wheelData, my._wheelOptions );
+                my._gridDraw();
 			} catch (err) {
 				my._errorCatch("PS.input() failed [" + err.message + "]", err);
 			}
@@ -2644,6 +2893,12 @@ var PerlenspielInternal = function (my) {
 
 		// If not in multispiel mode, the grid is always considered focused
 		grid.focused = !my._isMultiMode();
+
+        my._touchDown = false;
+
+        // Capture mouse down/up anywhere in page
+        document.addEventListener( "mousedown", my._docDown, false );
+        document.addEventListener( "mouseup", my._docUp, false );
 
 		grid.addEventListener("mousedown", my._mouseDown, false);
 		grid.addEventListener("mouseup", my._mouseUp, false);
@@ -2816,6 +3071,7 @@ var PerlenspielInternal = function (my) {
 		my._resetFader(my._grid.fader);
 		my._resetFader(my._status.fader);
 		my._grid.plane = 0;
+        my._swiping = []; // reset swipes
 
 		// x/y dimensions of grid
 
@@ -3579,7 +3835,7 @@ var PerlenspielInternal = function (my) {
 	};
 
 	my._borderColor = function (x, y, colors) {
-		var id, bead, current, fader, rgb, r, g, b, a;
+		var id, bead, current, fader, r, g, b, a;
 
 		id = (y * my._grid.x) + x;
 		bead = my._beads[id];
@@ -5493,7 +5749,7 @@ var PerlenspielInternal = function (my) {
 
 	my._getDate = function ()
 	{
-		var months, months3, days, days3, d, obj, dt, h, m, s, ms;
+		var months, months3, days, days3, d, obj, dt, h, m, s, ms, len;
 
 		months = [
 			"January", "February", "March", "April", "May", "June",
@@ -5517,6 +5773,7 @@ var PerlenspielInternal = function (my) {
 		d = new Date();
 
 		obj = {
+            time : d.getTime(),
 			year : d.getFullYear(),
 			month : d.getMonth(),
 			date : d.getDate(),
@@ -5554,7 +5811,7 @@ var PerlenspielInternal = function (my) {
 		}
 		else
 		{
-			dt = " " + obj.date;
+			dt = obj.date.toString();
 		}
 
 		if ( obj.hours < 10 )
@@ -5563,7 +5820,7 @@ var PerlenspielInternal = function (my) {
 		}
 		else
 		{
-			h = " " + obj.hours;
+			h = obj.hours.toString();
 		}
 
 		if ( obj.minutes < 10 )
@@ -5597,8 +5854,18 @@ var PerlenspielInternal = function (my) {
 			ms = "." + obj.milliseconds;
 		}
 
-		obj.string = obj.dayShort + dt + " " + obj.monthShort + " " + obj.year +
-		h + m + s + ms + " " + obj.am_pm;
+        len = ms.length;
+        if ( len === 2 )
+        {
+            ms += "00";
+        }
+        else if ( len === 3 )
+        {
+            ms += "0";
+        }
+
+        obj.string = obj.dayShort + " " + dt + " " + obj.monthShort + " " + obj.year + " " +
+        h + m + s + ms + " " + obj.am_pm;
 
 		return obj;
 	};

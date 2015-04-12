@@ -1250,9 +1250,9 @@ var PerlenspielInterface = function (my) {
 	// -----------------
 
 	my.PSInterface.prototype.random = function (val_p) {
-		var fn, val;
+        var fn, f, val;
 
-		fn = "[PS.random] ";
+        fn = "[PS.random] ";
 
 		if (PS.ERROR === my._checkNumArgs(fn, arguments.length, 1, 1))
 			return PS.ERROR;
@@ -1266,12 +1266,51 @@ var PerlenspielInterface = function (my) {
 			return 1;
 		}
 
-		val = Math.random() * val;
+        f = function () {
+            var x;
+
+            x = Math.sin( my._seed ) * 10000;
+            my._seed += 1;
+            return x - Math.floor( x );
+        };
+
+//			var seed = 1;
+//			function random() {
+//				var x = Math.sin(seed++) * 10000;
+//				return x - Math.floor(x);
+//			}
+
+//			val = Math.random() * val;
+//			val = Math.floor(val) + 1;
+
+        val = f() * val;
 		val = Math.floor(val) + 1;
 		return val;
 	};
 
-	my.PSInterface.prototype.makeRGB = function (r_p, g_p, b_p) {
+    my.PSInterface.prototype.seed = function ( val_p ) {
+        var fn, val;
+
+        fn = "[PS.seed] ";
+
+        if ( arguments.length < 1 ) {
+            return my._error( fn + "Argument missing" );
+        }
+
+        val = val_p; // prevent arg mutation
+        if ( my._typeOf( val ) !== "number" ) {
+            return my._error( fn + "Argument not a number" );
+        }
+        val = Math.floor( val );
+        if ( val < 1 ) {
+            val = 1;
+        }
+
+        my._seed = val;
+        return my._seed;
+    };
+
+    my.PSInterface.prototype.makeRGB = function (r_p, g_p, b_p) {
 		var fn, args, r, g, b;
 
 		fn = "[PS.makeRGB] ";
@@ -1631,7 +1670,7 @@ var PerlenspielInterface = function (my) {
 
 		d = new Date();
 		t = d.getTime();
-		return ( t - my._startTime );
+		return ( t - my._system.date.time );
 	};
 
 	// ---------
@@ -3459,17 +3498,17 @@ var PerlenspielInterface = function (my) {
 	// Returns PS.DONE
 
 	my.PSInterface.prototype.debugClear = function () {
-		var fn, e;
+		var fn;
 
 		fn = "[PS.debugClear] ";
 
 		if (PS.ERROR === my._checkNumArgs(fn, arguments.length, 0, 0))
 			return PS.ERROR;
 
-		e = document.getElementById(my._MONITOR_ID);
-		e.value = "";
+        my._monitor.value = "";
 
-		return PS.DONE;
+
+        return PS.DONE;
 	};
 
 	//----------------

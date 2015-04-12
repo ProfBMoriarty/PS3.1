@@ -3,7 +3,7 @@
 
 /*
  Perlenspiel is a scheme by Professor Moriarty (bmoriarty@wpi.edu).
- Perlenspiel is Copyright © 2009-14 Worcester Polytechnic Institute.
+ Perlenspiel is Copyright © 2009-15 Worcester Polytechnic Institute.
  This file is part of Perlenspiel.
 
  Perlenspiel is free software: you can redistribute it and/or modify
@@ -18,12 +18,15 @@
 
  You may have received a copy of the GNU Lesser General Public License
  along with Perlenspiel. If not, see <http://www.gnu.org/licenses/>.
+
+ Perlenspiel uses dygraphs (Copyright © 2009 by Dan Vanderkam) under the MIT License for data visualization.
+ See dygraphs License.txt, <http://dygraphs.com> and <http://opensource.org/licenses/MIT> for more information.
  */
 
 // The following comments are for JSLint
 
 /*jslint nomen: true, white: true, vars: true */
-/*global document, window, screen, console, Image, AQ, PIXI */
+/*global document, window, screen, console, Image, AQ, Dygraph, PIXI */
 
 // Global public constant-holder
 var PS = PS || {};
