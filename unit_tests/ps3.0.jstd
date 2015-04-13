@@ -7,6 +7,7 @@ load:
   - ../src/module-startup.js
   - ../src/module-interface.js
   - ../src/module-internal.js
+  - ../src/module-db.js
   - ../src/perlenspiel-start.js
 
 test:
